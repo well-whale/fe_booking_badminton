@@ -1,0 +1,79 @@
+/* src/Court/CourtReview.css */
+.court-review-container {
+    max-width: 1200px;
+    margin: auto;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .average-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+  }
+  
+  .rating-display {
+    display: flex;
+    align-items: center;
+  }
+  
+  .average-rating-text {
+    font-size: 1.2em;
+    color: #333;
+    margin-right: 10px;
+  }
+  
+  .average-rating-value {
+    display: flex;
+    align-items: center;
+  }
+  
+  .average-rating-value strong {
+    font-size: 2em;
+    color: #ffb400;
+    margin-right: 10px;
+  }
+  
+  .review-form {
+    margin-bottom: 20px;
+  }
+  
+  .review-form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .review-list {
+    margin-top: 20px;
+  }
+  
+  .review-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: #f7f7f7;
+  }
+  
+  .review-content {
+    margin-left: 15px;
+  }
+  
+  .review-content p {
+    margin: 0;
+  }
+  

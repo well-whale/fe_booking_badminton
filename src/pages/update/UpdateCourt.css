@@ -1,0 +1,63 @@
+/* UpdateCourt.css */
+.updateCourtContainer {
+  display: flex;
+}
+
+.updateCourtSidebar {
+  flex: 1;
+}
+
+.updateCourtContent {
+  flex: 4;
+  padding: 20px;
+  display: contents;
+  flex-direction: column;
+  align-items: center;
+}
+
+.updateCourtForm, .updateTimeForm {
+  width: 100%;
+  max-width: 600px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.updateCourtForm h2, .updateTimeForm h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.updateCourtForm .MuiTextField-root, .updateTimeForm .MuiTextField-root {
+  margin-bottom: 15px;
+}
+
+.courtPriceSlot table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.courtPriceSlot th, .courtPriceSlot td {
+  padding: 10px;
+  text-align: center;
+}
+
+.courtPriceSlot th {
+  background-color: #e0e0e0;
+}
+
+.courtPriceSlot td {
+  border-bottom: 1px solid #ddd;
+}
+
+.courtPriceSlot td input {
+  width: 100%;
+  padding: 5px;
+}
+
+.courtPriceSlot .MuiButton-root {
+  margin-right: 5px;
+}

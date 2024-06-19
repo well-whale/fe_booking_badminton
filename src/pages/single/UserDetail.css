@@ -1,0 +1,73 @@
+.single {
+    display: flex;
+  }
+  
+  .singleContainer {
+    flex: 4;
+  }
+  
+  .top {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .left {
+    flex: 3;
+  }
+  
+  .right {
+    flex: 2;
+  }
+  
+  .item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .itemImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+  }
+  
+  .details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .itemTitle {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  
+  .detailItem {
+    margin-top: 10px;
+  }
+  
+  .itemKey {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+  
+  .itemValue {
+    font-weight: 300;
+  }
+  
+  .editButton {
+    color: #3f51b5;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .bottom {
+    margin-top: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  

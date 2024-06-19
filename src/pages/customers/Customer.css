@@ -1,0 +1,59 @@
+/* Container for the Customer component */
+.customer {
+  display: flex;
+  width: 100%;
+}
+
+/* Main container for the content next to the sidebar */
+.customerContainer {
+  flex: 4;
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* Datatable container styling */
+.datatable {
+  background-color: white;
+  box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Title section styling */
+.datatableTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.datatableTitle span {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Styling for the DataGrid */
+.datagrid {
+  height: 600px;
+  border: none;
+}
+
+/* Action cell container styling */
+.cellAction {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* View and delete button styles */
+.cellAction .MuiButton-root {
+  font-size: 13px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-transform: none;
+}
+
+

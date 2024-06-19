@@ -1,0 +1,63 @@
+/* NewUser.css */
+
+.new {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.newContainer {
+  width: 100%;
+  max-width: 600px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h3 {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.close-button {
+  color: red;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-column {
+  flex: 1;
+  padding: 0 10px;
+}
+
+.form-column:first-child {
+  padding-left: 0;
+}
+
+.form-column:last-child {
+  padding-right: 0;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.form-button {
+  margin-left: 10px;
+}

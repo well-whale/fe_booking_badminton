@@ -1,0 +1,73 @@
+.singleCourt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .singleCourtContainer {
+    width: 100%;
+    padding: 20px;
+  }
+  
+  .courtTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .courtBody {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .courtImage {
+    flex: 1;
+  }
+  
+  .courtItemImg {
+    width: 100%;
+    height: auto;
+  }
+  
+  .courtDetails {
+    flex: 2;
+  }
+  
+  .courtDetail {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .courtDetailItem {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .courtItemKey {
+    font-weight: bold;
+  }
+  
+  .courtItemValue {
+    color: gray;
+  }
+  
+  .courtPriceSlot {
+    margin-top: 20px;
+  }
+  
+  .courtPriceSlot table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .courtPriceSlot th, .courtPriceSlot td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .courtPriceSlot th {
+    background-color: #f2f2f2;
+  }
+  

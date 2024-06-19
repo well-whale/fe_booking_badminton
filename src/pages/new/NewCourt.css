@@ -1,0 +1,47 @@
+.newCourt {
+    display: flex;
+    
+  }
+  
+  .newCourtContainer {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .newCourtHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .newCourtHeader h3 {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+  }
+  
+  .newCourtFormRow {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .newCourtFormColumn {
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .newCourtFormColumn:last-child {
+    margin-right: 0;
+  }
+  
+  .newCourtFormButtons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .newCourtFormButton {
+    margin: 0 10px;
+  }
+  
