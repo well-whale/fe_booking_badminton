@@ -6,7 +6,6 @@ import "../login/Login.css";
 import GoogleOAuth from "./Google_OAuth";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import { loginUser } from "../../redux/apiRequest";
 import { useDispatch } from "react-redux";
 import {loginUser} from  "../../services/UserServices";
 import { loginFailure, loginSuccess } from "../../redux/userSlice";
@@ -43,7 +42,7 @@ function LoginForm() {
         <div className="form-container sign-in-container">
             <form onSubmit={handleLogin}>
                 <h1>Login</h1>
-                <div className="social-container">
+                {/* <div className="social-container">
                     <GoogleOAuthProvider clientId="21328047732-02qfv7vb9ku5n0ov51v8d3k8vqb7e1ab.apps.googleusercontent.com">
                         <GoogleOAuth />
                     </GoogleOAuthProvider>
@@ -51,7 +50,7 @@ function LoginForm() {
                         <button className="logphone" type="button">Sign in with phone</button>
                     </NavLink>
                 </div>
-                <span>or use your account</span>
+                <span>or use your account</span> */}
                 <input
                     type="text"
                     placeholder="Username"

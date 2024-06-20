@@ -57,20 +57,6 @@ const CourtDetail = () => {
     { name: 'Đồ ăn', icon: <MdOutlineFastfood /> }
   ];
 
-  const getOperatingHours = (slots) => {
-    if (Array.isArray(slots) && slots.length > 0) {
-      const times = slots.map(slot => ({
-        open: slot.openTime,
-        close: slot.closeTime
-      }));
-      const earliestOpen = Math.min(...times.map(t => new Date(`1970-01-01T${t.open}`).getTime()));
-      const latestClose = Math.max(...times.map(t => new Date(`1970-01-01T${t.close}`).getTime()));
-      const formatTime = time => new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      return `${formatTime(earliestOpen)} - ${formatTime(latestClose)}`;
-    }
-    return "Đang Cập Nhật....";
-  };
 
   const getPriceRange = (prices) => {
     if (Array.isArray(prices) && prices.length > 0) {
@@ -83,7 +69,6 @@ const CourtDetail = () => {
     return "Đang Cập Nhật....";
   };
 
-  const operatingHours = getOperatingHours(court.slotOfCourt);
   const priceRange = getPriceRange(court.price);
 
   const handleBookingClick = () => {
@@ -118,7 +103,7 @@ const CourtDetail = () => {
             {/* Reviews component here */}
           </div>
           <p className="product-brand">
-            Giờ Hoạt Động: <span>{operatingHours}</span>
+            Giờ Hoạt Động: <span>{court.startTime} - {court.endTime}</span>
           </p>
           <p className="product-brand">
             Quy mô: <span>{court.courtQuantity}</span>

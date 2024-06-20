@@ -9,6 +9,15 @@ body {
 .container {
   display: flex;
   gap: 20px;
+  margin: 10% auto;
+  max-width: 1200px;
+}
+
+.input__group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .left-section {
@@ -31,7 +40,6 @@ body {
 }
 
 .area-selection {
-  display: inline-grid;
   align-items: baseline;
   font-size: 18px;
 }
@@ -62,8 +70,15 @@ body {
   margin-bottom: 15px;
 }
 
+.area-info h2 {
+  margin: 10px 0;
+  font-size: 24px;
+}
+
 .area-info h5 {
   margin: 10px 0;
+  font-size: 18px;
+  color: #555;
 }
 
 .area-info label {

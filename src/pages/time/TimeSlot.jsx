@@ -4,13 +4,17 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import "./TimeSlot.css";
 import {
-  getCourtByIdCourt,
-  checkSubCourt,
-} from "../../services/UserServices"; // Adjusted import
-import { Button } from "@mui/material";
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import dayjs from "dayjs";
+import "./TimeSlot.css";
+import { getCourtByIdCourt, checkSubCourt } from "../../services/UserServices";
+import CourtPrice from "../single/CourtPrice";
 
 const generateTimeSlots = (startTime, endTime, interval) => {
   const timeSlots = [];
@@ -26,12 +30,16 @@ const generateTimeSlots = (startTime, endTime, interval) => {
 
   return timeSlots;
 };
+
 const disablePastDates = (date) => {
   return date.isBefore(dayjs(), "day");
 };
 
 const generateAreas = (numCourts) => {
-  return Array.from({ length: numCourts }, (_, i) => `Sân ${i + 1}`);
+  return Array.from({ length: numCourts }, (_, i) => ({
+    name: `Sân ${i + 1}`,
+    id: i + 1,
+  }));
 };
 
 const TimeSlots = () => {
@@ -46,6 +54,8 @@ const TimeSlots = () => {
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [courtAvailability, setCourtAvailability] = useState([]);
+  let [selectedCourts, setSelectedCourts] = useState([]);
+  const [isPricingModalOpen, setPricingModalOpen] = useState(false);
 
   const getDetailCourt = async () => {
     try {
@@ -74,7 +84,6 @@ const TimeSlots = () => {
   useEffect(() => {
     if (court && court.startTime && court.endTime) {
       const startTime = parseTime(court.startTime);
-      console.log(startTime)
       const endTime = parseTime(court.endTime);
       const interval = 30;
 
@@ -104,6 +113,47 @@ const TimeSlots = () => {
     }
   };
 
+  useEffect(() => {
+    const checkAvailability = async () => {
+      if (startTime === null || endTime === null || !selectedDate) {
+        return;
+      }
+
+      const formattedDate = selectedDate.format("YYYY-MM-DD");
+      const startTimeStr = `${String(Math.floor(startTime / 60)).padStart(
+        2,
+        "0"
+      )}:${String(startTime % 60).padStart(2, "0")}`;
+      const endTimeStr = `${String(Math.floor(endTime / 60)).padStart(
+        2,
+        "0"
+      )}:${String(endTime % 60).padStart(2, "0")}`;
+
+      const requestData = {
+        courtID: court.courtID,
+        bookingDate: formattedDate,
+        startTime: startTimeStr,
+        endTime: endTimeStr,
+      };
+
+      try {
+        const response = await checkSubCourt(requestData);
+        setCourtAvailability(response.data.subCourt); // Assuming the server returns an array of subCourt objects
+      } catch (error) {
+        if (error.response) {
+          console.error("Error response from server:", error.response.data);
+          console.error("Status code:", error.response.status);
+        } else {
+          console.error("Error sending request:", error.message);
+        }
+      }
+    };
+
+    if (startTime !== null && endTime !== null) {
+      checkAvailability();
+    }
+  }, [startTime, endTime, selectedDate, court]);
+
   const areas = generateAreas(court?.courtQuantity || 0);
 
   const selectedTimeRange =
@@ -118,51 +168,10 @@ const TimeSlots = () => {
 
   const totalPrice =
     selectedTimes.length > 0
-      ? ((endTime - startTime) / 60) * (court?.price?.[0]?.unitPrice || 0)
+      ? ((endTime - startTime) / 60) *
+        (court?.price?.[0]?.unitPrice || 0) *
+        selectedCourts.length
       : 0;
-
-  const handleCheckAvailability = async () => {
-    if (startTime === null || endTime === null || !selectedDate) {
-      alert("Please select a valid date and time range.");
-      return;
-    }
-
-    const formattedDate = selectedDate.format("YYYY-MM-DD");
-    const startTimeStr = `${String(Math.floor(startTime / 60)).padStart(
-      2,
-      "0"
-    )}:${String(startTime % 60).padStart(2, "0")}`;
-    const endTimeStr = `${String(Math.floor(endTime / 60)).padStart(
-      2,
-      "0"
-    )}:${String(endTime % 60).padStart(2, "0")}`;
-
-    const requestData = {
-      courtID: court.courtID,
-      bookingDate: formattedDate,
-      startTime: startTimeStr,
-      endTime: endTimeStr,
-    };
-
-    try {
-      console.log(
-        "Sending request to check availability with data:",
-        requestData
-      );
-
-      const response = await checkSubCourt(requestData);
-console.log(requestData)
-      console.log("Response from server:", response.data);
-      setCourtAvailability(response.data.subCourt); // Assuming the server returns an array of subCourt objects
-    } catch (error) {
-      if (error.response) {
-        console.error("Error response from server:", error.response.data);
-        console.error("Status code:", error.response.status);
-      } else {
-        console.error("Error sending request:", error.message);
-      }
-    }
-  };
 
   const getButtonColor = (index) => {
     if (!courtAvailability || courtAvailability.length === 0) {
@@ -176,6 +185,42 @@ console.log(requestData)
       return subCourt.subCourtStatus ? "success" : "error";
     }
     return "warning";
+  };
+
+  const handleCourtSelection = (index) => {
+    if (startTime === null || endTime === null) {
+      return; // Disable court selection if startTime or endTime is not selected
+    }
+  
+    const selectedSubCourt = courtAvailability.find(
+      (court) => court.subCourtID === index + 1 && court.subCourtStatus
+    );
+  
+    if (selectedSubCourt) {
+      const newSelectedCourt = {
+        subCourtID: selectedSubCourt.subCourtID,
+        startTime: `${String(Math.floor(startTime / 60)).padStart(2, "0")}:${String(startTime % 60).padStart(2, "0")}:00`,
+        endTime: `${String(Math.floor(endTime / 60)).padStart(2, "0")}:${String(endTime % 60).padStart(2, "0")}:00`
+      };
+  
+      setSelectedCourts((prevSelectedCourts) =>
+        prevSelectedCourts.some(
+          (court) => court.subCourtID === newSelectedCourt.subCourtID
+        )
+          ? prevSelectedCourts.filter(
+              (court) => court.subCourtID !== newSelectedCourt.subCourtID
+            )
+          : [...prevSelectedCourts, newSelectedCourt]
+      );
+    }
+  };
+
+  const openPricingModal = () => {
+    setPricingModalOpen(true);
+  };
+
+  const closePricingModal = () => {
+    setPricingModalOpen(false);
   };
 
   if (loading) {
@@ -201,10 +246,17 @@ console.log(requestData)
                   label="Date"
                   value={selectedDate}
                   onChange={(newValue) => setSelectedDate(newValue)}
-                  shouldDisableDate={disablePastDates} // Add this line
+                  shouldDisableDate={disablePastDates}
                 />
               </DemoContainer>
             </LocalizationProvider>
+            <Button
+              onClick={openPricingModal}
+              variant="outlined"
+              style={{ marginTop: "1rem" }}
+            >
+              Bảng giá
+            </Button>
           </div>
         </div>
         <div id="time-slots" className="times-container">
@@ -220,30 +272,36 @@ console.log(requestData)
         </div>
         <label>Chọn Sân:</label>
         <div>
-          {areas.map((area, index) => (
+          {areas.map(({ name, id }) => (
             <Button
-              key={area}
-              color={getButtonColor(index)}
+              key={id}
+              color={
+                selectedCourts.some((court) => court.subCourtID === id)
+                  ? "primary"
+                  : getButtonColor(id - 1)
+              }
               variant="contained"
+              disabled={
+                getButtonColor(id - 1) === "error" ||
+                startTime === null ||
+                endTime === null
+              }
+              onClick={() => handleCourtSelection(id - 1)}
             >
-              {area}
+              {name}
             </Button>
           ))}
         </div>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleCheckAvailability}
-        >
-          Check Availability
-        </Button>
       </div>
 
       <div className="right-section">
         <div className="area-info">
-          {court?.images?.[0] && (
-            <img src={court.images[0]} alt={court.courtName} />
-          )}
+          {/* {court?.images?.[0] && <img src={court.images[0]} alt={court.courtName} />} */}
+          <img
+            src="https://png.pngtree.com/background/20231028/original/pngtree-badminton-court-green-leisure-badminton-photo-picture-image_5751022.jpg"
+            alt={court.courtName}
+          />
+
           <h2>{court.courtName}</h2>
           <h5>{court.courtAddress}</h5>
           <label>{selectedTimeRange}</label>
@@ -252,43 +310,41 @@ console.log(requestData)
               <h5>Thành tiền: {totalPrice.toLocaleString()} VND</h5>
             </div>
           )}
+          {selectedCourts.length > 0 && (
+            <div>
+              <h5>Selected Courts:</h5>
+              <ul>
+                {selectedCourts.map((court) => (
+                  <li key={court.subCourtID}>{`Sân ${court.subCourtID}`}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <button className="payment-button">
-          <NavLink className="dropdown-item" to="/payment">
+          <NavLink
+            className="dropdown-item"
+            to={{
+              pathname: "/payment",
+              state: { selectedCourts, selectedDate, startTime, endTime },
+            }}
+          >
             Thanh toán
           </NavLink>
         </button>
       </div>
+
+      <Dialog open={isPricingModalOpen} onClose={closePricingModal}>
+        <DialogTitle>Bảng giá</DialogTitle>
+        <DialogContent>
+          <CourtPrice courtID={court.courtID} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closePricingModal}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
 
 export default TimeSlots;
-
-  // const getOpenTime = (slots) => {
-  //   if (Array.isArray(slots) && slots.length > 0) {
-  //     const times = slots.map((slot) =>
-  //       new Date(`1970-01-01T${slot.openTime}`).getTime()
-  //     );
-  //     const earliestOpen = Math.min(...times);
-  //     return new Date(earliestOpen).toLocaleTimeString([], {
-  //       hour: "2-digit",
-  //       minute: "2-digit",
-  //     });
-  //   }
-  //   return "Đang Cập Nhật....";
-  // };
-
-  // const getCloseTime = (slots) => {
-  //   if (Array.isArray(slots) && slots.length > 0) {
-  //     const times = slots.map((slot) =>
-  //       new Date(`1970-01-01T${slot.closeTime}`).getTime()
-  //     );
-  //     const latestClose = Math.max(...times);
-  //     return new Date(latestClose).toLocaleTimeString([], {
-  //       hour: "2-digit",
-  //       minute: "2-digit",
-  //     });
-  //   }
-  //   return "Đang Cập Nhật....";
-  // };

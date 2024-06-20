@@ -29,7 +29,9 @@ const getCourtByIdCourt = (idcourt) => {
   return axios.get(`court/id/${idcourt}`);
 };
 
-
+const getPriceByIdCourt = (idcourt) => {
+  return axios.get(`price/id/${idcourt}`);
+}
 export const loginUser = async (username, password) => {
   const response = await axios.post(`login`, { username, password });
   return response.data;
@@ -41,4 +43,4 @@ export const loginUser = async (username, password) => {
   const getSubCourtStatus = () =>{
     return axios.get('booking/getCourtStatus');
   }
-export { newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus};
+export { newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};

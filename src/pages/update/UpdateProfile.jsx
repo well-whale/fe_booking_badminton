@@ -10,7 +10,7 @@ const Transition = React.forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
 ));
 
-const UpdateUser = ({ open, handleClose, user, refreshData }) => {
+const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
   const [formData, setFormData] = useState({
     userName: "",
     firstName: "",
@@ -119,7 +119,7 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
       <div className="update">
         <div className="updateContainer">
           <div className="header">
-            <h3><EditIcon style={{ fontSize: "70px" }} /> Update User Form</h3>
+            <h3><EditIcon style={{ fontSize: "70px" }} /> Update Profile Form</h3>
             <IconButton aria-label="close" onClick={handleClose} color="error" className="close-button">
               <CloseIcon />
             </IconButton>
@@ -167,7 +167,10 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                <TextField
+                
+              </div>
+              <div className="form-column">
+              <TextField
                   id="email"
                   label="Email*"
                   variant="outlined"
@@ -180,17 +183,13 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-              </div>
-              <div className="form-column">
                 <TextField
                   id="password"
-                  label="Password*"
+                  label="Password"
                   variant="outlined"
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  error={!!errors.password}
-                  helperText={errors.password}
                   fullWidth
                   margin="normal"
                 />
@@ -207,23 +206,7 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="role-select-label">Role</InputLabel>
-                  <Select
-                    labelId="role-select-label"
-                    id="role-select"
-                    value={formData.role}
-                    label="Role"
-                    onChange={handleRoleChange}
-                  >
-                    <MenuItem value="admin">Admin</MenuItem>
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="staff">Staff</MenuItem>
-                  </Select>
-                  {errors.role && (
-                    <FormHelperText error>{errors.role}</FormHelperText>
-                  )}
-                </FormControl>
+                
               </div>
             </div>
             <div className="form-buttons">
@@ -244,4 +227,4 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
   );
 };
 
-export default UpdateUser;
+export default UpdateProfile;
