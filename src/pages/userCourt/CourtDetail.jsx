@@ -78,7 +78,10 @@ const CourtDetail = () => {
   return (
     <section className="product-detail-container">
       <div className="image-gallery-container">
-        {court.images && (
+      <img src={court.images} alt={court.courtName} />
+
+        {/* {court.images
+         && (
           <ReactImageGallery
             showBullets={false}
             showFullscreenButton={false}
@@ -88,7 +91,8 @@ const CourtDetail = () => {
               thumbnail: url
             }))}
           />
-        )}
+        )
+        } */}
       </div>
 
       <div className='product'>

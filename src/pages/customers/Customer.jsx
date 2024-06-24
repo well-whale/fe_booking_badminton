@@ -30,7 +30,8 @@ const Customer = () => {
   const fetchData = async () => {
     try {
       const response = await fetchAllUsers();
-      setData(response.data);
+      setData(response.data.result);
+      console.log(response.data.result);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -92,19 +93,21 @@ const Customer = () => {
           >
             View
           </Button>
-          <Button
-            variant="outlined"
-            color="warning"
-            startIcon={<UpdateIcon />}
-            onClick={() => handleClickOpen(params.row, "update")}
-          >
-            Update
-          </Button>
+          {params.row.role.roleName !== "Customer" && (
+            <Button
+              variant="outlined"
+              color="warning"
+              startIcon={<UpdateIcon />}
+              onClick={() => handleClickOpen(params.row, "update")}
+            >
+              Update
+            </Button>
+          )}
           <Button
             variant="outlined"
             color="error"
             startIcon={<DeleteIcon />}
-            onClick={() => handleDelete(params.row.id)}
+            onClick={() => handleDelete(params.row.userID)}
           >
             Delete
           </Button>
@@ -114,13 +117,18 @@ const Customer = () => {
   ];
 
   const userColumns = [
-    { field: "id", headerName: "ID", width: 70 },
+    { field: "userID", headerName: "ID", width: 70 },
     { field: "userName", headerName: "User Name", width: 140 },
     { field: "firstName", headerName: "First Name", width: 140 },
     { field: "lastName", headerName: "Last Name", width: 140 },
     { field: "email", headerName: "Email", width: 200 },
     { field: "phone", headerName: "Phone", width: 100 },
-    { field: "role", headerName: "Role", width: 100 },
+    {
+      field: "role",
+      headerName: "Role",
+      width: 100,
+      renderCell: (params) => params.row.role.roleName,
+    },
   ];
 
   return (
@@ -145,6 +153,7 @@ const Customer = () => {
             columns={userColumns.concat(actionColumn)}
             pageSize={5}
             rowsPerPageOptions={[5, 10, 20]}
+            getRowId={(row) => row.userID}
           />
         </div>
       </div>

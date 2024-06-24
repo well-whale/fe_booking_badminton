@@ -1,82 +1,196 @@
-import React from "react";
-import { FcGoogle, FcPhone } from "react-icons/fc";
-import { NavLink } from "react-router-dom";
-import "../signup/Signup.css"
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import GoogleOAuth from "../login/Google_OAuth";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+import "react-toastify/dist/ReactToastify.css";
+import "../signup/Signup.css";
+import { register } from "../../services/UserServices";
 
 function SignupForm() {
-    const [state, setState] = React.useState({
-        name: "",
-        email: "",
-        password: ""
-    });
-    const handleChange = evt => {
-        const value = evt.target.value;
-        setState({
-            ...state,
-            [evt.target.name]: value
-        });
-    };
+  const [state, setState] = useState({
+    userName: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: ""
+  });
 
-    const handleOnSubmit = evt => {
-        evt.preventDefault();
+  const [errors, setErrors] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-        const { name, email, password } = state;
-        alert(
-            `You are sign up with name: ${name} email: ${email} and password: ${password}`
-        );
+  const navigate = useNavigate();
 
-        for (const key in state) {
-            setState({
-                ...state,
-                [key]: ""
-            });
+  const handleChange = (evt) => {
+    const { name, value } = evt.target;
+    setState((prevState) => ({
+      ...prevState,
+      [name]: value
+    }));
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: !value
+    }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!state.userName) newErrors.userName = true;
+    if (!state.password) newErrors.password = true;
+    if (!state.firstName) newErrors.firstName = true;
+    if (!state.lastName) newErrors.lastName = true;
+    if (!state.email) {
+      newErrors.email = true;
+    } else if (!/\S+@\S+\.\S+/.test(state.email)) {
+      newErrors.email = true;
+    }
+    if (!state.phone) newErrors.phone = true;
+
+    return newErrors;
+  };
+
+  const handleOnSubmit = async (evt) => {
+    evt.preventDefault();
+    const newErrors = validate();
+    if (Object.keys(newErrors).length === 0) {
+      try {
+        const response = await register(state);
+        if (response.status === 200) {
+          setSnackbarSeverity("success");
+          setSnackbarMessage("Registration successful!");
+          setSnackbarOpen(true);
+          // Reset state to clear the form
+          setState({
+            userName: "",
+            password: "",
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: ""
+          });
+          navigate("/login");
+        } else {
+          setSnackbarSeverity("error");
+          setSnackbarMessage("Registration failed. Please try again.");
+          setSnackbarOpen(true);
         }
-    };
+      } catch (error) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage("Registration failed. Please try again.");
+        setSnackbarOpen(true);
+        console.error("There was an error registering the user!", error);
+      }
+    } else {
+      setErrors(newErrors);
+    }
+  };
 
-    return (
-        <div className="form-container sign-up-container">
-            <form onSubmit={handleOnSubmit}>
-                <h1>Create Account</h1>
-                <div className="social-container">
-                    <>
-                        <GoogleOAuthProvider clientId="21328047732-02qfv7vb9ku5n0ov51v8d3k8vqb7e1ab.apps.googleusercontent.com">
-                            <GoogleOAuth />
-                        </GoogleOAuthProvider>
-                    </>
-                    <NavLink to="/loginotp" >
-                        <button className="logphone" type="submit">Sign in with phone</button>
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
-                    </NavLink>
-
-                </div>
-                <span>or use your email for registration</span>
-                <input
-                    type="text"
-                    name="name"
-                    value={state.name}
-                    onChange={handleChange}
-                    placeholder="Name"
-                />
-                <input
-                    type="email"
-                    name="email"
-                    value={state.email}
-                    onChange={handleChange}
-                    placeholder="Email"
-                />
-                <input
-                    type="password"
-                    name="password"
-                    value={state.password}
-                    onChange={handleChange}
-                    placeholder="Password"
-                />
-                <button className="submit" type="submit">Signup</button>
-            </form>
-        </div>
-    );
+  return (
+    <Container className="form-container sign-up-container">
+      <ToastContainer />
+      <form onSubmit={handleOnSubmit}>
+        <Typography variant="h4">Create Account</Typography>
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            id="userName"
+            name="userName"
+            label="User Name*"
+            value={state.userName}
+            onChange={handleChange}
+            error={Boolean(errors.userName)}
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            id="password"
+            name="password"
+            label="Password*"
+            type="password"
+            value={state.password}
+            onChange={handleChange}
+            error={Boolean(errors.password)}
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            id="firstName"
+            name="firstName"
+            label="First Name*"
+            value={state.firstName}
+            onChange={handleChange}
+            error={Boolean(errors.firstName)}
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            id="lastName"
+            name="lastName"
+            label="Last Name*"
+            value={state.lastName}
+            onChange={handleChange}
+            error={Boolean(errors.lastName)}
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            id="email"
+            name="email"
+            label="Email*"
+            value={state.email}
+            onChange={handleChange}
+            error={Boolean(errors.email)}
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            id="phone"
+            name="phone"
+            label="Phone*"
+            value={state.phone}
+            onChange={handleChange}
+            error={Boolean(errors.phone)}
+          />
+        </Box>
+        <Button color="primary" variant="contained" type="submit">
+          Signup
+        </Button>
+      </form>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Container>
+  );
 }
 
 export default SignupForm;

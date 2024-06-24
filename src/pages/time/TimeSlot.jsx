@@ -16,6 +16,7 @@ import "./TimeSlot.css";
 import { getCourtByIdCourt, checkSubCourt } from "../../services/UserServices";
 import CourtPrice from "../single/CourtPrice";
 
+
 const generateTimeSlots = (startTime, endTime, interval) => {
   const timeSlots = [];
   let currentTime = startTime;
@@ -46,6 +47,7 @@ const TimeSlots = () => {
   const [court, setCourt] = useState(null);
   const { idCourt } = useParams();
   const [selectedTimes, setSelectedTimes] = useState([]);
+  const [courtID, setCourtID] = useState([]);
   const [firstSelected, setFirstSelected] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
   const [startTime, setStartTime] = useState(null);
@@ -57,11 +59,19 @@ const TimeSlots = () => {
   let [selectedCourts, setSelectedCourts] = useState([]);
   const [isPricingModalOpen, setPricingModalOpen] = useState(false);
 
+  // TimeSlots.js
+const handleBooking = () => {
+  const bookingDetails = { courtID, selectedCourts, selectedDate: selectedDate.format('YYYY-MM-DD'), totalPrice };
+  console.log(bookingDetails)
+  localStorage.setItem('bookingDetails', JSON.stringify(bookingDetails));
+};
+
   const getDetailCourt = async () => {
     try {
       const res = await getCourtByIdCourt(idCourt);
       if (res.status === 200) {
         setCourt(res.data);
+        setCourtID(idCourt);
       } else {
         setError("Failed to fetch court details");
       }
@@ -139,6 +149,7 @@ const TimeSlots = () => {
       try {
         const response = await checkSubCourt(requestData);
         setCourtAvailability(response.data.subCourt); // Assuming the server returns an array of subCourt objects
+        console.log(response)
       } catch (error) {
         if (error.response) {
           console.error("Error response from server:", error.response.data);
@@ -191,18 +202,23 @@ const TimeSlots = () => {
     if (startTime === null || endTime === null) {
       return; // Disable court selection if startTime or endTime is not selected
     }
-  
+
     const selectedSubCourt = courtAvailability.find(
       (court) => court.subCourtID === index + 1 && court.subCourtStatus
     );
-  
+
     if (selectedSubCourt) {
       const newSelectedCourt = {
         subCourtID: selectedSubCourt.subCourtID,
-        startTime: `${String(Math.floor(startTime / 60)).padStart(2, "0")}:${String(startTime % 60).padStart(2, "0")}:00`,
-        endTime: `${String(Math.floor(endTime / 60)).padStart(2, "0")}:${String(endTime % 60).padStart(2, "0")}:00`
+        startTime: `${String(Math.floor(startTime / 60)).padStart(
+          2,
+          "0"
+        )}:${String(startTime % 60).padStart(2, "0")}:00`,
+        endTime: `${String(Math.floor(endTime / 60)).padStart(2, "0")}:${String(
+          endTime % 60
+        ).padStart(2, "0")}:00`,
       };
-  
+
       setSelectedCourts((prevSelectedCourts) =>
         prevSelectedCourts.some(
           (court) => court.subCourtID === newSelectedCourt.subCourtID
@@ -234,7 +250,7 @@ const TimeSlots = () => {
   if (!court) {
     return <div>No court details available</div>;
   }
-
+  console.log(selectedCourts);
   return (
     <div className="container">
       <div className="left-section">
@@ -245,7 +261,7 @@ const TimeSlots = () => {
                 <DatePicker
                   label="Date"
                   value={selectedDate}
-                  onChange={(newValue) => setSelectedDate(newValue)}
+                  onChange={(newValue) => setSelectedDate(dayjs(newValue))}
                   shouldDisableDate={disablePastDates}
                 />
               </DemoContainer>
@@ -305,11 +321,6 @@ const TimeSlots = () => {
           <h2>{court.courtName}</h2>
           <h5>{court.courtAddress}</h5>
           <label>{selectedTimeRange}</label>
-          {selectedTimeRange && (
-            <div>
-              <h5>Thành tiền: {totalPrice.toLocaleString()} VND</h5>
-            </div>
-          )}
           {selectedCourts.length > 0 && (
             <div>
               <h5>Selected Courts:</h5>
@@ -321,17 +332,22 @@ const TimeSlots = () => {
             </div>
           )}
         </div>
-        <button className="payment-button">
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={!selectedTimes.length || !selectedCourts.length}
+          onClick={handleBooking}
+        >
           <NavLink
-            className="dropdown-item"
             to={{
               pathname: "/payment",
-              state: { selectedCourts, selectedDate, startTime, endTime },
+              
             }}
+            style={{ textDecoration: "none", color: "white" }}
           >
             Thanh toán
           </NavLink>
-        </button>
+        </Button>
       </div>
 
       <Dialog open={isPricingModalOpen} onClose={closePricingModal}>

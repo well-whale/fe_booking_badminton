@@ -23,28 +23,24 @@ const UserDetail = ({ open, onClose, user }) => {
                 <h1 className="title">Information Customer</h1>
                 
                 <div className="item">
-                  <img
-                    src="https://i.pinimg.com/564x/99/6c/08/996c082e009ab441b7ce60224b4a6194.jpg"
-                    alt=""
-                    className="itemImg"
-                  />
+                  
                   <div className="details">
                     <h1 className="itemTitle">{user.firstName} {user.lastName}</h1>
                     <div className="detailItem">
                       <span className="itemKey">Email: </span>
                       <span className="itemValue">{user.email}</span>
                     </div>
-                    <div className="detailItem">
+                    {/* <div className="detailItem">
                       <span className="itemKey">Password: </span>
                       <span className="itemValue">{user.password}</span>
-                    </div>
+                    </div> */}
                     <div className="detailItem">
                       <span className="itemKey">Phone: </span>
                       <span className="itemValue">{user.phone}</span>
                     </div>
                     <div className="detailItem">
                       <span className="itemKey">Role: </span>
-                      <span className="itemValue">{user.role ? "Admin" : "User"}</span>
+                      <span className="itemValue">{user.role.roleName}</span>
                     </div>
                   </div>
                 </div>

@@ -47,7 +47,9 @@ const SearchList = () => {
       searchByDistrict(district)
         .then((response) => {
           setListSearchCourts(response.data);
+          console.log(response.data)
         })
+        
         .catch((error) => {
           console.error("There was an error making the request!", error);
         });
@@ -112,7 +114,7 @@ const SearchList = () => {
                   className="popular__card"
                   onClick={() => window.scrollTo(0, 100)}
                 >
-                  <img src={court.image} alt={court.courtName} />
+                  <img src={court.images} alt={court.courtName} />
                   <div className="popular__content">
                     <div className="popular__card__header">
                       <h4 style={{ display: "flex" }}>{court.courtName}</h4>

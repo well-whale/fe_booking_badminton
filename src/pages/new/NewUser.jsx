@@ -91,6 +91,7 @@ const NewUser = ({ open, handleClose, refreshData }) => {
     setSubmitting(true);
     setApiError(""); // Reset API error message before submitting
     try {
+      console.log(formData)
        await newUser(formData);
       setFormData(initialFormData);
       handleClose();
@@ -225,9 +226,9 @@ const NewUser = ({ open, handleClose, refreshData }) => {
                     label="Role"
                     onChange={handleRoleChange}
                   >
-                    <MenuItem value="admin">Admin</MenuItem>
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="staff">Staff</MenuItem>
+                    <MenuItem value="2">Admin</MenuItem>
+                    <MenuItem value="1">User</MenuItem>
+                    <MenuItem value="3">Owner Court</MenuItem>
                   </Select>
                   {errors.role && (
                     <FormHelperText>{errors.role}</FormHelperText>

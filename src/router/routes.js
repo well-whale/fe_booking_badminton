@@ -12,5 +12,6 @@ export const routes = {
     adminCourt: "/admin/court",
     adminNewUser: "/admin/users/new",
     adminUpdateCourt: "/admin/court/update/:courtId",
+    bill:"/bill"
   };
   

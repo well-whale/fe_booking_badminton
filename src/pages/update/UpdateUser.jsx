@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button, Dialog, Slide, Select, MenuItem, InputLabel, FormControl, IconButton,FormHelperText,
+import {
+  TextField, Button, Dialog, Slide, Select, MenuItem, InputLabel, FormControl, IconButton, FormHelperText,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from '@mui/icons-material/Edit';
@@ -31,9 +32,9 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
         firstName: user.firstName || "",
         lastName: user.lastName || "",
         email: user.email || "",
-        password: "",
+        password: user.password || "",
         phone: user.phone || "",
-        role: user.role || "",
+        role: user.role.roleName || "",
       });
     }
   }, [user]);
@@ -49,7 +50,7 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
   const handleRoleChange = (e) => {
     setFormData({
       ...formData,
-      role: e.target.value,
+      role: Number(e.target.value),
     });
   };
 
@@ -94,7 +95,7 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
 
     setSubmitting(true);
     setApiError("");
-    
+
     try {
       await updateByUserID(user.id, formData);
       refreshData();
@@ -216,9 +217,9 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                     label="Role"
                     onChange={handleRoleChange}
                   >
-                    <MenuItem value="admin">Admin</MenuItem>
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="staff">Staff</MenuItem>
+                    <MenuItem value={2}>Admin</MenuItem>
+                    <MenuItem value={1}>User</MenuItem>
+                    <MenuItem value={3}>Owner Court</MenuItem>
                   </Select>
                   {errors.role && (
                     <FormHelperText error>{errors.role}</FormHelperText>

@@ -7,12 +7,14 @@ import GoogleOAuth from "./Google_OAuth";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from "react-redux";
-import {loginUser} from  "../../services/UserServices";
+import {loginUser, verifyToken} from  "../../services/UserServices";
 import { loginFailure, loginSuccess } from "../../redux/userSlice";
+import axios from "axios";
+import { routes } from "../../router/routes";
 
 
 function LoginForm() {
-    const [username, setUsername] = useState("");
+    const [userName, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -21,17 +23,26 @@ function LoginForm() {
     const handleLogin = async (e) => {
         e.preventDefault();
 
-        if (!username || !password) {
+        if (!userName || !password) {
             toast.error("Both username and password fields are required.");
             return;
         }
 
         try {
-            const response = await loginUser(username, password);
-            dispatch(loginSuccess({ user: response.user, token: response.token }));
-            localStorage.setItem("user", JSON.stringify(response.user));
-            localStorage.setItem("token", response.token);
-            navigate("/");
+            const response = await loginUser(userName, password);
+            const verifyResponse = await verifyToken(response.data.result.token);
+            console.log(verifyResponse.data)
+            const user = response.data.result.response;
+            const token = response.data.result.token;
+            dispatch(loginSuccess({ user, token }));
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("token", token);
+
+            if (user.role.roleID === 1 || user.role.roleID === 3) {
+                navigate(routes.home);
+            } else if (user.role.roleID === 2) {
+                navigate(routes.adminHome);
+            }
         } catch (error) {
             dispatch(loginFailure(error.message));
             toast.error("Login failed. Please check your credentials.");
@@ -54,7 +65,7 @@ function LoginForm() {
                 <input
                     type="text"
                     placeholder="Username"
-                    value={username}
+                    value={userName}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <div className="input-pass">

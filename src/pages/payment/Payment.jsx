@@ -10,54 +10,59 @@ import {
   TextField,
   Button,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import { useLocation } from "react-router-dom"; // Import useLocation
 import "./tailwindcss-colors.css";
 import "./Payment.css";
 import { getCourtByIdCourt } from "../../services/UserServices";
-import PayPal from "../../img/888870.png";
+import VNPAGE from "../../img/VNPAGE.png";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/userSlice";
 
 const PaymentPage = () => {
-  const location = useLocation();
-  const { selectedCourts, selectedDate, startTime, endTime } = location.state || {};
-console.log(selectedCourts)
+  const user = useSelector(selectUser).user;
+  console.log(user);
   const [orderDetail, setOrderDetail] = useState({
-    firstname: "ABC",
-    lastName: "CDF",
-    idCustomer: "6",
-    email: "ahfhsfhdga@gmail.com",
-    phone: "03456789",
-    courtID: 1,
-    customerId: "6",
-    bookingDate: selectedDate ? selectedDate.format("YYYY-MM-DD") : "2024-06-20",
+    firstname: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    phone: user.phone,
+    customerId: user.userID,
     bookingType: "1",
-    bookingDetails: selectedCourts
-      ? selectedCourts.map((court) => ({
-          subCourtID: court.subCourtID,
-          startTime: startTime
-            ? `${String(Math.floor(startTime / 60)).padStart(2, "0")}:${String(
-                startTime % 60
-              ).padStart(2, "0")}`
-            : "15:00:00",
-          endTime: endTime
-            ? `${String(Math.floor(endTime / 60)).padStart(2, "0")}:${String(
-                endTime % 60
-              ).padStart(2, "0")}`
-            : "19:00:00",
-        }))
-      : [],
+    bookingDetails: [],
+    selectedCourts: [],
+    paymentMethod: "method-1", // Default payment method
   });
+
+  useEffect(() => {
+    const storedDetails = localStorage.getItem("bookingDetails");
+    console.log(storedDetails);
+    if (storedDetails) {
+      setOrderDetail((prevState) => ({
+        ...prevState,
+        ...JSON.parse(storedDetails),
+        selectedCourts: JSON.parse(storedDetails).selectedCourts || [],
+      }));
+    }
+  }, []);
 
   const [court, setCourt] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false); 
 
+  const navigate = useNavigate(); 
+  // console.log(orderDetail);
   const getDetailCourt = async () => {
     try {
       const res = await getCourtByIdCourt(orderDetail.courtID);
       if (res.status === 200) {
         setCourt(res.data);
-        console.log(res.data);
       } else {
         setError("Failed to fetch court details");
       }
@@ -81,9 +86,43 @@ console.log(selectedCourts)
     setOrderDetail({ ...orderDetail, paymentMethod: e.target.value });
   };
 
+  const book = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/booking/book",
+        data
+      );
+      if (response.status === 200 || response.status === 201) {
+        console.log("Booking successful:", response.data);
+        setOpenDialog(true); //
+      } else {
+        console.error("Booking failed:", response.data);
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted", orderDetail);
+    const dataToSubmit = {
+      courtID: orderDetail.courtID,
+      customerId: orderDetail.customerId,
+      bookingDate: orderDetail.selectedDate,
+      bookingType: orderDetail.bookingType,
+      bookingDetails: orderDetail.selectedCourts.map((court) => ({
+        subCourtID: court.subCourtID,
+        startTime: court.startTime,
+        endTime: court.endTime,
+      })),
+    };
+    console.log(dataToSubmit);
+    book(dataToSubmit);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    navigate("/"); // Navigate back to home after closing dialog
   };
 
   return (
@@ -94,8 +133,7 @@ console.log(selectedCourts)
             <Box className="payment-header-icon">
               <i className="ri-flashlight-fill"></i>
             </Box>
-            <h1 className="payment-header-title" > Order Summary</h1>
-            
+            <h1 className="payment-header-title">Order Summary</h1>
             <Box className="payment-plan-info">
               <h5 className="payment-plan-info-name">
                 Customer: {orderDetail.firstname} {orderDetail.lastName}
@@ -112,24 +150,20 @@ console.log(selectedCourts)
             <Box className="payment-body">
               <Box className="payment-plan">
                 <Typography variant="h6" className="payment-plan-type">
-                  {orderDetail.bookingType === "1" ? "Pro" : "Standard"}
+                  {orderDetail.bookingType === "1" ? "" : "Standard"}
                 </Typography>
                 {court && (
                   <Box className="payment-plan-info">
                     <h5 className="payment-plan-info payment-plan-info-court-title">
                       {court.courtName}
                     </h5>
-                    <h5 className="payment-plan-info">
-                      {court.courtAddress}
-                    </h5>
-                    <h5 className="payment-plan-info">
-                      {court.phone}
-                    </h5>
+                    <h5 className="payment-plan-info">{court.courtAddress}</h5>
+                    <h5 className="payment-plan-info">{court.phone}</h5>
                   </Box>
                 )}
               </Box>
               <Box className="payment-summary">
-                {orderDetail.bookingDetails.map((detail, index) => (
+                {orderDetail.selectedCourts.map((detail, index) => (
                   <Box key={index} className="payment-summary-item">
                     <Typography className="payment-summary-name">
                       Court {detail.subCourtID}
@@ -141,7 +175,9 @@ console.log(selectedCourts)
                 ))}
                 <Divider className="payment-summary-divider" />
                 <Box className="payment-summary-item payment-summary-total">
-                  <Typography className="payment-summary-name">Total</Typography>
+                  <Typography className="payment-summary-name">
+                    Total
+                  </Typography>
                   <Typography className="payment-summary-price">$49</Typography>
                 </Box>
               </Box>
@@ -163,7 +199,7 @@ console.log(selectedCourts)
                   value="method-1"
                   control={<Radio />}
                   label={
-                    <img src={PayPal} style={{ width: "50px" }} alt="PayPal" />
+                    <img src={VNPAGE} style={{ width: "50px" }} alt="VNPAGE" />
                   }
                 />
                 {/* <FormControlLabel
@@ -205,7 +241,7 @@ console.log(selectedCourts)
             </FormControl>
             <FormControl fullWidth className="formControl">
               <TextField
-                id="phoneNumber"
+                id="phone"
                 label="Phone Number"
                 variant="outlined"
                 value={orderDetail.phone || ""}
@@ -225,6 +261,21 @@ console.log(selectedCourts)
           </form>
         </Box>
       </Box>
+
+      {/* Dialog to display booking success */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Booking Successful!</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            Your court has been successfully booked.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

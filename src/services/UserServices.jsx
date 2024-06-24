@@ -1,11 +1,11 @@
 import axios from "./axios";
 
 const newUser = (user) => {
-  return axios.post('demo/create-users', user);
+  return axios.post('api/v1/admin/createUser', user);
 };
 
 const fetchAllUsers = () => {
-  return axios.get('demo/list-users');
+  return axios.get('api/v1/admin/getListInfoUser');
 };
 
 const deleteByUserID = (userid) => {
@@ -13,7 +13,7 @@ const deleteByUserID = (userid) => {
 };
 
 const updateByUserID = (userId, newUser) => {
-  return axios.put(`/demo/${userId}`, newUser);
+  return axios.put(`api/v1/admin/updateUser/${userId}`, newUser);
 };
 
 
@@ -32,15 +32,27 @@ const getCourtByIdCourt = (idcourt) => {
 const getPriceByIdCourt = (idcourt) => {
   return axios.get(`price/id/${idcourt}`);
 }
-export const loginUser = async (username, password) => {
-  const response = await axios.post(`login`, { username, password });
-  return response.data;
+ const loginUser = async (userName, password) => {
+  return  axios.post(`auth/login`, { userName, password });
+  
 };
-  const checkSubCourt = (data) => {
-    return axios.post('booking/check',data);
+
+const checkSubCourt = (data) => {
+  return axios.post('booking/check',data);
+}
+  const register = (data) => {
+    return axios.post('api/v1/user/register',data);
   }
 
   const getSubCourtStatus = () =>{
     return axios.get('booking/getCourtStatus');
   }
-export { newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};
+
+  const verifyToken = (token) => {
+    return axios.post('auth/verifyToken', { token });
+    }
+
+  const book = (data) =>{
+    return axios.post('booking/book',data);
+  }
+export {verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};

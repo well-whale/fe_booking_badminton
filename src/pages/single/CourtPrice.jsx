@@ -17,6 +17,7 @@ const CourtPrice = ({ courtID }) => {
 
   const fetchData = async () => {
     try {
+      console.log(courtID)
       const response = await getPriceByIdCourt(courtID);
       setListPrice(response.data);
       console.log(response.data);

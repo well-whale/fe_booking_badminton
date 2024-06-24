@@ -3,27 +3,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import "../header/Header.css";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../../img/Remove-bg.ai_1716950971549.png";
 import UpdateProfile from '../../../pages/update/UpdateProfile'; // Adjust the import path
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser, logout } from '../../../redux/userSlice';
+import { routes } from '../../../router/routes';
 
 const Header = () => {
-    // Uncomment the following line to use actual user data from Redux
-    // const user = useSelector(selectUser);
-    
-    // Fake user data for testing
-    const user = {
-        id: 1, // Add an ID for testing
-        userName: 'johndoe', // Add a username for testing
-        role: 'user', // or null for guest user
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '1234567890',
-        email: 'john.doe@example.com'
-    };
-
+    const user = useSelector(selectUser).user;
     const [showDropdown, setShowDropdown] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
@@ -40,6 +32,13 @@ const Header = () => {
 
     const refreshData = () => {
         // Refresh user data logic here
+    };
+
+    const handleLogout = () => {
+        dispatch(logout());
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        navigate(routes.login);
     };
 
     return (
@@ -59,7 +58,7 @@ const Header = () => {
                         </span>
                         {showDropdown && (
                             <ul className="dropdown-menu">
-                                {(!user || !user.role) ? (
+                                {(!user || !user.role.roleName) ? (
                                     <li className="link">
                                         <NavLink to="/login">LogIn</NavLink>
                                     </li>
@@ -76,7 +75,7 @@ const Header = () => {
                                             <span className="edit-profile-button" onClick={handleDialogOpen} style={{ cursor: 'pointer' }}>Edit Profile</span>
                                         </li>
                                         <li className="dropdown-item">
-                                            <NavLink className="logout-button" to="/">LogOut</NavLink>
+                                            <span className="logout-button" onClick={handleLogout} style={{ cursor: 'pointer' }}>LogOut</span>
                                         </li>
                                     </>
                                 )}
