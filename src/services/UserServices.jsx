@@ -55,4 +55,7 @@ const checkSubCourt = (data) => {
   const book = (data) =>{
     return axios.post('booking/book',data);
   }
-export {verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};
+  const payment = (total,idcourt) => {
+    return axios.get(`payV2/${total}/${idcourt}`);
+  }
+export {payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};

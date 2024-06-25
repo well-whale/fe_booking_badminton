@@ -17,9 +17,8 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
     firstName: "",
     lastName: "",
     email: "",
-    password: "",
     phone: "",
-    role: "",
+    roleID: "",
   });
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
@@ -32,9 +31,8 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
         firstName: user.firstName || "",
         lastName: user.lastName || "",
         email: user.email || "",
-        password: user.password || "",
         phone: user.phone || "",
-        role: user.role.roleName || "",
+        roleID: user.role.roleID || "", // Assuming roleId is part of the role object
       });
     }
   }, [user]);
@@ -50,7 +48,7 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
   const handleRoleChange = (e) => {
     setFormData({
       ...formData,
-      role: Number(e.target.value),
+      roleID: Number(e.target.value),
     });
   };
 
@@ -71,16 +69,13 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    }
     if (!formData.phone) {
       newErrors.phone = "Phone number is required";
     } else if (!/^\d+$/.test(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
     }
-    if (!formData.role) {
-      newErrors.role = "Role is required";
+    if (!formData.roleID) {
+      newErrors.roleID = "Role is required";
     }
 
     setErrors(newErrors);
@@ -92,12 +87,12 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
     if (!validate()) {
       return;
     }
-
     setSubmitting(true);
     setApiError("");
 
     try {
-      await updateByUserID(user.id, formData);
+      console.log(formData)
+      await updateByUserID(user.userID, formData);
       refreshData();
       handleClose();
     } catch (error) {
@@ -168,6 +163,8 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
+              </div>
+              <div className="form-column">
                 <TextField
                   id="email"
                   label="Email*"
@@ -178,20 +175,6 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                   error={!!errors.email}
                   helperText={errors.email}
                   type="email"
-                  fullWidth
-                  margin="normal"
-                />
-              </div>
-              <div className="form-column">
-                <TextField
-                  id="password"
-                  label="Password*"
-                  variant="outlined"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  error={!!errors.password}
-                  helperText={errors.password}
                   fullWidth
                   margin="normal"
                 />
@@ -208,12 +191,12 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="role-select-label">Role</InputLabel>
+                <FormControl fullWidth margin="normal" error={!!errors.roleID}>
+                  <InputLabel id="role-select-label">Role*</InputLabel>
                   <Select
                     labelId="role-select-label"
                     id="role-select"
-                    value={formData.role}
+                    value={formData.roleID}
                     label="Role"
                     onChange={handleRoleChange}
                   >
@@ -221,8 +204,8 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                     <MenuItem value={1}>User</MenuItem>
                     <MenuItem value={3}>Owner Court</MenuItem>
                   </Select>
-                  {errors.role && (
-                    <FormHelperText error>{errors.role}</FormHelperText>
+                  {errors.roleID && (
+                    <FormHelperText>{errors.roleID}</FormHelperText>
                   )}
                 </FormControl>
               </div>

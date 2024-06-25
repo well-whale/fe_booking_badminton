@@ -28,7 +28,7 @@ const NewUser = ({ open, handleClose, refreshData }) => {
     email: "",
     password: "",
     phone: "",
-    role: "",
+    roleId: 1,
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -47,7 +47,7 @@ const NewUser = ({ open, handleClose, refreshData }) => {
   const handleRoleChange = (e) => {
     setFormData({
       ...formData,
-      role: e.target.value,
+      roleId: e.target.value,
     });
   };
 
@@ -76,8 +76,8 @@ const NewUser = ({ open, handleClose, refreshData }) => {
     } else if (!/^\d+$/.test(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
     }
-    if (!formData.role) {
-      newErrors.role = "Role is required";
+    if (!formData.roleId) {
+      newErrors.roleId = "Role is required";
     }
 
     setErrors(newErrors);
@@ -217,21 +217,21 @@ const NewUser = ({ open, handleClose, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                <FormControl fullWidth margin="normal" error={!!errors.role}>
+                <FormControl fullWidth margin="normal" error={!!errors.roleId}>
                   <InputLabel id="role-select-label">Role</InputLabel>
                   <Select
                     labelId="role-select-label"
                     id="role-select"
-                    value={formData.role}
+                    value={formData.roleId}
                     label="Role"
                     onChange={handleRoleChange}
                   >
-                    <MenuItem value="2">Admin</MenuItem>
-                    <MenuItem value="1">User</MenuItem>
-                    <MenuItem value="3">Owner Court</MenuItem>
+                    <MenuItem value= {2} >Admin</MenuItem>
+                    <MenuItem value= {1}>User</MenuItem>
+                    <MenuItem value= {3}>Owner Court</MenuItem>
                   </Select>
-                  {errors.role && (
-                    <FormHelperText>{errors.role}</FormHelperText>
+                  {errors.roleId && (
+                    <FormHelperText>{errors.roleId}</FormHelperText>
                   )}
                 </FormControl>
                 <div className="form-buttons">

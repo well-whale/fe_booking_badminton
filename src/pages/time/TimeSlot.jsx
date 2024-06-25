@@ -16,16 +16,20 @@ import "./TimeSlot.css";
 import { getCourtByIdCourt, checkSubCourt } from "../../services/UserServices";
 import CourtPrice from "../single/CourtPrice";
 
-
-const generateTimeSlots = (startTime, endTime, interval) => {
+const generateTimeSlots = (startTime, endTime, interval, selectedDate) => {
   const timeSlots = [];
+  const now = dayjs();
+  const isToday = selectedDate.isSame(now, 'day');
   let currentTime = startTime;
 
   while (currentTime <= endTime) {
     const hours = String(Math.floor(currentTime / 60)).padStart(2, "0");
     const minutes = String(currentTime % 60).padStart(2, "0");
     const timeString = `${hours}:${minutes}`;
-    timeSlots.push({ timeString, id: currentTime });
+    const timeSlotMoment = selectedDate.hour(Math.floor(currentTime / 60)).minute(currentTime % 60);
+    const isPast = isToday && timeSlotMoment.isBefore(now);
+
+    timeSlots.push({ timeString, id: currentTime, isPast });
     currentTime += interval;
   }
 
@@ -59,12 +63,11 @@ const TimeSlots = () => {
   let [selectedCourts, setSelectedCourts] = useState([]);
   const [isPricingModalOpen, setPricingModalOpen] = useState(false);
 
-  // TimeSlots.js
-const handleBooking = () => {
-  const bookingDetails = { courtID, selectedCourts, selectedDate: selectedDate.format('YYYY-MM-DD'), totalPrice };
-  console.log(bookingDetails)
-  localStorage.setItem('bookingDetails', JSON.stringify(bookingDetails));
-};
+  const handleBooking = () => {
+    const bookingDetails = { courtID, selectedCourts, selectedDate: selectedDate.format('YYYY-MM-DD'), totalPrice };
+    console.log(bookingDetails)
+    localStorage.setItem('bookingDetails', JSON.stringify(bookingDetails));
+  };
 
   const getDetailCourt = async () => {
     try {
@@ -98,12 +101,14 @@ const handleBooking = () => {
       const interval = 30;
 
       if (startTime !== null && endTime !== null) {
-        setTimeSlots(generateTimeSlots(startTime, endTime, interval));
+        setTimeSlots(generateTimeSlots(startTime, endTime, interval, selectedDate));
       }
     }
-  }, [court]);
+  }, [court, selectedDate]);
 
-  const toggleTimeSlot = (id) => {
+  const toggleTimeSlot = (id, isPast) => {
+    if (isPast) return; // Disable past time slots
+
     if (firstSelected === null) {
       setFirstSelected(id);
       setSelectedTimes([id]);
@@ -250,7 +255,7 @@ const handleBooking = () => {
   if (!court) {
     return <div>No court details available</div>;
   }
-  console.log(selectedCourts);
+
   return (
     <div className="container">
       <div className="left-section">
@@ -276,11 +281,11 @@ const handleBooking = () => {
           </div>
         </div>
         <div id="time-slots" className="times-container">
-          {timeSlots.map(({ timeString, id }) => (
+          {timeSlots.map(({ timeString, id, isPast }) => (
             <div
               key={id}
-              className={`time ${selectedTimes.includes(id) ? "selected" : ""}`}
-              onClick={() => toggleTimeSlot(id)}
+              className={`time ${selectedTimes.includes(id) ? "selected" : ""} ${isPast ? "disabled" : ""}`}
+              onClick={() => toggleTimeSlot(id, isPast)}
             >
               {timeString}
             </div>
@@ -312,7 +317,6 @@ const handleBooking = () => {
 
       <div className="right-section">
         <div className="area-info">
-          {/* {court?.images?.[0] && <img src={court.images[0]} alt={court.courtName} />} */}
           <img
             src="https://png.pngtree.com/background/20231028/original/pngtree-badminton-court-green-leisure-badminton-photo-picture-image_5751022.jpg"
             alt={court.courtName}
@@ -341,7 +345,6 @@ const handleBooking = () => {
           <NavLink
             to={{
               pathname: "/payment",
-              
             }}
             style={{ textDecoration: "none", color: "white" }}
           >

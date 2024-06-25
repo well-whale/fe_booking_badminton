@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import "./tailwindcss-colors.css";
 import "./Payment.css";
-import { getCourtByIdCourt } from "../../services/UserServices";
+import { getCourtByIdCourt, payment } from "../../services/UserServices";
 import VNPAGE from "../../img/VNPAGE.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,6 @@ import { selectUser } from "../../redux/userSlice";
 
 const PaymentPage = () => {
   const user = useSelector(selectUser).user;
-  console.log(user);
   const [orderDetail, setOrderDetail] = useState({
     firstname: user.firstName,
     lastName: user.lastName,
@@ -37,11 +36,11 @@ const PaymentPage = () => {
     bookingDetails: [],
     selectedCourts: [],
     paymentMethod: "method-1", // Default payment method
+    totalPrice: 49, // Update this with your logic
   });
 
   useEffect(() => {
     const storedDetails = localStorage.getItem("bookingDetails");
-    console.log(storedDetails);
     if (storedDetails) {
       setOrderDetail((prevState) => ({
         ...prevState,
@@ -54,10 +53,9 @@ const PaymentPage = () => {
   const [court, setCourt] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false); 
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const navigate = useNavigate(); 
-  // console.log(orderDetail);
+  const navigate = useNavigate();
   const getDetailCourt = async () => {
     try {
       const res = await getCourtByIdCourt(orderDetail.courtID);
@@ -103,7 +101,7 @@ const PaymentPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSubmit = {
       courtID: orderDetail.courtID,
@@ -116,14 +114,44 @@ const PaymentPage = () => {
         endTime: court.endTime,
       })),
     };
+    console.log(orderDetail);
     console.log(dataToSubmit);
-    book(dataToSubmit);
+        book(dataToSubmit);
+
+    // try {
+    //   const res = await payment(orderDetail.totalPrice * 1000, orderDetail.customerId);
+    //   console.log(res.data);
+
+    //   // Redirect to VNPay
+    //   window.location.href = res.data;
+    // } catch (error) {
+    //   console.error("Payment failed:", error);
+    // }
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    navigate("/"); // Navigate back to home after closing dialog
+    navigate(`/booking/${orderDetail.courtID}`); // Navigate to the booking page with the specific court ID
   };
+  
+
+  // useEffect(() => {
+  //   // Handle VNPay return URL
+  //   const query = new URLSearchParams(window.location.search);
+  //   const jsonResponse = query.get('response');
+  //   console.log(query);
+  //   console.log(jsonResponse);
+  //   if (jsonResponse) {
+  //     try {
+  //       const response = JSON.parse(jsonResponse);
+  //       if (response.message === 'Successfully') {
+  //         setOpenDialog(true);
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to parse VNPay response:", error);
+  //     }
+  //   }
+  // }, [navigate]);
 
   return (
     <Container className="container">
@@ -178,7 +206,9 @@ const PaymentPage = () => {
                   <Typography className="payment-summary-name">
                     Total
                   </Typography>
-                  <Typography className="payment-summary-price">$49</Typography>
+                  <Typography className="payment-summary-price">
+                    ${orderDetail.totalPrice}
+                  </Typography>
                 </Box>
               </Box>
             </Box>
@@ -244,31 +274,37 @@ const PaymentPage = () => {
                 id="phone"
                 label="Phone Number"
                 variant="outlined"
-                value={orderDetail.phone || ""}
+                value={orderDetail.phone}
                 onChange={handleInputChange}
                 required
+              />
+            </FormControl>
+            <FormControl fullWidth className="formControl">
+              <TextField
+                id="totalPrice"
+                label="Total Price"
+                variant="outlined"
+                value={orderDetail.totalPrice || ""}
+                onChange={handleInputChange}
+                disabled
               />
             </FormControl>
             <Button
               type="submit"
               variant="contained"
               color="primary"
-              className="submitButton"
-              startIcon={<i className="ri-wallet-line"></i>}
+              className="payment-submit-button"
             >
-              Pay
+              Proceed to Pay
             </Button>
           </form>
         </Box>
       </Box>
 
-      {/* Dialog to display booking success */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Booking Successful!</DialogTitle>
+        <DialogTitle>Booking Successful</DialogTitle>
         <DialogContent>
-          <Typography variant="body1">
-            Your court has been successfully booked.
-          </Typography>
+          <Typography>Your booking has been successfully processed!</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">

@@ -5,6 +5,10 @@ body {
   padding: 20px;
   color: #333;
 }
+.time.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
 
 .container {
   display: flex;
