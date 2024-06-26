@@ -25,19 +25,34 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 
 const PaymentPage = () => {
-  const user = useSelector(selectUser).user;
+  const user = useSelector(selectUser)?.user;
+  const [loadingUser, setLoadingUser] = useState(true);
   const [orderDetail, setOrderDetail] = useState({
-    firstname: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    phone: user.phone,
-    customerId: user.userID,
+    firstname: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    customerId: "",
     bookingType: "1",
     bookingDetails: [],
     selectedCourts: [],
     paymentMethod: "method-1", // Default payment method
     totalPrice: 49, // Update this with your logic
   });
+
+  useEffect(() => {
+    if (user) {
+      setOrderDetail((prevState) => ({
+        ...prevState,
+        firstname: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        customerId: user.userID,
+      }));
+      setLoadingUser(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     const storedDetails = localStorage.getItem("bookingDetails");
@@ -116,17 +131,17 @@ const PaymentPage = () => {
     };
     console.log(orderDetail);
     console.log(dataToSubmit);
-        book(dataToSubmit);
+        // book(dataToSubmit);
 
-    // try {
-    //   const res = await payment(orderDetail.totalPrice * 1000, orderDetail.customerId);
-    //   console.log(res.data);
+    try {
+      const res = await payment(orderDetail.totalPrice * 1000, orderDetail.customerId);
+      console.log(res.data);
 
-    //   // Redirect to VNPay
-    //   window.location.href = res.data;
-    // } catch (error) {
-    //   console.error("Payment failed:", error);
-    // }
+      // Redirect to VNPay
+      window.location.href = res.data;
+    } catch (error) {
+      console.error("Payment failed:", error);
+    }
   };
 
   const handleCloseDialog = () => {
@@ -152,6 +167,10 @@ const PaymentPage = () => {
   //     }
   //   }
   // }, [navigate]);
+
+  if (loadingUser) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container className="container">

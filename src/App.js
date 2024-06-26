@@ -22,6 +22,7 @@ import { routes } from './router/routes';
 import Invoice from './pages/bill/BillDate';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from './redux/userSlice';
+import PaymentSuccess from './pages/payment/PaymentSuccess';
 
 function App() {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ function App() {
                         <GoogleOAuth />
                     </GoogleOAuthProvider>
                 } />
+                <Route path={routes.paymentSuccess} element={<><Header/><PaymentSuccess /><Footer/></>} />
                 <Route path={routes.loginOTP} element={<LoginOTP />} />
                 <Route path={routes.courtDetail} element={<><Header /><CourtDetail /><ListCourt /><Footer /></>} />
                 <Route path={routes.search} element={<><Header /><SearchAndList /><Footer /></>} />

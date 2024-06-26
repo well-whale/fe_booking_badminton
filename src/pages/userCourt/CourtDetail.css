@@ -160,6 +160,7 @@ a:hover {
   padding: 1rem;
   background-color: #bed8c5;
   border-radius: 8px;
+  margin-top: 10px;
 }
 
 .amenities-list {
@@ -187,4 +188,28 @@ a:hover {
 }
 .react-rater-star.is-active {
   color: #ffd93b;
+}
+.dialog {
+  padding: 20px;
+  text-align: center;
+}
+
+.choseType {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 20px;
+}
+
+.buttonType {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.buttonType Button {
+  width: 100%;
+  max-width: 300px;
 }

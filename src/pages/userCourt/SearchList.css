@@ -32,6 +32,7 @@ a {
 img {
   width: 100%;
   display: flex;
+  height: 250px;
 }
 
 .booking__container1 {

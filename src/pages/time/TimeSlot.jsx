@@ -318,7 +318,7 @@ const TimeSlots = () => {
       <div className="right-section">
         <div className="area-info">
           <img
-            src="https://png.pngtree.com/background/20231028/original/pngtree-badminton-court-green-leisure-badminton-photo-picture-image_5751022.jpg"
+            src={court.images}
             alt={court.courtName}
           />
 
