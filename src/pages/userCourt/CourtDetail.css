@@ -37,11 +37,15 @@ body {
 }
 
 .image-gallery-container {
+  width: auto;
   flex: 2;
   border-radius: 8px;
   overflow: hidden;
 }
-
+.image-gallery  {
+  width: 100%;
+  height: auto;
+}
 .image-gallery img {
   width: 100%;
   height: auto;

@@ -51,7 +51,7 @@ const Header = () => {
                 <ul className="nav__links">
                     <li className="link"><NavLink to="/">Home</NavLink></li>
                     <li className="link"><NavLink to="/search">Book</NavLink></li>
-                    {/* <li className="link"><NavLink to="/admin/home">Your Booked</NavLink></li> */}
+                    <li className="link"><NavLink to="/booked">Your Booked</NavLink></li>
                     <li className="nav-item dropdown">
                         <span className="nav-link dropdown-toggle" role="button" onClick={toggleDropdown}>
                             <AccountCircleIcon/> My account

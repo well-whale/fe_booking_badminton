@@ -37,7 +37,7 @@ const PaymentPage = () => {
     bookingDetails: [],
     selectedCourts: [],
     paymentMethod: "method-1", // Default payment method
-    totalPrice: 49, // Update this with your logic
+    totalPrice: "", // Update this with your logic
   });
 
   useEffect(() => {
@@ -99,23 +99,38 @@ const PaymentPage = () => {
     setOrderDetail({ ...orderDetail, paymentMethod: e.target.value });
   };
 
-  const book = async (data) => {
+
+  const tien = async (data) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/booking/book",
+        "http://localhost:8080/booking/provisionalInvoice",
         data
       );
       if (response.status === 200 || response.status === 201) {
-        console.log("Booking successful:", response.data);
-        setOpenDialog(true); //
+        setOrderDetail((prevState) => ({
+          ...prevState,
+          totalPrice: response.data.totalPrice,
+        }));
       } else {
-        console.error("Booking failed:", response.data);
+        console.error(" failed:", response.data);
       }
     } catch (error) {
-      console.error("Error during booking:", error);
+      console.error("Error during :", error);
     }
   };
-
+  
+  const dataToPrice = {
+    courtID: orderDetail.courtID,
+    customerId: orderDetail.customerId,
+    bookingDate: orderDetail.selectedDate,
+    bookingType: orderDetail.bookingType,
+    bookingDetails: orderDetail.selectedCourts.map((court) => ({
+      subCourtID: court.subCourtID,
+      startTime: court.startTime,
+      endTime: court.endTime,
+    })),
+  };
+  const res =  tien(dataToPrice)
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSubmit = {
@@ -129,9 +144,11 @@ const PaymentPage = () => {
         endTime: court.endTime,
       })),
     };
+    localStorage.setItem('bookingData', JSON.stringify(dataToSubmit));
+
+
     console.log(orderDetail);
     console.log(dataToSubmit);
-        // book(dataToSubmit);
 
     try {
       const res = await payment(orderDetail.totalPrice * 1000, orderDetail.customerId);
@@ -149,25 +166,6 @@ const PaymentPage = () => {
     navigate(`/booking/${orderDetail.courtID}`); // Navigate to the booking page with the specific court ID
   };
   
-
-  // useEffect(() => {
-  //   // Handle VNPay return URL
-  //   const query = new URLSearchParams(window.location.search);
-  //   const jsonResponse = query.get('response');
-  //   console.log(query);
-  //   console.log(jsonResponse);
-  //   if (jsonResponse) {
-  //     try {
-  //       const response = JSON.parse(jsonResponse);
-  //       if (response.message === 'Successfully') {
-  //         setOpenDialog(true);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to parse VNPay response:", error);
-  //     }
-  //   }
-  // }, [navigate]);
-
   if (loadingUser) {
     return <div>Loading...</div>;
   }
@@ -205,6 +203,7 @@ const PaymentPage = () => {
                       {court.courtName}
                     </h5>
                     <h5 className="payment-plan-info">{court.courtAddress}</h5>
+                    <h6 className="payment-plan-info">{orderDetail.selectedDate}</h6>
                     <h5 className="payment-plan-info">{court.phone}</h5>
                   </Box>
                 )}
@@ -226,7 +225,7 @@ const PaymentPage = () => {
                     Total
                   </Typography>
                   <Typography className="payment-summary-price">
-                    ${orderDetail.totalPrice}
+                    {orderDetail.totalPrice*1000} VND
                   </Typography>
                 </Box>
               </Box>
@@ -248,7 +247,7 @@ const PaymentPage = () => {
                   value="method-1"
                   control={<Radio />}
                   label={
-                    <img src={VNPAGE} style={{ width: "50px" }} alt="VNPAGE" />
+                    <img className="imagePayment"src={VNPAGE} style={{ width: "50px" }} alt="VNPAGE" />
                   }
                 />
                 {/* <FormControlLabel
@@ -303,7 +302,7 @@ const PaymentPage = () => {
                 id="totalPrice"
                 label="Total Price"
                 variant="outlined"
-                value={orderDetail.totalPrice || ""}
+                value={orderDetail.totalPrice*1000 || ""}
                 onChange={handleInputChange}
                 disabled
               />

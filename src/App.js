@@ -23,6 +23,7 @@ import Invoice from './pages/bill/BillDate';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from './redux/userSlice';
 import PaymentSuccess from './pages/payment/PaymentSuccess';
+import BookingList from './pages/booked/BookedList';
 
 function App() {
   const dispatch = useDispatch();
@@ -46,11 +47,12 @@ function App() {
                     </GoogleOAuthProvider>
                 } />
                 <Route path={routes.paymentSuccess} element={<><Header/><PaymentSuccess /><Footer/></>} />
+                <Route path={routes.booked} element={<><Header/><BookingList/><Footer/></>} />
                 <Route path={routes.loginOTP} element={<LoginOTP />} />
                 <Route path={routes.courtDetail} element={<><Header /><CourtDetail /><ListCourt /><Footer /></>} />
                 <Route path={routes.search} element={<><Header /><SearchAndList /><Footer /></>} />
                 <Route path={routes.booking} element={<><Header /><TimeSlots /><Footer /></>} />
-                <Route path={routes.payment} element={<><Header /><Payment /><Footer /></>} />
+                <Route path={routes.payment} element={<><ProtectedRoute role="Customer"><Header/><Payment /><Footer/></ProtectedRoute></>} />
                 <Route path={routes.bill} element={<><Header /><Invoice /><Footer /></>} />
 
                 <Route path={routes.adminHome} element={<ProtectedRoute role="Admin"><AdminHome /></ProtectedRoute>} />

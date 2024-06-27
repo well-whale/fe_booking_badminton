@@ -1,10 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import axios from "axios";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
+
+  const book = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/booking/book",
+        data
+      );
+      if (response.status === 200 || response.status === 201) {
+        console.log("Booking successful:", response.data);
+        // Clear localStorage after successful booking
+      } else {
+        console.error("Booking failed:", response.data);
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+    }
+  };
+
+  useEffect(() => {
+    const bookingData = JSON.parse(localStorage.getItem('bookingData'));
+    if (bookingData) {
+      book(bookingData);
+      localStorage.removeItem('bookingData');
+
+    }
+  }, []); // Empty dependency array ensures this runs only once after the initial render
 
   const handleBackHome = () => {
     navigate("/");

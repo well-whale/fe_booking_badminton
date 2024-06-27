@@ -14,7 +14,10 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
 }
-
+.imagePayment{
+  width: 35%;
+  height: 35%;
+}
 .payment-header {
   padding: 24px;
   background-color: var(--indigo-500);

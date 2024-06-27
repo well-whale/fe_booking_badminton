@@ -51,7 +51,7 @@ const CourtPrice = ({ courtID }) => {
                 <TableRow>
                   <TableCell>Open Time</TableCell>
                   <TableCell>Close Time</TableCell>
-                  <TableCell>Unit Price (VND)</TableCell>
+                  <TableCell>Unit Price (VND/1h)</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -59,7 +59,7 @@ const CourtPrice = ({ courtID }) => {
                   <TableRow key={price.priceID}>
                     <TableCell>{price.openTime}</TableCell>
                     <TableCell>{price.closeTime}</TableCell>
-                    <TableCell>{price.unitPrice}</TableCell>
+                    <TableCell>{price.unitPrice*1000}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -73,7 +73,7 @@ const CourtPrice = ({ courtID }) => {
                 <TableRow>
                   <TableCell>Open Time</TableCell>
                   <TableCell>Close Time</TableCell>
-                  <TableCell>Unit Price (VND)</TableCell>
+                  <TableCell>Unit Price (VND/1h)</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -81,7 +81,7 @@ const CourtPrice = ({ courtID }) => {
                   <TableRow key={price.priceID}>
                     <TableCell>{price.openTime}</TableCell>
                     <TableCell>{price.closeTime}</TableCell>
-                    <TableCell>{price.unitPrice}</TableCell>
+                    <TableCell>{price.unitPrice*1000}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -103,7 +103,7 @@ const CourtPrice = ({ courtID }) => {
                   <TableRow key={price.priceID}>
                     <TableCell>{price.openTime}</TableCell>
                     <TableCell>{price.closeTime}</TableCell>
-                    <TableCell>{price.unitPrice}</TableCell>
+                    <TableCell>{price.unitPrice*1000}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

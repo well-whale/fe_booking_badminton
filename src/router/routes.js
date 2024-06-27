@@ -13,6 +13,7 @@ export const routes = {
     adminNewUser: "/admin/users/new",
     adminUpdateCourt: "/admin/court/update/:courtId",
     bill:"/bill",
-    paymentSuccess:"/payment-success"
+    paymentSuccess:"/payment-success",
+    booked:"/booked"
   };
   

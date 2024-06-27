@@ -91,7 +91,7 @@ const CourtDetail = () => {
   return (
     <section className="product-detail-container">
       <div className="image-gallery-container">
-        <img src={court.images} alt={court.courtName} />
+        <img className="image-gallery" src={court.images} alt={court.courtName} />
 
         {/* {court.images
          && (
@@ -122,7 +122,7 @@ const CourtDetail = () => {
             </span>
           </p>
           <p className="product-brand">
-            Quy mô: <span>{court.courtQuantity}</span>
+            Quy mô: <span>{court.courtQuantity} Sân </span>
           </p>
           <p className="product-sku">
             Điện Thoại: <span>{court.phoneNumber}</span>
