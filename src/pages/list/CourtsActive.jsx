@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { DataGrid } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -10,18 +9,16 @@ import {
   DialogTitle,
   MenuItem,
   Select,
+  CircularProgress,
+  Box,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import UpdateIcon from "@mui/icons-material/Update";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
-import { fetchAllCourts } from "../../services/UserServices";
-
+import { fetchAllCourts, updateStatusCourt } from "../../services/UserServices";
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 const CourtsActive = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -34,7 +31,7 @@ const CourtsActive = () => {
   const fetchData = async () => {
     try {
       const response = await fetchAllCourts();
-      console.log(response.data)
+      console.log(response.data);
       if (Array.isArray(response.data)) {
         const preprocessedData = response.data.map((court) => ({
           ...court,
@@ -94,7 +91,7 @@ const CourtsActive = () => {
             color="info"
             onClick={() => handleClickOpen(params.row, "view")}
           />
-          <EditNoteIcon
+          <AutorenewIcon
             color="secondary"
             onClick={() => handleClickOpen(params.row, "update")}
           />
@@ -125,7 +122,11 @@ const CourtsActive = () => {
 
     const handleUpdate = async () => {
       try {
-        // await updateCourtStatus(court.courtID, status);
+        const res = await updateStatusCourt({
+          courtID: court.courtID,
+          statusCourt: status,
+        });
+        console.log(res.status)
         fetchData();
         onClose();
       } catch (error) {
@@ -140,7 +141,7 @@ const CourtsActive = () => {
           <Select value={status} onChange={handleChange} fullWidth>
             <MenuItem value={1}>Hoạt động</MenuItem>
             <MenuItem value={-1}>Tạm ngưng</MenuItem>
-            <MenuItem value={0}>Chờ duyệt</MenuItem>
+            {/* <MenuItem value={0}>Chờ duyệt</MenuItem> */}
           </Select>
         </DialogContent>
         <DialogActions>
@@ -154,6 +155,7 @@ const CourtsActive = () => {
       </Dialog>
     );
   };
+
   return (
     <div className="customer">
       <Sidebar />

@@ -19,11 +19,11 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import UpdateIcon from "@mui/icons-material/Update";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
-import { fetchAllCourts, getAllCourtOfOwner } from "../../services/UserServices";
+import { fetchAllCourts, getAllCourtOfOwner, updateStatusCourt } from "../../services/UserServices";
 import Sidebar from "../../components/courtowner/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
-
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 const ListCourtForOwnerPause = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -90,11 +90,16 @@ console.log(user)
     {
       field: "action",
       headerName: "",
+      width: 200,
       renderCell: (params) => (
         <div className="cellAction">
           <VisibilityIcon
             color="info"
             onClick={() => handleClickOpen(params.row, "view")}
+          />
+          <AutorenewIcon
+            color="secondary"
+            onClick={() => handleClickOpen(params.row, "update")}
           />
           <EditNoteIcon
             color="secondary"
@@ -104,6 +109,7 @@ console.log(user)
             color="error"
             onClick={() => handleDelete(params.row.courtID)}
           />
+          
         </div>
       ),
     },
@@ -127,7 +133,11 @@ console.log(user)
 
     const handleUpdate = async () => {
       try {
-        // await updateCourtStatus(court.courtID, status);
+        const res = await updateStatusCourt({
+          courtID: court.courtID,
+          statusCourt: status,
+        });
+        console.log(res.status)
         fetchData();
         onClose();
       } catch (error) {
@@ -142,7 +152,7 @@ console.log(user)
           <Select value={status} onChange={handleChange} fullWidth>
             <MenuItem value={1}>Hoạt động</MenuItem>
             <MenuItem value={-1}>Tạm ngưng</MenuItem>
-            <MenuItem value={0}>Chờ duyệt</MenuItem>
+            {/* <MenuItem value={0}>Chờ duyệt</MenuItem> */}
           </Select>
         </DialogContent>
         <DialogActions>

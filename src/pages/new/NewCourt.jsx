@@ -23,6 +23,12 @@ import { createCourt } from "../../services/UserServices";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 
+const districtList = [
+  "Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8",
+  "Quận 10", "Quận 11", "Quận 12", "Phú Nhuận", "Bình Thạnh",
+  "Gò Vấp", "Tân Bình", "Bình Tân", "Tân Phú",
+  "Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Cần Giờ", "Nhà Bè"
+];
 
 const NewCourt = () => {
   const user = useSelector(selectUser)?.user;
@@ -53,8 +59,8 @@ const NewCourt = () => {
     WIFI: false,
     WATER: false,
     PARKING: false,
-    Restaurant: false,
-    food: false,
+    RESTAURANT: false,
+    FOOD: false,
   });
 
   const handleInputChange = (e) => {
@@ -238,16 +244,23 @@ const NewCourt = () => {
                 fullWidth
                 margin="normal"
               />
-              <TextField
-                id="district"
-                label="District*"
-                variant="outlined"
-                name="district"
-                value={formData.district}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-              />
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="districtLabel">District*</InputLabel>
+                <Select
+                label= 'District'
+                  labelId="districtLabel"
+                  id="district"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleInputChange}
+                >
+                  {districtList.map((district, index) => (
+                    <MenuItem key={index} value={district}>
+                      {district}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <TextField
                 id="courtAddress"
                 label="Court Address*"
@@ -272,13 +285,13 @@ const NewCourt = () => {
               {[...Array(5)].map((_, index) => (
                 <div key={index} style={{ marginBottom: "15px" }}>
                   <input type="file" onChange={handleImageChange(index)} />
-                  {imageURLs[index] && (
+                  {/* {imageURLs[index] && (
                     <img
                       src={imageURLs[index]}
                       alt={`Uploaded ${index + 1}`}
                       style={{ maxWidth: 150 }}
                     />
-                  )}
+                  )} */}
                 </div>
               ))}
             </div>
@@ -319,9 +332,9 @@ const NewCourt = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={services.Restaurant}
+                    checked={services.RESTAURANT}
                     onChange={handleServiceChange}
-                    name="Restaurant"
+                    name="RESTAURANT"
                   />
                 }
                 label="Căng tin"
@@ -329,9 +342,9 @@ const NewCourt = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={services.food}
+                    checked={services.FOOD}
                     onChange={handleServiceChange}
-                    name="food"
+                    name="RESTAURANT"
                   />
                 }
                 label="Đồ ăn"
@@ -369,6 +382,7 @@ const NewCourt = () => {
                   Slot Duration (minutes)*
                 </InputLabel>
                 <Select
+                label='Slot Duration (minutes)*'
                   labelId="slotDurationLabel"
                   id="slotDuration"
                   value={formData.duration}

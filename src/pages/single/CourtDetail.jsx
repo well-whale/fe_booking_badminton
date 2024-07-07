@@ -107,8 +107,8 @@ const CourtDetail = ({ open, onClose, court }) => {
                     <TableBody>
                       {listPrice.map((price) => (
                         <TableRow key={price.priceID}>
-                          <TableCell>{price.openTime}</TableCell>
-                          <TableCell>{price.closeTime}</TableCell>
+                          <TableCell>{price.startTime}</TableCell>
+                          <TableCell>{price.endTime}</TableCell>
                           <TableCell>{price.unitPrice * 1000}</TableCell>
                         </TableRow>
                       ))}

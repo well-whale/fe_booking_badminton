@@ -10,7 +10,6 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,10 +18,11 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import UpdateIcon from "@mui/icons-material/Update";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
-import { fetchAllCourts } from "../../services/UserServices";
+import { fetchAllCourts, updateStatusCourt } from "../../services/UserServices";
 import Sidebar from "../../components/courtowner/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 const ListCourtForOwnerPending = () => {
   const [data, setData] = useState([]);
@@ -90,6 +90,7 @@ console.log(user)
     {
       field: "action",
       headerName: "",
+      width: 200,
       renderCell: (params) => (
         <div className="cellAction">
           <VisibilityIcon
@@ -127,7 +128,11 @@ console.log(user)
 
     const handleUpdate = async () => {
       try {
-        // await updateCourtStatus(court.courtID, status);
+        const res = await updateStatusCourt({
+          courtID: court.courtID,
+          statusCourt: status,
+        });
+        console.log(res.status)
         fetchData();
         onClose();
       } catch (error) {

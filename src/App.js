@@ -36,6 +36,9 @@ import ListCourtForOwnerPending from './pages/list/ListCourtForOwnerPending';
 import ListCourtForOwnerPause from './pages/list/ListCourtForOwnerPause';
 import ListOrder from './pages/list/Order';
 import NewCourt from './pages/new/NewCourt';
+import Profile from './pages/single/Profile';
+import ProfileAdmin from './pages/single/Profile';
+import ProfileOwner from './pages/single/ProfileOwner';
 
 function App() {
   const dispatch = useDispatch();
@@ -80,6 +83,8 @@ function App() {
                 <Route path={routes.adminListCourtPause} element={<ProtectedRoute role="Admin"><CourtsPause/></ProtectedRoute>} />
                 <Route path={routes.adminNewUser} element={<ProtectedRoute role="Admin"><NewUser /></ProtectedRoute>} />
                 <Route path={routes.adminUpdateCourt} element={<ProtectedRoute role="Admin"><UpdateCourt /></ProtectedRoute>} />
+                <Route path={routes.adminProfile} element={<ProtectedRoute role="Admin"><ProfileAdmin/></ProtectedRoute>} />
+
 
                 <Route path={routes.ownerHome} element={<ProtectedRoute role="Court Owner"><OwnerHome/></ProtectedRoute>} />
                 <Route path={routes.listCourtForOwnerActive} element={<ProtectedRoute role="Court Owner"><ListCourtForOwnerActive/></ProtectedRoute>} />
@@ -88,6 +93,8 @@ function App() {
 
                 <Route path={routes.listOrder} element={<ProtectedRoute role="Court Owner"><ListOrder/></ProtectedRoute>} />
                 <Route path={routes.newCourt} element={<ProtectedRoute role="Court Owner"><NewCourt/></ProtectedRoute>} />
+                <Route path={routes.ownerProfile} element={<ProtectedRoute role="Court Owner"><ProfileOwner/></ProtectedRoute>} />
+
             </Routes>
         </React.StrictMode>
     );

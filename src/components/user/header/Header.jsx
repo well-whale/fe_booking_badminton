@@ -74,18 +74,18 @@ const Header = () => {
                     <span className="nav__logo-text">BadmintonHub</span>
                 </div>
                 <ul className="nav__links">
-                    <li className="link"><NavLink to="/">Home</NavLink></li>
-                    <li className="link"><NavLink to="/search">Book</NavLink></li>
-                    <li className="link"><NavLink to="/booked">Your Booked</NavLink></li>
+                    <li className="link"><NavLink to="/">Trang Chủ</NavLink></li>
+                    <li className="link"><NavLink to="/search">Đặt Sân</NavLink></li>
+                    <li className="link"><NavLink to="/booked">Lịch sử đặt</NavLink></li>
                     <li className="nav-item dropdown">
                         <span className="nav-link dropdown-toggle" role="button" onClick={toggleDropdown}>
-                            <AccountCircleIcon /> My account
+                            <AccountCircleIcon /> 
                         </span>
                         {showDropdown && (
                             <ul className="dropdown-menu">
                                 {!userInfor ? (
                                     <li className="link">
-                                        <NavLink to="/login">Login</NavLink>
+                                        <NavLink to="/login">Đăng Nhập</NavLink>
                                     </li>
                                 ) : (
                                     <>
@@ -97,10 +97,10 @@ const Header = () => {
                                             <small>{userInfor.email}</small>
                                         </li>
                                         <li className="dropdown-item">
-                                            <span className="edit-profile-button" onClick={handleDialogOpen} style={{ cursor: 'pointer' }}>Edit Profile</span>
+                                            <span className="edit-profile-button" onClick={handleDialogOpen} style={{ cursor: 'pointer' }}>Chỉnh sửa thông tin</span>
                                         </li>
                                         <li className="dropdown-item">
-                                            <span className="logout-button" onClick={handleLogout} style={{ cursor: 'pointer' }}>Logout</span>
+                                            <span className="logout-button" onClick={handleLogout} style={{ cursor: 'pointer' }}>Đăng xuất</span>
                                         </li>
                                     </>
                                 )}

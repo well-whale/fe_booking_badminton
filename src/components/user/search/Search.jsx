@@ -7,8 +7,8 @@ import "../search/Search.css";
 
 const address = [
   "Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8",
-  "Quận 10", "Quận 11", "Quận 12", "Quận Phú Nhuận", "Quận Bình Thạnh",
-  "Quận Gò Vấp", "Quận Tân Bình", "Quận Bình Tân", "Quận Tân Phú",
+  "Quận 10", "Quận 11", "Quận 12", "Phú Nhuận", "Bình Thạnh",
+  "Gò Vấp", "Tân Bình", "Bình Tân", "Tân Phú",
   "Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Cần Giờ", "Nhà Bè"
 ];
 
@@ -34,7 +34,7 @@ const Search = () => {
               onChange={(event, newValue) => {
                 setSelectedDistrict(newValue);
               }}
-              renderInput={(params) => <TextField {...params} label="Location" />}
+              renderInput={(params) => <TextField {...params} label="Khu vực" />}
             />
           </div>
           <p>Where are you playing?</p>

@@ -9,28 +9,10 @@ import "./SearchList.css";
 import { searchByDistrict } from "../../services/UserServices";
 
 const address = [
-  "Quận 1",
-  "Quận 3",
-  "Quận 4",
-  "Quận 5",
-  "Quận 6",
-  "Quận 7",
-  "Quận 8",
-  "Quận 10",
-  "Quận 11",
-  "Quận 12",
-  "Quận Phú Nhuận",
-  "Quận Bình Thạnh",
-  "Quận Gò Vấp",
-  "Quận Tân Bình",
-  "Quận Bình Tân",
-  "Quận Tân Phú",
-  "Thủ Đức",
-  "Bình Chánh",
-  "Hóc Môn",
-  "Củ Chi",
-  "Cần Giờ",
-  "Nhà Bè",
+  "Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8",
+  "Quận 10", "Quận 11", "Quận 12", "Phú Nhuận", "Bình Thạnh",
+  "Gò Vấp", "Tân Bình", "Bình Tân", "Tân Phú",
+  "Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Cần Giờ", "Nhà Bè"
 ];
 
 const SearchList = () => {
@@ -88,7 +70,7 @@ const SearchList = () => {
                     setSelectedDistrict(newValue);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Location" />
+                    <TextField {...params} label="Khu vực" />
                   )}
                 />
               </div>

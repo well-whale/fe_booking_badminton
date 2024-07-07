@@ -166,7 +166,7 @@ const Sidebar = () => {
         </NavLink>
 
         <Typography variant="overline" display="block" gutterBottom>User Interface</Typography>
-        <NavLink to="/profile" className={({ isActive }) => (isActive ? "active" : "")}>
+        <NavLink to="/admin/Profile" className={({ isActive }) => (isActive ? "active" : "")}>
           <ListItem button>
             <ListItemIcon>
               <ManageAccountsOutlinedIcon />

@@ -22,16 +22,18 @@ import {
 } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
 const CourtDetail = () => {
   const { idCourt } = useParams();
   const [court, setCourt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -40,6 +42,7 @@ const CourtDetail = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
   const getDetailCourt = async () => {
     try {
       const res = await getCourtByIdCourt(idCourt);
@@ -73,11 +76,12 @@ const CourtDetail = () => {
   }
 
   const amenities = [
-    { name: "Wifi", icon: <CiWifiOn /> },
-    { name: "Bãi đỗ xe máy", icon: <FaMotorcycle /> },
-    { name: "Nước uống", icon: <GiWaterBottle /> },
-    { name: "Căng tin", icon: <IoMdRestaurant /> },
-    { name: "Đồ ăn", icon: <MdOutlineFastfood /> },
+    // { name: "Wifi", icon: <CiWifiOn /> },
+    // { name: "Bãi đỗ xe máy", icon: <FaMotorcycle /> },
+    // { name: "Nước uống", icon: <GiWaterBottle /> },
+    // { name: "Căng tin", icon: <IoMdRestaurant /> },
+    // { name: "Đồ ăn", icon: <c /> },
+    court.serviceCourt
   ];
 
   const getPriceRange = (prices) => {
@@ -86,7 +90,7 @@ const CourtDetail = () => {
       const minPrice = Math.min(...unitPrices);
       const maxPrice = Math.max(...unitPrices);
 
-      return `${minPrice*1000} - ${maxPrice*1000} VND`;
+      return `${minPrice * 1000} - ${maxPrice * 1000} VND`;
     }
     return "Đang Cập Nhật....";
   };
@@ -100,15 +104,14 @@ const CourtDetail = () => {
     navigate(`/bookingmonth/${court.courtID}`);
   };
 
+  const formatTime = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  };
+
   return (
     <section className="product-detail-container">
       <div className="image-gallery-container">
-        {/* <img
-          className="image-gallery"
-          src={court.images}
-          alt={court.courtName}
-        /> */}
-
         {court.images && court.images.length > 0 && (
           <ReactImageGallery
             showBullets={false}
@@ -133,7 +136,7 @@ const CourtDetail = () => {
           <p className="product-brand">
             Giờ Hoạt Động:{" "}
             <span>
-              {court.startTime} - {court.endTime}
+              {formatTime(court.startTime)} - {formatTime(court.endTime)}
             </span>
           </p>
           <p className="product-brand">
@@ -147,17 +150,25 @@ const CourtDetail = () => {
           </p>
         </div>
 
-        <div className="amenities-container">
+<div className="amenities-container">
           <h5>Dịch vụ tiện ích</h5>
           <ul className="amenities-list">
-            {amenities.map((amenity, index) => (
+            {court.serviceCourt.map((amenity, index) => (
               <li key={index} className="amenity-item">
-                <div className="amenity-icon">{amenity.icon}</div>
-                <div>{amenity.name}</div>
+                <div className="amenity-icon">{
+                  amenity.serviceName ==="WIFI" ?<CiWifiOn />:
+                  amenity.serviceName ==="WATER" ?<GiWaterBottle />:
+                  amenity.serviceName ==="PARKING" ?<FaMotorcycle />:
+                  amenity.serviceName ==="RESTAURANT" ?<IoMdRestaurant />:
+                  amenity.serviceName ==="FOOD" ?<MdOutlineFastfood />:
+                  "Không có tiện ích"
+              }</div>
+                <div>{amenity.serviceName}</div>
               </li>
             ))}
           </ul>
         </div>
+        
 
         <button className="btn-book" onClick={handleClickOpen}>
           Đặt sân
@@ -209,7 +220,6 @@ const CourtDetail = () => {
             <Button
               variant="outlined"
               color="error"
-              // endIcon={<SubdirectoryArrowRightIcon />}
               onClick={handleBookingMonthClick}
               style={{ padding: "16px", width: "100%" }}
             >
@@ -222,7 +232,7 @@ const CourtDetail = () => {
                   color="textSecondary"
                   style={{ textTransform: "none" }}
                 >
-                  Đặt giờ + thứ cố định trong tuần,đặt dành cho trên 1 tháng
+                  Đặt giờ + thứ cố định trong tuần, đặt dành cho trên 1 tháng
                 </Typography>
               </Box>
               <CalendarMonthIcon

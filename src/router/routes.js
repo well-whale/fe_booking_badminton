@@ -17,6 +17,7 @@ export const routes = {
     adminCourtActive: "/admin/listCourtActive",
     adminNewUser: "/admin/users/new",
     adminUpdateCourt: "/admin/court/update/:courtId",
+    adminProfile:"/admin/Profile",
     bill:"/bill",
     paymentSuccess:"/payment-success",
     booked:"/booked",
@@ -25,6 +26,7 @@ export const routes = {
     listCourtForOwnerPending : "/ownerCourt/listCourtPending",
     listCourtForOwnerPause : "/ownerCourt/listCourtPause",
     listOrder: "/ownerCourt/listOrder",
-    newCourt: "/ownerCourt/newCourt"
+    newCourt: "/ownerCourt/newCourt",
+    ownerProfile:"/ownerCourt/Profile",
     };
   

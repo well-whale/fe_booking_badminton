@@ -21,9 +21,9 @@ import UpdateIcon from "@mui/icons-material/Update";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
 import NewCourt from "../new/NewCourt";
-import { fetchAllCourts } from "../../services/UserServices";
+import { fetchAllCourts, updateStatusCourt } from "../../services/UserServices";
 import { dataCOurt } from "../../datatableSource";
-
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 const CourtsPause = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -95,7 +95,7 @@ const CourtsPause = () => {
             color="info"
             onClick={() => handleClickOpen(params.row, "view")}
           />
-          <EditNoteIcon
+          <AutorenewIcon
             color="secondary"
             onClick={() => handleClickOpen(params.row, "update")}
           />
@@ -126,13 +126,18 @@ const CourtsPause = () => {
 
     const handleUpdate = async () => {
       try {
-        // await updateCourtStatus(court.courtID, status);
+        const res = await updateStatusCourt({
+          courtID: court.courtID,
+          statusCourt: status,
+        });
+        console.log(res.status)
         fetchData();
         onClose();
       } catch (error) {
         console.error("Error updating court status:", error);
       }
     };
+
 
     return (
       <Dialog open={open} onClose={onClose}>
@@ -141,7 +146,7 @@ const CourtsPause = () => {
           <Select value={status} onChange={handleChange} fullWidth>
             <MenuItem value={1}>Hoạt động</MenuItem>
             <MenuItem value={-1}>Tạm ngưng</MenuItem>
-            <MenuItem value={0}>Chờ duyệt</MenuItem>
+            {/* <MenuItem value={0}>Chờ duyệt</MenuItem> */}
           </Select>
         </DialogContent>
         <DialogActions>

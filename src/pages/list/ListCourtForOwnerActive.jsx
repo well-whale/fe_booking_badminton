@@ -23,11 +23,12 @@ import {
   fetchAllCourts,
   getAllBookingsOfCourt,
   getAllCourtOfOwner,
+  updateStatusCourt,
 } from "../../services/UserServices";
 import Sidebar from "../../components/courtowner/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
-
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 const ListCourtForOwnerActive = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -96,12 +97,17 @@ const ListCourtForOwnerActive = () => {
   const actionColumn = [
     {
       field: "action",
+      width: 200,
       headerName: "",
       renderCell: (params) => (
         <div className="cellAction">
           <VisibilityIcon
             color="info"
             onClick={() => handleClickOpen(params.row, "view")}
+          />
+          <AutorenewIcon
+            color="secondary"
+            onClick={() => handleClickOpen(params.row, "update")}
           />
           <EditNoteIcon
             color="secondary"
@@ -134,13 +140,18 @@ const ListCourtForOwnerActive = () => {
 
     const handleUpdate = async () => {
       try {
-        // await updateCourtStatus(court.courtID, status);
+        const res = await updateStatusCourt({
+          courtID: court.courtID,
+          statusCourt: status,
+        });
+        console.log(res.status)
         fetchData();
         onClose();
       } catch (error) {
         console.error("Error updating court status:", error);
       }
     };
+
 
     return (
       <Dialog open={open} onClose={onClose}>
@@ -149,7 +160,7 @@ const ListCourtForOwnerActive = () => {
           <Select value={status} onChange={handleChange} fullWidth>
             <MenuItem value={1}>Hoạt động</MenuItem>
             <MenuItem value={-1}>Tạm ngưng</MenuItem>
-            <MenuItem value={0}>Chờ duyệt</MenuItem>
+            {/* <MenuItem value={0}>Chờ duyệt</MenuItem> */}
           </Select>
         </DialogContent>
         <DialogActions>
