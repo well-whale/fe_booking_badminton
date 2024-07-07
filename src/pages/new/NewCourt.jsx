@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   TextField,
   Button,
@@ -6,203 +8,460 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  Dialog,
-  Slide,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import "../new/NewCourt.css";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { imageDB } from "../../firebaseimage/Config";
+import { ref, uploadBytes, getDownloadURL, getStorage } from "firebase/storage";
+import Sidebar from "../../components/courtowner/sidebar/Sidebar";
+import app from "../../firebase";
+import dayjs from "dayjs";
+import { createCourt } from "../../services/UserServices";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/userSlice";
 
-const Transition = React.forwardRef((props, ref) => (
-  <Slide direction="up" ref={ref} {...props} />
-));
 
-const NewCourt = ({ open, handleClose }) => {
+const NewCourt = () => {
+  const user = useSelector(selectUser)?.user;
+
   const initialFormData = {
-    court_name: "",
+    courtName: "",
     district: "",
-    court_address: "",
-    court_quantity: "",
-    slot_duration: "",
+    courtAddress: "",
+    courtQuantity: null,
+    duration: null,
+    startTime: null,
+    endTime: null,
     images: [],
+    userID: user.userID,
+    statusCourt: 0,
+    serviceCourt: [],
+    prices: [
+      { startTime: null, endTime: null, unitPrice: null },
+      { startTime: null, endTime: null, unitPrice: null },
+    ],
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [imageFiles, setImageFiles] = useState([]);
+  const [imageFiles, setImageFiles] = useState(new Array(5).fill(null));
+  const [upLoading, setUploading] = useState(false);
+  const [imageURLs, setImageURLs] = useState([]);
+  const [services, setServices] = useState({
+    WIFI: false,
+    WATER: false,
+    PARKING: false,
+    Restaurant: false,
+    food: false,
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: name === "courtQuantity" ? parseInt(value, 10) : value,
     });
   };
 
   const handleSlotDurationChange = (e) => {
     setFormData({
       ...formData,
-      slot_duration: e.target.value,
+      duration: e.target.value,
     });
   };
 
-  const handleImageChange = (e) => {
-    setImageFiles([...e.target.files]);
+  const handleImageChange = (index) => (e) => {
+    const files = e.target.files;
+    if (files.length > 0) {
+      const updatedImageFiles = [...imageFiles];
+      updatedImageFiles[index] = files[0];
+      setImageFiles(updatedImageFiles);
+    }
+  };
+
+  const handleTimeChange = (name) => (newValue) => {
+    setFormData((prevFormData) => {
+      let updatedPrices = [...prevFormData.prices];
+      if (name === "startTime") {
+        updatedPrices[0].startTime = newValue; // Start Time AM
+      } else if (name === "endTime") {
+        updatedPrices[1].endTime = newValue; // End Time PM
+      } else if (name === "end_time_am") {
+        updatedPrices[0].endTime = newValue; // End Time AM
+        updatedPrices[1].startTime = newValue; // Start Time PM
+      }
+      return {
+        ...prevFormData,
+        [name]: newValue,
+        prices: updatedPrices,
+      };
+    });
+  };
+
+  const handleServiceChange = (e) => {
+    const { name, checked } = e.target;
+    setServices({
+      ...services,
+      [name]: checked,
+    });
+  };
+
+  const handlePriceChange = (index, field) => (e) => {
+    const value =
+      field === "unitPrice" ? parseFloat(e.target.value) : e.target.value;
+    const updatedPrices = [...formData.prices];
+    updatedPrices[index][field] = value;
+    setFormData({
+      ...formData,
+      prices: updatedPrices,
+    });
   };
 
   const uploadImages = async () => {
-    const uploadedImageURLs = await Promise.all(
-      imageFiles.map(async (file) => {
-        const storageRef = ref(imageDB, `courts/${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
+    const storage = getStorage(app);
+    const uploadPromises = imageFiles.map(async (image) => {
+      if (image) {
+        const storageRef = ref(storage, `images/${Date.now()}_${image.name}`);
+        await uploadBytes(storageRef, image);
+        const downloadURL = await getDownloadURL(storageRef);
+        return downloadURL;
+      }
+      return null;
+    });
 
-        return new Promise((resolve, reject) => {
-          uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              // Handle progress if needed
-            },
-            (error) => {
-              console.error("Upload failed:", error);
-              reject(error);
-            },
-            () => {
-              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                resolve(downloadURL);
-              });
-            }
-          );
-        });
-      })
-    );
-
-    return uploadedImageURLs;
+    return Promise.all(uploadPromises);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const uploadedImageURLs = await uploadImages();
-    const updatedFormData = {
-      ...formData,
-      images: uploadedImageURLs,
-    };
-    console.log(updatedFormData);
 
-    // Here you can add the API call to save the updatedFormData to your database
+    // Validation
+    if (
+      !formData.courtName ||
+      !formData.district ||
+      !formData.courtAddress ||
+      !formData.courtQuantity ||
+      !formData.duration ||
+      !formData.startTime ||
+      !formData.endTime ||
+      imageFiles.some((image) => image === null) ||
+      !formData.prices[0].endTime ||
+      !formData.prices[1].unitPrice
+    ) {
+      toast.error("Please fill out all required fields and upload 5 images.");
+      return;
+    }
 
-    setFormData(initialFormData);
-    setImageFiles([]);
+    if (dayjs(formData.endTime).isBefore(dayjs(formData.startTime))) {
+      toast.error("End time must be after start time.");
+      return;
+    }
+
+    if (
+      dayjs(formData.prices[0].endTime).isBefore(dayjs(formData.startTime)) ||
+      dayjs(formData.prices[0].endTime).isAfter(dayjs(formData.endTime))
+    ) {
+      toast.error("End Time AM must be between Start Time and End Time.");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const uploadedImageURLs = await uploadImages();
+      const selectedServices = Object.keys(services).filter(
+        (service) => services[service]
+      );
+
+      const { end_time_am, ...finalFormData } = {
+        ...formData,
+        images: uploadedImageURLs.filter((url) => url !== null),
+        serviceCourt: selectedServices,
+        startTime: formData.startTime
+          ? formData.startTime.format("HH:00:00")
+          : "",
+        endTime: formData.endTime ? formData.endTime.format("HH:00:00") : "",
+        prices: formData.prices.map((price) => ({
+          ...price,
+          startTime: price.startTime ? price.startTime.format("HH:00:00") : "",
+          endTime: price.endTime ? price.endTime.format("HH:00:00") : "",
+          unitPrice: price.unitPrice !== null ? Number(price.unitPrice) : null,
+        })),
+      };
+
+      console.log(finalFormData);
+      const res = await createCourt(finalFormData);
+      console.log(res.status);
+      if (res.status === 200) {
+        toast.success("Court created successfully!");
+        setFormData(initialFormData);
+        setImageFiles(new Array(5).fill(null));
+        setImageURLs(uploadedImageURLs.filter((url) => url !== null));
+      } else {
+        toast.error("Failed to fetch court details");
+      }
+
+      setFormData(initialFormData);
+      setImageFiles(new Array(5).fill(null));
+      setImageURLs(uploadedImageURLs.filter((url) => url !== null));
+    } catch (err) {
+      toast.error("An error occurred while fetching court details");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
-    <Dialog
-      open={open}
-      TransitionComponent={Transition}
-      keepMounted
-      onClose={handleClose}
-      aria-describedby="alert-dialog-slide-description"
-    >
-      <div className="newCourt">
-        <div className="newCourtContainer">
-          <div className="newCourtHeader">
-            <h3>
-              <PersonAddAlt1Icon style={{ fontSize: "70px" }} />
-              Add Court Form
-            </h3>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="newCourtFormRow">
-              <div className="newCourtFormColumn">
-                <TextField
-                  id="courtName"
-                  label="Court Name*"
-                  variant="outlined"
-                  name="court_name"
-                  value={formData.court_name}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  id="district"
-                  label="District*"
-                  variant="outlined"
-                  name="district"
-                  value={formData.district}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-              </div>
-              <div className="newCourtFormColumn">
-                <TextField
-                  id="courtAddress"
-                  label="Court Address*"
-                  variant="outlined"
-                  name="court_address"
-                  value={formData.court_address}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  id="courtQuantity"
-                  label="Court Quantity*"
-                  variant="outlined"
-                  name="court_quantity"
-                  value={formData.court_quantity}
-                  onChange={handleInputChange}
-                  type="number"
-                  fullWidth
-                  margin="normal"
-                />
-                <FormControl fullWidth margin="normal">
-                  <InputLabel id="slotDurationLabel">Slot Duration (minutes)*</InputLabel>
-                  <Select
-                    labelId="slotDurationLabel"
-                    id="slotDuration"
-                    value={formData.slot_duration}
-                    name="slot_duration"
-                    onChange={handleSlotDurationChange}
-                  >
-                    <MenuItem value="30">30</MenuItem>
-                    <MenuItem value="60">60</MenuItem>
-                  </Select>
-                </FormControl>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageChange}
-                />
-                <div className="newCourtFormButtons">
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="success"
-                    className="newCourtFormButton"
-                  >
-                    Submit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    className="newCourtFormButton"
-                    onClick={() => {
-                      setFormData(initialFormData);
-                      setImageFiles([]);
-                    }}
-                  >
-                    Reset
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </form>
+    <div className="newCourt">
+      <Sidebar />
+      <div className="newCourtContainer">
+        <ToastContainer />
+
+        <div className="newCourtHeader">
+          <h3>
+            <PersonAddAlt1Icon style={{ fontSize: "70px" }} />
+            Add Court Form
+          </h3>
         </div>
+        <form onSubmit={handleSubmit}>
+          <div className="colum">
+            <div className="formSection top-left">
+              <h2 style={{ textAlign: "center" }}>Information</h2>
+              <TextField
+                id="courtName"
+                label="Court Name*"
+                variant="outlined"
+                name="courtName"
+                value={formData.courtName}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                id="district"
+                label="District*"
+                variant="outlined"
+                name="district"
+                value={formData.district}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                id="courtAddress"
+                label="Court Address*"
+                variant="outlined"
+                name="courtAddress"
+                value={formData.courtAddress}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                id="courtQuantity"
+                label="Court Quantity*"
+                variant="outlined"
+                name="courtQuantity"
+                value={formData.courtQuantity}
+                onChange={handleInputChange}
+                type="number"
+                fullWidth
+                margin="normal"
+              />
+              {[...Array(5)].map((_, index) => (
+                <div key={index} style={{ marginBottom: "15px" }}>
+                  <input type="file" onChange={handleImageChange(index)} />
+                  {imageURLs[index] && (
+                    <img
+                      src={imageURLs[index]}
+                      alt={`Uploaded ${index + 1}`}
+                      style={{ maxWidth: 150 }}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="formSection top-right">
+              <h2 style={{ textAlign: "center" }}>Services</h2>
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={services.WIFI}
+                    onChange={handleServiceChange}
+                    name="WIFI"
+                  />
+                }
+                label="Wifi"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={services.WATER}
+                    onChange={handleServiceChange}
+                    name="WATER"
+                  />
+                }
+                label="Nước uống"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={services.PARKING}
+                    onChange={handleServiceChange}
+                    name="PARKING"
+                  />
+                }
+                label="Bãi đỗ xe máy"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={services.Restaurant}
+                    onChange={handleServiceChange}
+                    name="Restaurant"
+                  />
+                }
+                label="Căng tin"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={services.food}
+                    onChange={handleServiceChange}
+                    name="food"
+                  />
+                }
+                label="Đồ ăn"
+              />
+            </div>
+          </div>
+          <div className="colum">
+            <div className="formSection bottom-left">
+              <h2 style={{ textAlign: "center" }}>Time</h2>
+              <div className="aaaaaa">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <TimePicker
+                    label="Start Time*"
+                    views={["hours"]}
+                    value={formData.startTime}
+                    onChange={handleTimeChange("startTime")}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth margin="normal" />
+                    )}
+                  />
+
+                  <TimePicker
+                    label="End Time*"
+                    views={["hours"]}
+                    value={formData.endTime}
+                    onChange={handleTimeChange("endTime")}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth margin="normal" />
+                    )}
+                  />
+                </LocalizationProvider>
+              </div>
+              <FormControl fullWidth margin="normal">
+                <InputLabel id="slotDurationLabel">
+                  Slot Duration (minutes)*
+                </InputLabel>
+                <Select
+                  labelId="slotDurationLabel"
+                  id="slotDuration"
+                  value={formData.duration}
+                  name="slot_duration"
+                  onChange={handleSlotDurationChange}
+                >
+                  <MenuItem value={30}>30</MenuItem>
+                  <MenuItem value={60}>60</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+
+            <div className="formSection bottom-right">
+              <h2 style={{ textAlign: "center" }}>Prices</h2>
+
+              <div className="aaaaaa"></div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="aaaaaa">
+                  <TimePicker
+                    label="Start Time AM"
+                    views={["hours"]}
+                    value={formData.startTime}
+                    onChange={handleTimeChange("startTime")}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth margin="normal" />
+                    )}
+                    disabled
+                  />
+                  <TimePicker
+                    label="End Time AM"
+                    views={["hours"]}
+                    value={formData.prices[0].endTime}
+                    onChange={handleTimeChange("end_time_am")}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth margin="normal" />
+                    )}
+                  />
+                </div>
+
+                <TextField
+                  label="Unit Price AM"
+                  type="number"
+                  value={formData.prices[0].unitPrice}
+                  onChange={handlePriceChange(0, "unitPrice")}
+                  fullWidth
+                  margin="normal"
+                />
+                <div className="aaaaaa">
+                  <TimePicker
+                    label="Start Time PM"
+                    views={["hours"]}
+                    value={formData.prices[1].startTime}
+                    onChange={handleTimeChange("end_time_am")}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth margin="normal" />
+                    )}
+                    disabled
+                  />
+                  <TimePicker
+                    label="End Time PM"
+                    views={["hours"]}
+                    value={formData.endTime}
+                    onChange={handleTimeChange("endTime")}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth margin="normal" />
+                    )}
+                    disabled
+                  />
+                </div>
+
+                <TextField
+                  label="Unit Price PM"
+                  type="number"
+                  value={formData.prices[1].unitPrice}
+                  onChange={handlePriceChange(1, "unitPrice")}
+                  fullWidth
+                  margin="normal"
+                />
+              </LocalizationProvider>
+              <Button
+                type="submit"
+                variant="contained"
+                color="success"
+                disabled={upLoading}
+                fullWidth
+              >
+                {upLoading ? "Uploading" : "Submit"}
+              </Button>
+            </div>
+          </div>
+        </form>
       </div>
-    </Dialog>
+    </div>
   );
 };
 

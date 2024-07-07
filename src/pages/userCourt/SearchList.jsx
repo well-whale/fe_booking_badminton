@@ -114,8 +114,8 @@ const SearchList = () => {
                   className="popular__card"
                   onClick={() => window.scrollTo(0, 100)}
                 >
-                  <img src={court.images} alt={court.courtName} />
-                  <div className="popular__content">
+              <img src={court.images.length > 0 ? court.images[0].image : 'default-image-url'} alt={court.courtName} />
+              <div className="popular__content">
                     <div className="popular__card__header">
                       <h4 style={{ display: "flex" }}>{court.courtName}</h4>
                     </div>

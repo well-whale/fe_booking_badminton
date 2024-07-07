@@ -39,7 +39,8 @@ const ListCourt = () => {
       >
         {randomCourts.map((court, index) => (
           <div key={index} className="carousel-card">
-            <img src={court.images} className="carousel-card-img" alt={court.courtName} />
+            <img src={court.images.length > 0 ? court.images[0].image : 'default-image-url'}className="carousel-card-img"  alt={court.courtName} />
+
             <div className="carousel-card-body">
               <h5 className="carousel-card-title">{court.courtName}</h5>
               <p className="carousel-card-text">{court.district}</p>

@@ -22,13 +22,13 @@ const Transition = React.forwardRef((props, ref) => (
 
 const NewUser = ({ open, handleClose, refreshData }) => {
   const initialFormData = {
-    userName:"",
+    userName: "",
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     phone: "",
-    roleId: 1,
+    roleID: 1,
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -47,7 +47,7 @@ const NewUser = ({ open, handleClose, refreshData }) => {
   const handleRoleChange = (e) => {
     setFormData({
       ...formData,
-      roleId: e.target.value,
+      roleID: e.target.value,
     });
   };
 
@@ -76,8 +76,8 @@ const NewUser = ({ open, handleClose, refreshData }) => {
     } else if (!/^\d+$/.test(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
     }
-    if (!formData.roleId) {
-      newErrors.roleId = "Role is required";
+    if (!formData.roleID) {
+      newErrors.roleID = "Role is required";
     }
 
     setErrors(newErrors);
@@ -91,8 +91,8 @@ const NewUser = ({ open, handleClose, refreshData }) => {
     setSubmitting(true);
     setApiError(""); // Reset API error message before submitting
     try {
-      console.log(formData)
-       await newUser(formData);
+      console.log(formData);
+      await newUser(formData);
       setFormData(initialFormData);
       handleClose();
       refreshData();
@@ -217,42 +217,41 @@ const NewUser = ({ open, handleClose, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                <FormControl fullWidth margin="normal" error={!!errors.roleId}>
+                <FormControl fullWidth margin="normal" error={!!errors.roleID}>
                   <InputLabel id="role-select-label">Role</InputLabel>
                   <Select
                     labelId="role-select-label"
                     id="role-select"
-                    value={formData.roleId}
+                    value={formData.roleID}
                     label="Role"
                     onChange={handleRoleChange}
                   >
-                    <MenuItem value= {2} >Admin</MenuItem>
-                    <MenuItem value= {1}>User</MenuItem>
-                    <MenuItem value= {3}>Owner Court</MenuItem>
+                    <MenuItem value={2}>Admin</MenuItem>
+                    <MenuItem value={3}>Owner Court</MenuItem>
                   </Select>
-                  {errors.roleId && (
-                    <FormHelperText>{errors.roleId}</FormHelperText>
+                  {errors.roleID && (
+                    <FormHelperText>{errors.roleID}</FormHelperText>
                   )}
                 </FormControl>
                 <div className="form-buttons">
-              <Button
-                type="submit"
-                variant="contained"
-                color="success"
-                className="form-button"
-                disabled={submitting}
-              >
-                {submitting ? "Submitting..." : "Submit"}
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                className="form-button"
-                onClick={() => setFormData(initialFormData)}
-              >
-                Reset
-              </Button>
-            </div>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                    className="form-button"
+                    disabled={submitting}
+                  >
+                    {submitting ? "Submitting..." : "Submit"}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    className="form-button"
+                    onClick={() => setFormData(initialFormData)}
+                  >
+                    Reset
+                  </Button>
+                </div>
               </div>
             </div>
           </form>

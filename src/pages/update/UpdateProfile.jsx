@@ -16,9 +16,8 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
     firstName: "",
     lastName: "",
     email: "",
-    password: "",
     phone: "",
-    role: "",
+    roleID: "",
   });
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
@@ -31,9 +30,8 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
         firstName: user.firstName || "",
         lastName: user.lastName || "",
         email: user.email || "",
-        password: "",
         phone: user.phone || "",
-        role: user.role || "",
+        roleID: user.role.roleID || "", // Assuming roleId is part of the role object
       });
     }
   }, [user]);
@@ -49,7 +47,7 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
   const handleRoleChange = (e) => {
     setFormData({
       ...formData,
-      role: e.target.value,
+      roleID: Number(e.target.value),
     });
   };
 
@@ -70,16 +68,13 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    }
     if (!formData.phone) {
       newErrors.phone = "Phone number is required";
     } else if (!/^\d+$/.test(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
     }
-    if (!formData.role) {
-      newErrors.role = "Role is required";
+    if (!formData.roleID) {
+      newErrors.roleID = "Role is required";
     }
 
     setErrors(newErrors);
@@ -91,12 +86,12 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
     if (!validate()) {
       return;
     }
-
     setSubmitting(true);
     setApiError("");
-    
+
     try {
-      await updateByUserID(user.id, formData);
+      console.log(formData)
+      await updateByUserID(user.userID, formData);
       refreshData();
       handleClose();
     } catch (error) {
@@ -119,7 +114,7 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
       <div className="update">
         <div className="updateContainer">
           <div className="header">
-            <h3><EditIcon style={{ fontSize: "70px" }} /> Update Profile Form</h3>
+            <h3><EditIcon style={{ fontSize: "70px" }} /> Update User Form</h3>
             <IconButton aria-label="close" onClick={handleClose} color="error" className="close-button">
               <CloseIcon />
             </IconButton>
@@ -167,10 +162,9 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                
               </div>
               <div className="form-column">
-              <TextField
+                <TextField
                   id="email"
                   label="Email*"
                   variant="outlined"
@@ -180,16 +174,6 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
                   error={!!errors.email}
                   helperText={errors.email}
                   type="email"
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  id="password"
-                  label="Password"
-                  variant="outlined"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
                   fullWidth
                   margin="normal"
                 />
@@ -206,7 +190,7 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                
+              
               </div>
             </div>
             <div className="form-buttons">
@@ -226,5 +210,4 @@ const UpdateProfile = ({ open, handleClose, user, refreshData }) => {
     </Dialog>
   );
 };
-
 export default UpdateProfile;

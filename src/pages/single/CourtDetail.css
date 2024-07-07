@@ -13,10 +13,10 @@
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
+    border-radius: 10px;
   }
   
   .courtBody {
-    display: flex;
     gap: 20px;
   }
   
@@ -31,6 +31,7 @@
   
   .courtDetails {
     flex: 2;
+    display: flex;
   }
   
   .courtDetail {
@@ -39,10 +40,7 @@
     gap: 10px;
   }
   
-  .courtDetailItem {
-    display: flex;
-    justify-content: space-between;
-  }
+ 
   
   .courtItemKey {
     font-weight: bold;

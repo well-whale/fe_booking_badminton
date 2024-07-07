@@ -223,6 +223,63 @@ export const userRows = [
     age: 27,
   },
 ];
+export const dataCOurt = [
+  {
+    courtID: 1,
+    courtName: "Sân cầu lông Bình Triệu",
+    courtQuantity: 3,
+    district: "Thủ Đức",
+    courtAddress: "Số 8 Đường 20, Khu phố 4, Phường Hiệp Bình Chánh, TP. Thủ Đức",
+    openTime: "05:00:00",
+    closeTime: "23:00:00",
+    duration: 30,
+    images: [
+      "https://firebasestorage.googleapis.com/v0/b/imageuploaddb-a23fc.appspot.com/o/courts%2Fsan-cau-long-binh-trieu-album--1716955110.jpeg?alt=media&token=42329c4e-2ffe-4248-b66a-651f1dc2380d",
+      "https://firebasestorage.googleapis.com/v0/b/imageuploaddb-a23fc.appspot.com/o/courts%2Fsan-cau-long-binh-trieu-album-2.jpeg?alt=media&token=42329c4e-2ffe-4248-b66a-651f1dc2380e",
+      "https://firebasestorage.googleapis.com/v0/b/imageuploaddb-a23fc.appspot.com/o/courts%2Fsan-cau-long-binh-trieu-album-3.jpeg?alt=media&token=42329c4e-2ffe-4248-b66a-651f1dc2380f",
+      "https://example.com/image4.jpg",
+      "https://example.com/image5.jpg"
+    ],
+    status: "hoạt động"
+  },
+  {
+    courtID: 2,
+    courtName: "Sân cầu lông Bình Triệu 2",
+    courtQuantity: 3,
+    district: "Thủ Đức",
+    courtAddress: "Số 9 Đường 21, Khu phố 4, Phường Hiệp Bình Chánh, TP. Thủ Đức",
+    openTime: "06:00:00",
+    closeTime: "22:00:00",
+    duration: 30,
+    images: [
+      "https://example.com/image1.jpg",
+      "https://example.com/image2.jpg",
+      "https://example.com/image3.jpg",
+      "https://example.com/image4.jpg",
+      "https://example.com/image5.jpg"
+    ],
+    status: "chờ duyệt"
+  },
+  {
+    courtID: 3,
+    courtName: "Sân cầu lông Bình Triệu 3",
+    courtQuantity: 3,
+    district: "Thủ Đức",
+    courtAddress: "Số 10 Đường 22, Khu phố 4, Phường Hiệp Bình Chánh, TP. Thủ Đức",
+    openTime: "07:00:00",
+    closeTime: "21:00:00",
+    duration: 30,
+    images: [
+      "https://example.com/image1.jpg",
+      "https://example.com/image2.jpg",
+      "https://example.com/image3.jpg",
+      "https://example.com/image4.jpg",
+      "https://example.com/image5.jpg"
+    ],
+    status: "tạm ngưng"
+  }
+];
+
 
 // export const productColumns = [
 //   { field: "partNumber", headerName: "PART NO", width: 100 },

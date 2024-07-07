@@ -1,0 +1,75 @@
+:root {
+  --main-color: #005f73; /* Màu xanh biển đậm */
+  --light-color: #0a9396; /* Màu xanh biển nhạt */
+  --bg-color: #edf6f9; /* Màu nền xanh nhạt */
+  --hover-bg-color: #94d2bd; /* Màu nền khi hover */
+  --border-color: #3d5a80; /* Màu xám đậm */
+}
+
+.sidebar {
+  width: 250px; /* Fixed width for the sidebar */
+  flex-shrink: 0; /* Prevent shrinking */
+  min-height: 100vh;
+  border-right: 0.5px solid var(--border-color);
+  background-color: var(--bg-color);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 0 0 8px;
+}
+
+.sidebar .top {
+  display: flex;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar .top .logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--main-color);
+  letter-spacing: 1px;
+}
+
+.sidebar .bottom {
+  padding: 20px 10px;
+}
+
+.sidebar .bottom ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar .bottom ul .title {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--light-color);
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.sidebar .bottom ul li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .bottom ul li:hover {
+  background-color: var(--hover-bg-color);
+}
+
+.sidebar .bottom ul li .icon {
+  font-size: 22px;
+  color: var(--main-color);
+}
+
+.sidebar .bottom ul li span {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--light-color);
+  margin-left: 15px;
+}

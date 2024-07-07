@@ -6,12 +6,11 @@ import { selectUser } from '../redux/userSlice';
 
 const ProtectedRoute = ({ children, role }) => {
     const user = useSelector(selectUser).user;
-
     if (!user || !user.role.roleName) {
         return <Navigate to={routes.login} />;
     }
     if (user.role.roleName !== role) {
-        return <Navigate to={routes.home} />;
+        return <Navigate to={routes.login} />;
     }
     return children;
 };

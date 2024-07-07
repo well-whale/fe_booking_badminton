@@ -2,7 +2,10 @@
     display: flex;
     
   }
-  
+  .aaaaaa{
+    display: flex;
+    justify-content: space-between;
+  }
   .newCourtContainer {
     flex: 1;
     padding: 20px;
@@ -43,5 +46,44 @@
   
   .newCourtFormButton {
     margin: 0 10px;
+  }
+  
+  .colum{
+    display: inline-table;
+    width: 50%;
+    padding: 10px;
+  }
+  .formSection {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0 ;
+    border-radius: 8px;
+  }
+  
+  .top-left {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    padding: 10px;
+  }
+  
+  .top-right {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    padding: 10px;
+
+  }
+  
+  .bottom-left {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    padding: 10px;
+
+  }
+  
+  .bottom-right {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    padding: 10px;
+
   }
   

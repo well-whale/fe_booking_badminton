@@ -4,29 +4,40 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import HomeIcon from "@mui/icons-material/Home";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import TodayIcon from "@mui/icons-material/Today";
+import { PiCourtBasketball } from "react-icons/pi";
 import {
   Button,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import "./TimeSlot.css";
+import "./BookDay.css";
 import { getCourtByIdCourt, checkSubCourt } from "../../services/UserServices";
 import CourtPrice from "../single/CourtPrice";
 
 const generateTimeSlots = (startTime, endTime, interval, selectedDate) => {
   const timeSlots = [];
   const now = dayjs();
-  const isToday = selectedDate.isSame(now, 'day');
+  const isToday = selectedDate.isSame(now, "day");
   let currentTime = startTime;
 
   while (currentTime <= endTime) {
     const hours = String(Math.floor(currentTime / 60)).padStart(2, "0");
     const minutes = String(currentTime % 60).padStart(2, "0");
     const timeString = `${hours}:${minutes}`;
-    const timeSlotMoment = selectedDate.hour(Math.floor(currentTime / 60)).minute(currentTime % 60);
+    const timeSlotMoment = selectedDate
+      .hour(Math.floor(currentTime / 60))
+      .minute(currentTime % 60);
     const isPast = isToday && timeSlotMoment.isBefore(now);
 
     timeSlots.push({ timeString, id: currentTime, isPast });
@@ -40,18 +51,18 @@ const disablePastDates = (date) => {
   return date.isBefore(dayjs(), "day");
 };
 
-const generateAreas = (numCourts) => {
-  return Array.from({ length: numCourts }, (_, i) => ({
+const generateAreas = (subCourts) => {
+  return subCourts.map(({ subCourtID }, i) => ({
     name: `Sân ${i + 1}`,
-    id: i + 1,
+    subCourtID: subCourtID,
   }));
 };
 
-const TimeSlots = () => {
+const BookDay = () => {
   const [court, setCourt] = useState(null);
   const { idCourt } = useParams();
   const [selectedTimes, setSelectedTimes] = useState([]);
-  const [courtID, setCourtID] = useState([]);
+  const [courtID, setCourtID] = useState(null);
   const [firstSelected, setFirstSelected] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
   const [startTime, setStartTime] = useState(null);
@@ -60,13 +71,19 @@ const TimeSlots = () => {
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [courtAvailability, setCourtAvailability] = useState([]);
-  let [selectedCourts, setSelectedCourts] = useState([]);
+  const [selectedCourts, setSelectedCourts] = useState([]);
   const [isPricingModalOpen, setPricingModalOpen] = useState(false);
+  const [idCourtF, setIdCourtF] = useState(null);
 
   const handleBooking = () => {
-    const bookingDetails = { courtID, selectedCourts, selectedDate: selectedDate.format('YYYY-MM-DD'), totalPrice };
-    console.log(bookingDetails)
-    localStorage.setItem('bookingDetails', JSON.stringify(bookingDetails));
+    const bookingDetails = {
+      courtID: Number(courtID),
+      selectedCourts,
+      selectedDate: selectedDate.format("YYYY-MM-DD"),
+      totalPrice,
+    };
+    console.log(bookingDetails);
+    localStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
   };
 
   const getDetailCourt = async () => {
@@ -74,6 +91,7 @@ const TimeSlots = () => {
       const res = await getCourtByIdCourt(idCourt);
       if (res.status === 200) {
         setCourt(res.data);
+        setIdCourtF(res.data.subCourts[0].subCourtID);
         setCourtID(idCourt);
       } else {
         setError("Failed to fetch court details");
@@ -154,7 +172,7 @@ const TimeSlots = () => {
       try {
         const response = await checkSubCourt(requestData);
         setCourtAvailability(response.data.subCourt); // Assuming the server returns an array of subCourt objects
-        console.log(response)
+        console.log(response);
       } catch (error) {
         if (error.response) {
           console.error("Error response from server:", error.response.data);
@@ -170,7 +188,7 @@ const TimeSlots = () => {
     }
   }, [startTime, endTime, selectedDate, court]);
 
-  const areas = generateAreas(court?.courtQuantity || 0);
+  const areas = generateAreas(court?.subCourts || []);
 
   const selectedTimeRange =
     startTime !== null && endTime !== null
@@ -189,13 +207,9 @@ const TimeSlots = () => {
         selectedCourts.length
       : 0;
 
-  const getButtonColor = (index) => {
-    if (!courtAvailability || courtAvailability.length === 0) {
-      return "warning"; // Or any default color you prefer
-    }
-
+  const getButtonColor = (subCourtID) => {
     const subCourt = courtAvailability.find(
-      (court) => court.subCourtID === index + 1
+      (court) => court.subCourtID === subCourtID
     );
     if (subCourt) {
       return subCourt.subCourtStatus ? "success" : "error";
@@ -203,13 +217,13 @@ const TimeSlots = () => {
     return "warning";
   };
 
-  const handleCourtSelection = (index) => {
+  const handleCourtSelection = (subCourtID) => {
     if (startTime === null || endTime === null) {
-      return; // Disable court selection if startTime or endTime is not selected
+      return; 
     }
 
     const selectedSubCourt = courtAvailability.find(
-      (court) => court.subCourtID === index + 1 && court.subCourtStatus
+      (court) => court.subCourtID === subCourtID && court.subCourtStatus
     );
 
     if (selectedSubCourt) {
@@ -242,6 +256,11 @@ const TimeSlots = () => {
 
   const closePricingModal = () => {
     setPricingModalOpen(false);
+  };
+
+  const getCourtName = (subCourtID) => {
+    const area = areas.find(area => area.subCourtID === subCourtID);
+    return area ? area.name : `Sân ${subCourtID}`;
   };
 
   if (loading) {
@@ -284,7 +303,9 @@ const TimeSlots = () => {
           {timeSlots.map(({ timeString, id, isPast }) => (
             <div
               key={id}
-              className={`time ${selectedTimes.includes(id) ? "selected" : ""} ${isPast ? "disabled" : ""}`}
+              className={`time ${selectedTimes.includes(id) ? "selected" : ""} ${
+                isPast ? "disabled" : ""
+              }`}
               onClick={() => toggleTimeSlot(id, isPast)}
             >
               {timeString}
@@ -293,21 +314,21 @@ const TimeSlots = () => {
         </div>
         <label>Chọn Sân:</label>
         <div>
-          {areas.map(({ name, id }) => (
+          {areas.map(({ name, subCourtID }) => (
             <Button
-              key={id}
+              key={subCourtID}
               color={
-                selectedCourts.some((court) => court.subCourtID === id)
+                selectedCourts.some((court) => court.subCourtID === subCourtID)
                   ? "primary"
-                  : getButtonColor(id - 1)
+                  : getButtonColor(subCourtID)
               }
               variant="contained"
               disabled={
-                getButtonColor(id - 1) === "error" ||
+                getButtonColor(subCourtID) === "error" ||
                 startTime === null ||
                 endTime === null
               }
-              onClick={() => handleCourtSelection(id - 1)}
+              onClick={() => handleCourtSelection(subCourtID)}
             >
               {name}
             </Button>
@@ -316,26 +337,51 @@ const TimeSlots = () => {
       </div>
 
       <div className="right-section">
-        <div className="area-info">
-          <img
-            src={court.images}
-            alt={court.courtName}
-          />
+        <Card sx={{ maxWidth: 345 }}>
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="140"
+              image={court.images.length > 0 ? court.images[0].image : 'default-image-url'}
+              alt="green iguana"
+            />
 
-          <h2>{court.courtName}</h2>
-          <h5>{court.courtAddress}</h5>
-          <label>{selectedTimeRange}</label>
-          {selectedCourts.length > 0 && (
-            <div>
-              <h5>Selected Courts:</h5>
-              <ul>
-                {selectedCourts.map((court) => (
-                  <li key={court.subCourtID}>{`Sân ${court.subCourtID}`}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {court.courtName}
+              </Typography>
+              <Typography variant="body2" color="ActiveBorder" display={"flex"}>
+                <HomeIcon />
+                {court.courtAddress}
+              </Typography>
+              <Typography variant="body2" color="ButtonText">
+                <TodayIcon />
+                {selectedDate.format("DD/MM/YYYY")}
+              </Typography>
+              <Typography variant="body2" color="ActiveBorder">
+                <AccessTimeIcon />
+                {selectedTimeRange}
+              </Typography>
+              {selectedCourts.length > 0 && (
+                <div>
+                  <Typography variant="body2" color="ButtonText">
+                    {selectedCourts.map((court) => (
+                      <Typography
+                        variant="body2"
+                        color="ButtonText"
+                        key={court.subCourtID}
+                      >
+                        {" "}
+                        <PiCourtBasketball fontSize={"24px"} />
+                        {getCourtName(court.subCourtID)}
+                      </Typography>
+                    ))}
+                  </Typography>
+                </div>
+              )}
+            </CardContent>
+          </CardActionArea>
+        </Card>
         <Button
           variant="contained"
           color="primary"
@@ -346,6 +392,7 @@ const TimeSlots = () => {
             to={{
               pathname: "/payment",
             }}
+            onClick={() => window.scrollTo(0, 200)}
             style={{ textDecoration: "none", color: "white" }}
           >
             Thanh toán
@@ -366,4 +413,4 @@ const TimeSlots = () => {
   );
 };
 
-export default TimeSlots;
+export default BookDay;

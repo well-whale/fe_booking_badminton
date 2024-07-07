@@ -1,0 +1,71 @@
+/* BookMonth.css */
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.left-section,
+.right-section {
+  flex: 1;
+  margin: 10px;
+}
+
+.input__group {
+  margin-bottom: 20px;
+}
+
+.times-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.time {
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.time.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.time.disabled {
+  background-color: #f0f0f0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.area-info {
+  text-align: center;
+}
+
+.area-info img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.area-info h2,
+.area-info h5 {
+  margin: 10px 0;
+}
+
+.area-info ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.area-info li {
+  margin: 5px 0;
+}
+
+.MuiButton-containedPrimary {
+  margin-top: 20px;
+}
+.iconCourt{
+  font-size: 24px;
+}

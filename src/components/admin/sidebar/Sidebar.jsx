@@ -1,100 +1,196 @@
-import React from "react";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import Person3OutlinedIcon from "@mui/icons-material/Person3Outlined";
-import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
-import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
-import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
-import DiamondOutlinedIcon from "@mui/icons-material/DiamondOutlined";
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import BackupTableIcon from "@mui/icons-material/BackupTable";
+import React, { useState } from "react";
+import {
+  Box,
+  Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  Collapse
+} from "@mui/material";
+import {
+  Dashboard as DashboardIcon,
+  Person3Outlined as Person3OutlinedIcon,
+  CreditCardOutlined as CreditCardOutlinedIcon,
+  ManageAccountsOutlined as ManageAccountsOutlinedIcon,
+  ExitToAppOutlined as ExitToAppOutlinedIcon,
+  DiamondOutlined as DiamondOutlinedIcon,
+  CalendarMonthOutlined as CalendarMonthOutlinedIcon,
+  AdminPanelSettings as AdminPanelSettingsIcon,
+  ManageAccounts as ManageAccountsIcon,
+  SwitchAccount as SwitchAccountIcon,
+  People as PeopleIcon,
+  ExpandLess,
+  ExpandMore
+} from "@mui/icons-material";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import "./Sidebar.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { routes } from "../../../router/routes";
-import { logout } from "../../../redux/userSlice";
+import { logout, selectUser } from "../../../redux/userSlice";
+import "./Sidebar.css";
 
 const Sidebar = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector(selectUser).user;
 
-    const handleLogout = () => {
-        dispatch(logout());
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        navigate(routes.login);
-    };
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate(routes.login);
+  };
 
-    return (
-        <div className="sidebar">
-            <div className="top">
-                <Link to="/aa" style={{ textDecoration: "none" }}>
-                    <span className="logo">BadmintonHub</span>
-                </Link>
-            </div>
-            <hr />
-            <div className="bottom">
-                <ul>
-                    <p className="title">MAIN</p>
-                    <NavLink to="/admin/home" className={({ isActive }) => isActive ? "active" : ""}>
-                        <li>
-                            <DashboardIcon className="icon" />
-                            <span>Dashboard</span>
-                        </li>
-                    </NavLink>
+  const [openAccounts, setOpenAccounts] = useState(false);
+  const [openCourts, setOpenCourts] = useState(false);
 
-                    <p className="title">LISTS</p>
-                    <NavLink to="/admin/users" className={({ isActive }) => isActive ? "active" : ""}>
-                        <li>
-                            <Person3OutlinedIcon className="icon" />
-                            <span>Users</span>
-                        </li>
-                    </NavLink>
+  const handleAccountClick = () => {
+    setOpenAccounts(!openAccounts);
+  };
 
-                    <NavLink to="/admin/court" className={({ isActive }) => isActive ? "active" : ""}>
-                        <li>
-                            <BackupTableIcon className="icon" />
-                            <span>Court</span>
-                        </li>
-                    </NavLink>
+  const handleCourtClick = () => {
+    setOpenCourts(!openCourts);
+  };
 
-                    <p className="title">BOOKED</p>
-                    <NavLink to="/orders" className={({ isActive }) => isActive ? "active" : ""}>
-                        <li>
-                            <CreditCardOutlinedIcon className="icon" />
-                            <span>Orders</span>
-                        </li>
-                    </NavLink>
+  return (
+    <Box className="sidebar" sx={{ width: 250 }}>
+      <Box className="top" sx={{ p: 2, textAlign: "center" }}>
+        <Link to="/admin/home" style={{ textDecoration: "none", color: "inherit" }}>
+          <Typography variant="h6">BadmintonHub</Typography>
+          <Typography variant="subtitle1">Admin {user.firstName} {user.lastName}</Typography>
+        </Link>
+      </Box>
+      <Divider />
+      <List className="bottom">
+        <Typography variant="overline" display="block" gutterBottom>Main</Typography>
+        <NavLink to="/admin/home" className={({ isActive }) => (isActive ? "active" : "")}>
+          <ListItem button>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItem>
+        </NavLink>
 
-                    <NavLink to="/calendar" className={({ isActive }) => isActive ? "active" : ""}>
-                        <li>
-                            <CalendarMonthOutlinedIcon className="icon" />
-                            <span>Calendar</span>
-                        </li>
-                    </NavLink>
+        <Typography variant="overline" display="block" gutterBottom>Lists</Typography>
+        <ListItemButton onClick={handleAccountClick}>
+          <ListItemIcon>
+            <SwitchAccountIcon />
+          </ListItemIcon>
+          <ListItemText primary="Account" />
+          {openAccounts ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openAccounts} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <NavLink to="/admin/listAdmin" className={({ isActive }) => (isActive ? "active" : "")}>
+              <ListItem button sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <AdminPanelSettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Admin" />
+              </ListItem>
+            </NavLink>
+            <NavLink to="/admin/listOwners" className={({ isActive }) => (isActive ? "active" : "")}>
+              <ListItem button sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <ManageAccountsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Court Owner" />
+              </ListItem>
+            </NavLink>
+            <NavLink to="/admin/listUsers" className={({ isActive }) => (isActive ? "active" : "")}>
+              <ListItem button sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText primary="Customer" />
+              </ListItem>
+            </NavLink>
+          </List>
+        </Collapse>
 
-                    <p className="title">USER INTERFACE</p>
-                    <NavLink to="/profile" className={({ isActive }) => isActive ? "active" : ""}>
-                        <li>
-                            <ManageAccountsOutlinedIcon className="icon" />
-                            <span>Profile</span>
-                        </li>
-                    </NavLink>
+        <ListItemButton onClick={handleCourtClick}>
+          <ListItemIcon>
+            <SwitchAccountIcon />
+          </ListItemIcon>
+          <ListItemText primary="Court" />
+          {openCourts ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openCourts} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <NavLink to="/admin/listCourtActive" className={({ isActive }) => (isActive ? "active" : "")}>
+              <ListItem button sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <AdminPanelSettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Hoạt Động" />
+              </ListItem>
+            </NavLink>
+            <NavLink to="/admin/listCourtPending" className={({ isActive }) => (isActive ? "active" : "")}>
+              <ListItem button sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <ManageAccountsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Chờ Duyệt" />
+              </ListItem>
+            </NavLink>
+            <NavLink to="/admin/listCourtPause" className={({ isActive }) => (isActive ? "active" : "")}>
+              <ListItem button sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText primary="Tạm Ngưng" />
+              </ListItem>
+            </NavLink>
+          </List>
+        </Collapse>
 
-                    <NavLink to="/helper" className={({ isActive }) => isActive ? "active" : ""}>
-                        <li>
-                            <DiamondOutlinedIcon className="icon" />
-                            <span>Helper</span>
-                        </li>
-                    </NavLink>
+        <Typography variant="overline" display="block" gutterBottom>Booked</Typography>
+        <NavLink to="/orders" className={({ isActive }) => (isActive ? "active" : "")}>
+          <ListItem button>
+            <ListItemIcon>
+              <CreditCardOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Orders" />
+          </ListItem>
+        </NavLink>
+        <NavLink to="/calendar" className={({ isActive }) => (isActive ? "active" : "")}>
+          <ListItem button>
+            <ListItemIcon>
+              <CalendarMonthOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Calendar" />
+          </ListItem>
+        </NavLink>
 
-                    <li onClick={handleLogout} style={{ cursor: "pointer" }}>
-                        <ExitToAppOutlinedIcon className="icon" />
-                        <span>Logout</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    );
+        <Typography variant="overline" display="block" gutterBottom>User Interface</Typography>
+        <NavLink to="/profile" className={({ isActive }) => (isActive ? "active" : "")}>
+          <ListItem button>
+            <ListItemIcon>
+              <ManageAccountsOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Profile" />
+          </ListItem>
+        </NavLink>
+        <NavLink to="/helper" className={({ isActive }) => (isActive ? "active" : "")}>
+          <ListItem button>
+            <ListItemIcon>
+              <DiamondOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Helper" />
+          </ListItem>
+        </NavLink>
+        <ListItem button onClick={handleLogout}>
+          <ListItemIcon>
+            <ExitToAppOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItem>
+      </List>
+    </Box>
+  );
 };
 
 export default Sidebar;

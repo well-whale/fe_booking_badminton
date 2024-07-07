@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, NavLink, useNavigate } from "react-router-dom";
 import ReactImageGallery from "react-image-gallery";
+import SubdirectoryArrowRightIcon from "@mui/icons-material/SubdirectoryArrowRight";
 import "react-image-gallery/styles/css/image-gallery.css";
 import "./CourtDetail.css";
 import { CiWifiOn } from "react-icons/ci";
@@ -10,7 +11,15 @@ import { MdOutlineFastfood } from "react-icons/md";
 import { LuMapPin } from "react-icons/lu";
 import { IoMdRestaurant } from "react-icons/io";
 import { getCourtByIdCourt } from "../../services/UserServices";
-import { Button, Dialog, DialogActions, DialogTitle, Slide } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Slide,
+  Typography,
+  Box,
+} from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -77,35 +86,41 @@ const CourtDetail = () => {
       const minPrice = Math.min(...unitPrices);
       const maxPrice = Math.max(...unitPrices);
 
-      return `${minPrice} - ${maxPrice} VND`;
+      return `${minPrice*1000} - ${maxPrice*1000} VND`;
     }
     return "Đang Cập Nhật....";
   };
 
   const priceRange = getPriceRange(court.price);
 
-  const handleBookingClick = () => {
-    navigate(`/booking/${court.courtID}`);
+  const handleBookingDayClick = () => {
+    navigate(`/bookingday/${court.courtID}`);
+  };
+  const handleBookingMonthClick = () => {
+    navigate(`/bookingmonth/${court.courtID}`);
   };
 
   return (
     <section className="product-detail-container">
       <div className="image-gallery-container">
-        <img className="image-gallery" src={court.images} alt={court.courtName} />
+        {/* <img
+          className="image-gallery"
+          src={court.images}
+          alt={court.courtName}
+        /> */}
 
-        {/* {court.images
-         && (
+        {court.images && court.images.length > 0 && (
           <ReactImageGallery
             showBullets={false}
+            autoPlay={true}
             showFullscreenButton={false}
             showPlayButton={false}
-            items={court.images.map((url) => ({
-              original: url,
-              thumbnail: url
+            items={court.images.slice(0, 5).map((img) => ({
+              original: img.image,
+              thumbnail: img.image,
             }))}
           />
-        )
-        } */}
+        )}
       </div>
 
       <div className="product">
@@ -125,7 +140,7 @@ const CourtDetail = () => {
             Quy mô: <span>{court.courtQuantity} Sân </span>
           </p>
           <p className="product-sku">
-            Điện Thoại: <span>{court.phoneNumber}</span>
+            Điện Thoại: <span>{court.phone}</span>
           </p>
           <p className="product-price">
             Giá: <span>{priceRange} </span>
@@ -149,26 +164,78 @@ const CourtDetail = () => {
         </button>
       </div>
       <Dialog
-      open={open}
-      TransitionComponent={Transition}
-      keepMounted
-      onClose={handleClose}
-      aria-describedby="alert-dialog-slide-description"
-      className="dialog"
-    >
-      <div className="choseType">
-        <div className="buttonType">
-          <Button variant="contained" color="success" onClick={handleBookingClick}>
-            <CalendarTodayIcon /> Đặt Sân Ngày
-          </Button>
-        </div>
-        <div className="buttonType">
-          <Button variant="contained" color="error" onClick={handleClose}>
-            <CalendarMonthIcon /> Đặt sân cố định
-          </Button>
-        </div>
-      </div>
-    </Dialog>
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+        className="dialog"
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          gap={2}
+          className="choseType"
+        >
+          <Box className="buttonType">
+            <Button
+              variant="outlined"
+              color="success"
+              onClick={handleBookingDayClick}
+              style={{ padding: "16px", width: "100%" }}
+            >
+              <Box textAlign="left">
+                <Typography variant="h6" component="h5">
+                  Đặt Lịch Ngày
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  style={{ textTransform: "none" }}
+                >
+                  Đặt cho 1 lần chơi
+                </Typography>
+              </Box>
+              <CalendarTodayIcon
+                style={{
+                  marginTop: "10px",
+                  fontSize: "30px",
+                  marginLeft: "80px",
+                }}
+              />
+            </Button>
+          </Box>
+          <Box className="buttonType">
+            <Button
+              variant="outlined"
+              color="error"
+              // endIcon={<SubdirectoryArrowRightIcon />}
+              onClick={handleBookingMonthClick}
+              style={{ padding: "16px", width: "100%" }}
+            >
+              <Box textAlign="left">
+                <Typography variant="h6" component="h5">
+                  Đặt Lịch Cố Định
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="textSecondary"
+                  style={{ textTransform: "none" }}
+                >
+                  Đặt giờ + thứ cố định trong tuần,đặt dành cho trên 1 tháng
+                </Typography>
+              </Box>
+              <CalendarMonthIcon
+                style={{
+                  marginTop: "10px",
+                  fontSize: "30px",
+                  marginLeft: "10px",
+                }}
+              />
+            </Button>
+          </Box>
+        </Box>
+      </Dialog>
     </section>
   );
 };

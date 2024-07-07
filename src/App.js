@@ -9,11 +9,10 @@ import Footer from './components/user/footer/Footer';
 import HomePage from './pages/userHomePage/Home';
 import CourtDetail from './pages/userCourt/CourtDetail';
 import ListCourt from './pages/userCourt/ListCourt';
-import TimeSlots from './pages/time/TimeSlot';
 import Payment from './pages/payment/Payment';
-import Customer from './pages/customers/Customer';
+import Customer from './pages/list/Customer';
 import NewUser from './pages/new/NewUser';
-import Courts from './pages/adminCourts/Courts';
+import CourtsActive from './pages/list/CourtsActive';
 import UpdateCourt from './pages/update/UpdateCourt';
 import SearchAndList from './pages/userCourt/SearchList';
 import AdminHome from './pages/adminHomePage/Home';
@@ -24,6 +23,19 @@ import { useDispatch } from 'react-redux';
 import { loginSuccess } from './redux/userSlice';
 import PaymentSuccess from './pages/payment/PaymentSuccess';
 import BookingList from './pages/booked/BookedList';
+import BookDay from './pages/book/BookDay';
+import BookMonth from './pages/book/BookMonth';
+import ListAdmin from './pages/list/Admin';
+import CourtOwner from './pages/list/CourtOwner';
+import CourtsPause from './pages/list/CourtPause';
+import CourtsPending from './pages/list/CourtPending';
+import OwnerHome from './pages/ownerHome/Home';
+import ListCourtForOwner from './pages/list/ListCourtForOwnerActive';
+import ListCourtForOwnerActive from './pages/list/ListCourtForOwnerActive';
+import ListCourtForOwnerPending from './pages/list/ListCourtForOwnerPending';
+import ListCourtForOwnerPause from './pages/list/ListCourtForOwnerPause';
+import ListOrder from './pages/list/Order';
+import NewCourt from './pages/new/NewCourt';
 
 function App() {
   const dispatch = useDispatch();
@@ -51,15 +63,31 @@ function App() {
                 <Route path={routes.loginOTP} element={<LoginOTP />} />
                 <Route path={routes.courtDetail} element={<><Header /><CourtDetail /><ListCourt /><Footer /></>} />
                 <Route path={routes.search} element={<><Header /><SearchAndList /><Footer /></>} />
-                <Route path={routes.booking} element={<><Header /><TimeSlots /><Footer /></>} />
+                <Route path={routes.bookingday} element={<><Header /><BookDay/> <Footer /></>} />
+                <Route path={routes.bookingmonth} element={<><Header /><BookMonth/> <Footer /></>} />
                 <Route path={routes.payment} element={<><ProtectedRoute role="Customer"><Header/><Payment /><Footer/></ProtectedRoute></>} />
+                {/* <Route path={routes.payment} element={<><Header/><Payment /><Footer/><></>} /> */}
+
                 <Route path={routes.bill} element={<><Header /><Invoice /><Footer /></>} />
 
                 <Route path={routes.adminHome} element={<ProtectedRoute role="Admin"><AdminHome /></ProtectedRoute>} />
-                <Route path={routes.adminUsers} element={<ProtectedRoute role="Admin"><Customer /></ProtectedRoute>} />
-                <Route path={routes.adminCourt} element={<ProtectedRoute role="Admin"><Courts /></ProtectedRoute>} />
+                <Route path={routes.adminListUsers} element={<ProtectedRoute role="Admin"><Customer /></ProtectedRoute>} />
+                <Route path={routes.adminListAdmins} element={<ProtectedRoute role="Admin"><ListAdmin/></ProtectedRoute>} />
+                <Route path={routes.adminListOwners} element={<ProtectedRoute role="Admin"><CourtOwner/></ProtectedRoute>} />
+
+                <Route path={routes.adminCourtActive} element={<ProtectedRoute role="Admin"><CourtsActive/></ProtectedRoute>} />
+                <Route path={routes.adminListCourtPending} element={<ProtectedRoute role="Admin"><CourtsPending/></ProtectedRoute>} />
+                <Route path={routes.adminListCourtPause} element={<ProtectedRoute role="Admin"><CourtsPause/></ProtectedRoute>} />
                 <Route path={routes.adminNewUser} element={<ProtectedRoute role="Admin"><NewUser /></ProtectedRoute>} />
                 <Route path={routes.adminUpdateCourt} element={<ProtectedRoute role="Admin"><UpdateCourt /></ProtectedRoute>} />
+
+                <Route path={routes.ownerHome} element={<ProtectedRoute role="Court Owner"><OwnerHome/></ProtectedRoute>} />
+                <Route path={routes.listCourtForOwnerActive} element={<ProtectedRoute role="Court Owner"><ListCourtForOwnerActive/></ProtectedRoute>} />
+                <Route path={routes.listCourtForOwnerPending} element={<ProtectedRoute role="Court Owner"><ListCourtForOwnerPending/></ProtectedRoute>} />
+                <Route path={routes.listCourtForOwnerPause} element={<ProtectedRoute role="Court Owner"><ListCourtForOwnerPause/></ProtectedRoute>} />
+
+                <Route path={routes.listOrder} element={<ProtectedRoute role="Court Owner"><ListOrder/></ProtectedRoute>} />
+                <Route path={routes.newCourt} element={<ProtectedRoute role="Court Owner"><NewCourt/></ProtectedRoute>} />
             </Routes>
         </React.StrictMode>
     );

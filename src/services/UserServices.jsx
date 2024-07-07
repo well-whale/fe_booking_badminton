@@ -15,7 +15,9 @@ const deleteByUserID = (userid) => {
 const updateByUserID = (userId, newUser) => {
   return axios.put(`api/v1/admin/updateUser/${userId}`, newUser);
 };
-
+const getInfoUser= (userId)=>{
+  return axios.get(`api/v1/admin/getInfoUser/${userId}`)
+}
 
 const fetchAllCourts = () => {
   return axios.get('court/getAllCourt');
@@ -47,7 +49,9 @@ const checkSubCourt = (data) => {
   const getSubCourtStatus = () =>{
     return axios.get('booking/getCourtStatus');
   }
-
+  const getSubCourtByIdCourt = (idsubcourt) => {
+    return axios.get(`/subcourt/${idsubcourt}`);
+  };
   const verifyToken = (token) => {
     return axios.post('auth/verifyToken', { token });
     }
@@ -58,4 +62,22 @@ const checkSubCourt = (data) => {
   const payment = (total,idcourt) => {
     return axios.get(`payV2/${total}/${idcourt}`);
   }
-export {payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};
+  const paymentSave = (data)=>{
+    return axios.post(`booking/book/saveBookingV2`,data)
+  }
+  const getBookedByID = (idcustomer) =>{
+    return axios.get(`booking/booked/${idcustomer}`);
+  }
+ const getAllBookingsOfCourt = (courtID) =>{
+  return axios.get(`booking/AllBookingsOfCourt/${courtID}`);
+ }
+
+ const getAllCourtOfOwner = (ownerID) =>{
+  return axios.get(`court/userid/${ownerID}`);
+ }
+
+ const createCourt = (dataCourt)=>{
+  return axios.post(`court/createcourt`,dataCourt)
+ }
+  
+export {createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};

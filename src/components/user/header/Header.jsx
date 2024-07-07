@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import "../header/Header.css";
@@ -9,13 +9,38 @@ import UpdateProfile from '../../../pages/update/UpdateProfile'; // Adjust the i
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, logout } from '../../../redux/userSlice';
 import { routes } from '../../../router/routes';
+import { getInfoUser } from '../../../services/UserServices';
 
 const Header = () => {
-    const user = useSelector(selectUser).user;
+    const user = useSelector(selectUser)?.user;
     const [showDropdown, setShowDropdown] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [userInfor, setUserInfor] = useState(null);
+
+    const fetchUserInfo = async () => {
+        if (user && user.userID) {
+            try {
+                const res = await getInfoUser(user.userID);
+                if (res.status === 200) {
+                    setUserInfor(res.data.result);
+                } else {
+                    setError("Failed to fetch user information");
+                }
+            } catch (err) {
+                setError("An error occurred while fetching user information");
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchUserInfo();
+    }, [user?.userID]);
 
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
@@ -31,7 +56,7 @@ const Header = () => {
     };
 
     const refreshData = () => {
-        // Refresh user data logic here
+        fetchUserInfo();
     };
 
     const handleLogout = () => {
@@ -54,28 +79,28 @@ const Header = () => {
                     <li className="link"><NavLink to="/booked">Your Booked</NavLink></li>
                     <li className="nav-item dropdown">
                         <span className="nav-link dropdown-toggle" role="button" onClick={toggleDropdown}>
-                            <AccountCircleIcon/> My account
+                            <AccountCircleIcon /> My account
                         </span>
                         {showDropdown && (
                             <ul className="dropdown-menu">
-                                {(!user || !user.role.roleName) ? (
+                                {!userInfor ? (
                                     <li className="link">
-                                        <NavLink to="/login">LogIn</NavLink>
+                                        <NavLink to="/login">Login</NavLink>
                                     </li>
                                 ) : (
                                     <>
                                         <li className="dropdown-item profile-info">
-                                            <strong>{user.firstName} {user.lastName}</strong>
+                                            <strong>{userInfor.firstName} {userInfor.lastName}</strong>
                                             <br />
-                                            <small>{user.phone}</small>
-                                            <br/>
-                                            <small>{user.email}</small>
+                                            <small>{userInfor.phone}</small>
+                                            <br />
+                                            <small>{userInfor.email}</small>
                                         </li>
                                         <li className="dropdown-item">
                                             <span className="edit-profile-button" onClick={handleDialogOpen} style={{ cursor: 'pointer' }}>Edit Profile</span>
                                         </li>
                                         <li className="dropdown-item">
-                                            <span className="logout-button" onClick={handleLogout} style={{ cursor: 'pointer' }}>LogOut</span>
+                                            <span className="logout-button" onClick={handleLogout} style={{ cursor: 'pointer' }}>Logout</span>
                                         </li>
                                     </>
                                 )}
@@ -84,7 +109,7 @@ const Header = () => {
                     </li>
                 </ul>
             </nav>
-            <UpdateProfile open={isDialogOpen} handleClose={handleDialogClose} user={user} refreshData={refreshData} />
+            <UpdateProfile open={isDialogOpen} handleClose={handleDialogClose} user={userInfor} refreshData={refreshData} />
         </div>
     );
 };

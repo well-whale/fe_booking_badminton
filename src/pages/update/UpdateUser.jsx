@@ -201,7 +201,6 @@ const UpdateUser = ({ open, handleClose, user, refreshData }) => {
                     onChange={handleRoleChange}
                   >
                     <MenuItem value={2}>Admin</MenuItem>
-                    <MenuItem value={1}>User</MenuItem>
                     <MenuItem value={3}>Owner Court</MenuItem>
                   </Select>
                   {errors.roleID && (

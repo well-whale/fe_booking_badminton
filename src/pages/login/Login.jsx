@@ -38,10 +38,12 @@ function LoginForm() {
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem("token", token);
 
-            if (user.role.roleID === 1 || user.role.roleID === 3) {
+            if (user.role.roleID === 1 ) {
                 navigate(routes.home);
             } else if (user.role.roleID === 2) {
                 navigate(routes.adminHome);
+            }else if (user.role.roleID === 3) {
+                navigate(routes.ownerHome)
             }
         } catch (error) {
             dispatch(loginFailure(error.message));

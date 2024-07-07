@@ -5,15 +5,26 @@ export const routes = {
     loginOTP: "/loginotp",
     courtDetail: "/view/:idCourt",
     search: "/search",
-    booking: "/booking/:idCourt",
+    bookingday: "/bookingday/:idCourt",
+    bookingmonth: "/bookingmonth/:idCourt",
     payment: "/payment",
     adminHome: "/admin/home",
-    adminUsers: "/admin/users",
-    adminCourt: "/admin/court",
+    adminListUsers: "/admin/listUsers",
+    adminListAdmins: "/admin/listAdmin",
+    adminListOwners: "/admin/listOwners",
+    adminListCourtPending: "/admin/listCourtPending",
+    adminListCourtPause: "/admin/listCourtPause",
+    adminCourtActive: "/admin/listCourtActive",
     adminNewUser: "/admin/users/new",
     adminUpdateCourt: "/admin/court/update/:courtId",
     bill:"/bill",
     paymentSuccess:"/payment-success",
-    booked:"/booked"
-  };
+    booked:"/booked",
+    ownerHome : "/ownerCourt/home",
+    listCourtForOwnerActive : "/ownerCourt/listCourtActive",
+    listCourtForOwnerPending : "/ownerCourt/listCourtPending",
+    listCourtForOwnerPause : "/ownerCourt/listCourtPause",
+    listOrder: "/ownerCourt/listOrder",
+    newCourt: "/ownerCourt/newCourt"
+    };
   

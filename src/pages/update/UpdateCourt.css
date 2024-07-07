@@ -4,7 +4,32 @@
 }
 
 .updateCourtSidebar {
-  flex: 1;
+}
+.updateProfile{
+display: flex;
+gap: 20px;
+}
+.updateProfileLeft{
+
+
+}
+.updateCourtFormImages {
+  margin-top: 16px;
+}
+
+.imagePreviews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.imagePreview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .updateCourtContent {
@@ -17,7 +42,7 @@
 
 .updateCourtForm, .updateTimeForm {
   width: 100%;
-  max-width: 600px;
+  /* max-width: 600px; */
   background-color: #f9f9f9;
   padding: 20px;
   margin-bottom: 20px;

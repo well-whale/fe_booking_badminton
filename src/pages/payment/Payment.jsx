@@ -32,7 +32,7 @@ const PaymentPage = () => {
     lastName: "",
     email: "",
     phone: "",
-    customerId: "",
+    customerId: 1,
     bookingType: "1",
     bookingDetails: [],
     selectedCourts: [],
@@ -98,27 +98,6 @@ const PaymentPage = () => {
   const handlePaymentMethodChange = (e) => {
     setOrderDetail({ ...orderDetail, paymentMethod: e.target.value });
   };
-
-
-  const tien = async (data) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/booking/provisionalInvoice",
-        data
-      );
-      if (response.status === 200 || response.status === 201) {
-        setOrderDetail((prevState) => ({
-          ...prevState,
-          totalPrice: response.data.totalPrice,
-        }));
-      } else {
-        console.error(" failed:", response.data);
-      }
-    } catch (error) {
-      console.error("Error during :", error);
-    }
-  };
-  
   const dataToPrice = {
     courtID: orderDetail.courtID,
     customerId: orderDetail.customerId,
@@ -129,8 +108,32 @@ const PaymentPage = () => {
       startTime: court.startTime,
       endTime: court.endTime,
     })),
+    firstName: orderDetail.firstname,
+    lastName: orderDetail.lastName,
+    email: orderDetail.email,
+    phone: orderDetail.phone,
   };
-  const res =  tien(dataToPrice)
+  const tien = async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/booking/provisionalInvoice",
+        data
+      );
+      if (response.status === 200 || response.status === 201) {
+        setOrderDetail((prevState) => ({
+          ...prevState,
+          totalPrice: response.data,
+        }));
+      } else {
+        console.error(" failed:", response.data);
+      }
+    } catch (error) {
+      console.error("Error during :", error);
+    }
+  };
+
+  // console.log(dataToPrice)
+  const res = tien(dataToPrice);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSubmit = {
@@ -143,15 +146,21 @@ const PaymentPage = () => {
         startTime: court.startTime,
         endTime: court.endTime,
       })),
+      firstName: orderDetail.firstname,
+      lastName: orderDetail.lastName,
+      email: orderDetail.email,
+      phone: orderDetail.phone,
     };
-    localStorage.setItem('bookingData', JSON.stringify(dataToSubmit));
-
+    localStorage.setItem("bookingData", JSON.stringify(dataToSubmit));
 
     console.log(orderDetail);
     console.log(dataToSubmit);
 
     try {
-      const res = await payment(orderDetail.totalPrice * 1000, orderDetail.customerId);
+      const res = await payment(
+        orderDetail.totalPrice * 1000,
+        orderDetail.customerId
+      );
       console.log(res.data);
 
       // Redirect to VNPay
@@ -165,7 +174,7 @@ const PaymentPage = () => {
     setOpenDialog(false);
     navigate(`/booking/${orderDetail.courtID}`); // Navigate to the booking page with the specific court ID
   };
-  
+
   if (loadingUser) {
     return <div>Loading...</div>;
   }
@@ -203,7 +212,9 @@ const PaymentPage = () => {
                       {court.courtName}
                     </h5>
                     <h5 className="payment-plan-info">{court.courtAddress}</h5>
-                    <h6 className="payment-plan-info">{orderDetail.selectedDate}</h6>
+                    <h6 className="payment-plan-info">
+                      {orderDetail.selectedDate}
+                    </h6>
                     <h5 className="payment-plan-info">{court.phone}</h5>
                   </Box>
                 )}
@@ -225,7 +236,7 @@ const PaymentPage = () => {
                     Total
                   </Typography>
                   <Typography className="payment-summary-price">
-                    {orderDetail.totalPrice*1000} VND
+                    {orderDetail.totalPrice * 1000} VND
                   </Typography>
                 </Box>
               </Box>
@@ -247,7 +258,12 @@ const PaymentPage = () => {
                   value="method-1"
                   control={<Radio />}
                   label={
-                    <img className="imagePayment"src={VNPAGE} style={{ width: "50px" }} alt="VNPAGE" />
+                    <img
+                      className="imagePayment"
+                      src={VNPAGE}
+                      style={{ width: "50px" }}
+                      alt="VNPAGE"
+                    />
                   }
                 />
                 {/* <FormControlLabel
@@ -302,7 +318,7 @@ const PaymentPage = () => {
                 id="totalPrice"
                 label="Total Price"
                 variant="outlined"
-                value={orderDetail.totalPrice*1000 || ""}
+                value={orderDetail.totalPrice * 1000 || ""}
                 onChange={handleInputChange}
                 disabled
               />

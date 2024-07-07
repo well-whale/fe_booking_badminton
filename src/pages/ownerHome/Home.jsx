@@ -1,13 +1,13 @@
 import Navbar from "../../components/admin/navbar/Navbar";
-import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Widget from "../../components/admin/widget/Widget";
+import Sidebar from "../../components/courtowner/sidebar/Sidebar";
 import "./Home.css"
 
-const adminHome = () => {
+const OwnerHome = () => {
   return (
     <div className="home">
     <>
-      <Sidebar />
+      <Sidebar/>
    
       <div className="homeContainer">
         <div className="widgets">
@@ -21,4 +21,4 @@ const adminHome = () => {
   </div>
   );
 };
-export default adminHome;
+export default OwnerHome;

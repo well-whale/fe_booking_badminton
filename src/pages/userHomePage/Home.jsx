@@ -36,13 +36,12 @@ const HomePage = () => {
   };
 
   const randomCourts = getRandomCourts(courts);
-
   return (
     <div className="section__container header__container">
       <div className="header__image__container">
         <div className="header__content">
           <h1>Book Your Badminton Court</h1>
-          <p>Play with Ease!</p>
+          <p>Play with Easily!</p>
         </div>
         <Search />
       </div>
@@ -56,7 +55,8 @@ const HomePage = () => {
               className="popular__card"
               onClick={() => window.scrollTo(0, 100)}
             >
-              <img src={court.images || 'default-image-url'} alt={court.courtName} />
+              {/* <img src={court.images[0] || 'default-image-url'} alt={court.courtName} /> */}
+              <img src={court.images.length > 0 ? court.images[0].image : 'default-image-url'} alt={court.courtName} />
               <div className="popular__content">
                 <div className="popular__card__header">
                   <h4 style={{ display: 'flex' }}>{court.courtName}</h4>
@@ -82,7 +82,7 @@ const HomePage = () => {
         <div className="reward__container">
           <p>20+ badminton courts</p>
           <h4>"Join BadmintonHub and unlock unbeatable discounts on your court bookings!"</h4>
-          <button className="reward__btn">Book Now</button>
+          <NavLink to="/search"><button className="reward__btn">Book Now</button></NavLink>
         </div>
       </section>
     </div>

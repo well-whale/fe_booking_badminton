@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar } from "@mui/material";
-import MuiAlert from '@mui/material/Alert';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
+} from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import UpdateIcon from "@mui/icons-material/Update";
-import "../customers/Customer.css";
+import "./Customer.css";
 import UserDetail from "../single/UserDetail";
 import NewUser from "../new/NewUser";
 import UpdateUser from "../update/UpdateUser";
@@ -17,7 +24,7 @@ const Alert = React.forwardRef((props, ref) => {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const Customer = () => {
+const ListAdmin = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [dialogType, setDialogType] = useState("");
@@ -30,8 +37,11 @@ const Customer = () => {
   const fetchData = async () => {
     try {
       const response = await fetchAllUsers();
-      setData(response.data.result);
-      console.log(response.data.result);
+      const customers = response.data.result.filter(
+        (user) => user.role.roleName === "Admin"
+      );
+      setData(customers);
+      console.log(customers);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -93,16 +103,14 @@ const Customer = () => {
           >
             View
           </Button>
-          {params.row.role.roleName !== "Customer" && (
-            <Button
-              variant="outlined"
-              color="warning"
-              startIcon={<UpdateIcon />}
-              onClick={() => handleClickOpen(params.row, "update")}
-            >
-              Update
-            </Button>
-          )}
+          <Button
+            variant="outlined"
+            color="warning"
+            startIcon={<UpdateIcon />}
+            onClick={() => handleClickOpen(params.row, "update")}
+          >
+            Update
+          </Button>
           <Button
             variant="outlined"
             color="error"
@@ -137,7 +145,7 @@ const Customer = () => {
       <div className="customerContainer">
         <div className="datatable">
           <div className="datatableTitle">
-            <span>Customers</span>
+            <span>Admin</span>
             <Button
               variant="outlined"
               color="success"
@@ -162,10 +170,19 @@ const Customer = () => {
         <UserDetail open={open} onClose={handleClose} user={selectedUser} />
       )}
       {dialogType === "new" && (
-        <NewUser open={open} handleClose={handleClose} refreshData={fetchData} />
+        <NewUser
+          open={open}
+          handleClose={handleClose}
+          refreshData={fetchData}
+        />
       )}
       {dialogType === "update" && (
-        <UpdateUser open={open} handleClose={handleClose} user={selectedUser} refreshData={fetchData} />
+        <UpdateUser
+          open={open}
+          handleClose={handleClose}
+          user={selectedUser}
+          refreshData={fetchData}
+        />
       )}
       {dialogType === "delete" && (
         <Dialog open={open} onClose={handleClose}>
@@ -183,7 +200,11 @@ const Customer = () => {
           </DialogActions>
         </Dialog>
       )}
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
           {snackbarMessage}
         </Alert>
@@ -192,4 +213,4 @@ const Customer = () => {
   );
 };
 
-export default Customer;
+export default ListAdmin;
