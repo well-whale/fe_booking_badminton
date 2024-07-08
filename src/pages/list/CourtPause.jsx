@@ -21,7 +21,7 @@ import UpdateIcon from "@mui/icons-material/Update";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
 import NewCourt from "../new/NewCourt";
-import { fetchAllCourts, updateStatusCourt } from "../../services/UserServices";
+import { deleteCourt, fetchAllCourts, updateStatusCourt } from "../../services/UserServices";
 import { dataCOurt } from "../../datatableSource";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 const CourtsPause = () => {
@@ -68,11 +68,15 @@ const CourtsPause = () => {
     setOpen(true);
   };
 
-  const confirmDelete = () => {
-    setData(data.filter((item) => item.courtID !== deleteId));
-    handleClose();
+  const confirmDelete = async () => {
+    try {
+      await deleteCourt(deleteId);
+      fetchData();
+      handleClose();
+    } catch (error) {
+      console.error("Error deleting court:", error);
+    }
   };
-
   const handleClickOpen = (court, type) => {
     setSelectedCourt(court);
     setDialogType(type);

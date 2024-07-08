@@ -82,5 +82,39 @@ const checkSubCourt = (data) => {
  const updateStatusCourt = (dataCourt)=>{
   return axios.put(`court/updatestatuscourt`,dataCourt)
  }
+ const updateCourt = (dataCourt)=>{
+  return axios.put(`court`,dataCourt)
+ }
   
-export {updateStatusCourt,createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};
+ const deleteCourt = (courtID) => {
+  return axios.delete('court/deletecourt', {
+    data: { courtID: courtID },
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+ const deleteAccount = (accountID) =>{
+  return axios.delete('api/v1/user/deleteuser',{
+  data: { userID: accountID },
+    headers: { 'Content-Type': 'application/json' }
+  });
+ }
+
+
+
+const addRecureBooking = (dataBooking) =>{
+  return axios.post('recure-booking/add-booking',dataBooking)
+}
+
+const GetAvailableSubCourtRecure = (dataBooking) =>{
+  return axios.post(`recure-booking/GetAvailableSubCourt`,dataBooking)
+ }
+
+ 
+ const getTotalPriceRecureBooking = (dataBooking) =>{
+  return axios.post('recure-booking/totalPrice',dataBooking)
+ }
+ 
+
+
+export {addRecureBooking,GetAvailableSubCourtRecure,getTotalPriceRecureBooking,deleteAccount,deleteCourt,updateCourt,updateStatusCourt,createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};

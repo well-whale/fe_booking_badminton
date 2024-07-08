@@ -16,28 +16,29 @@ const ProfileAdmin = () => {
 
   const fetchUserInfo = async () => {
     if (user && user.userID) {
-        try {
-            const res = await getInfoUser(user.userID);
-            if (res.status === 200) {
-                console.log(res.data.result)
-                setUserInfor(res.data.result);
-            } else {
-                setError("Failed to fetch user information");
-            }
-        } catch (err) {
-            setError("An error occurred while fetching user information");
-        } finally {
-            setLoading(false);
+      try {
+        const res = await getInfoUser(user.userID);
+        if (res.status === 200) {
+          console.log(res.data.result);
+          setUserInfor(res.data.result);
+        } else {
+          setError("Failed to fetch user information");
         }
+      } catch (err) {
+        setError("An error occurred while fetching user information");
+      } finally {
+        setLoading(false);
+      }
     }
-};
+  };
 
-useEffect(() => {
+  useEffect(() => {
     fetchUserInfo();
-}, [user?.userID]);
-const refreshData = () => {
+  }, [user?.userID]);
+
+  const refreshData = () => {
     fetchUserInfo();
-};
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -49,7 +50,7 @@ const refreshData = () => {
 
   return (
     <div className="profile-page">
-        <Sidebar/>
+      <Sidebar />
       <Container maxWidth="md" className="profile-container">
         <Paper elevation={3} className="profile-paper">
           <div className="profile-header">
@@ -65,12 +66,10 @@ const refreshData = () => {
                 <Typography variant="h6">Email: {userInfor.email}</Typography>
                 <Typography variant="h6">Phone: {userInfor.phone}</Typography>
               </>
+            ) : loading ? (
+              <Typography variant="h6">Loading...</Typography>
             ) : (
-              loading ? (
-                <Typography variant="h6">Loading...</Typography>
-              ) : (
-                <Typography variant="h6" color="error">{error}</Typography>
-              )
+              <Typography variant="h6" color="error">{error}</Typography>
             )}
           </div>
           <Button
@@ -83,7 +82,7 @@ const refreshData = () => {
           </Button>
         </Paper>
       </Container>
-      <UpdateProfile open={open} handleClose={handleClose} user={userInfor} refreshData={refreshData}/>
+      <UpdateProfile open={open} handleClose={handleClose} user={userInfor} refreshData={refreshData} />
     </div>
   );
 };

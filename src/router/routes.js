@@ -8,6 +8,8 @@ export const routes = {
     bookingday: "/bookingday/:idCourt",
     bookingmonth: "/bookingmonth/:idCourt",
     payment: "/payment",
+    paymentMonth: "/paymentMonth",
+
     adminHome: "/admin/home",
     adminListUsers: "/admin/listUsers",
     adminListAdmins: "/admin/listAdmin",
@@ -17,16 +19,18 @@ export const routes = {
     adminCourtActive: "/admin/listCourtActive",
     adminNewUser: "/admin/users/new",
     adminUpdateCourt: "/admin/court/update/:courtId",
-    adminProfile:"/admin/Profile",
-    bill:"/bill",
-    paymentSuccess:"/payment-success",
-    booked:"/booked",
-    ownerHome : "/ownerCourt/home",
-    listCourtForOwnerActive : "/ownerCourt/listCourtActive",
-    listCourtForOwnerPending : "/ownerCourt/listCourtPending",
-    listCourtForOwnerPause : "/ownerCourt/listCourtPause",
+
+    adminProfile: "/admin/Profile",
+    bill: "/bill",
+    paymentSuccess: "/payment-success",
+    booked: "/booked",
+    ownerHome: "/ownerCourt/home",
+    ownerUpdateCourt: "/ownerCourt/court/update/:courtId",
+
+    listCourtForOwnerActive: "/ownerCourt/listCourtActive",
+    listCourtForOwnerPending: "/ownerCourt/listCourtPending",
+    listCourtForOwnerPause: "/ownerCourt/listCourtPause",
     listOrder: "/ownerCourt/listOrder",
     newCourt: "/ownerCourt/newCourt",
-    ownerProfile:"/ownerCourt/Profile",
-    };
-  
+    ownerProfile: "/ownerCourt/Profile",
+};

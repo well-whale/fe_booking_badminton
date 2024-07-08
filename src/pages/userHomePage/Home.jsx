@@ -11,7 +11,7 @@ const HomePage = () => {
   const getListCourt = async () => {
     const res = await fetchAllCourts();
     if (res.status === 200) {
-      setCourt(res.data);
+      setCourt(res.data.filter((court) => court.statusCourt === 1));
       console.log(res.data);
     }
   };

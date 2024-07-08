@@ -47,11 +47,11 @@
   }
   
   .courtItemValue {
-    color: gray;
+    color: #191717;;
   }
   
   .courtPriceSlot {
-    margin-top: 20px;
+    margin-left: 20px;
   }
   
   .courtPriceSlot table {

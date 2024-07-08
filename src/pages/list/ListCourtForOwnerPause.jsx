@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -19,7 +19,7 @@ import NoteAddIcon from "@mui/icons-material/NoteAdd";
 import UpdateIcon from "@mui/icons-material/Update";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
-import { fetchAllCourts, getAllCourtOfOwner, updateStatusCourt } from "../../services/UserServices";
+import { deleteCourt, fetchAllCourts, getAllCourtOfOwner, updateStatusCourt } from "../../services/UserServices";
 import Sidebar from "../../components/courtowner/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
@@ -33,6 +33,8 @@ const ListCourtForOwnerPause = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(15);
   const user = useSelector(selectUser).user;
+  const navigate = useNavigate();
+
 console.log(user)
   const fetchData = async () => {
     try {
@@ -69,11 +71,15 @@ console.log(user)
     setOpen(true);
   };
 
-  const confirmDelete = () => {
-    setData(data.filter((item) => item.courtID !== deleteId));
-    handleClose();
+  const confirmDelete = async () => {
+    try {
+      await deleteCourt(deleteId);
+      fetchData();
+      handleClose();
+    } catch (error) {
+      console.error("Error deleting court:", error);
+    }
   };
-
   const handleClickOpen = (court, type) => {
     setSelectedCourt(court);
     setDialogType(type);
@@ -102,8 +108,8 @@ console.log(user)
             onClick={() => handleClickOpen(params.row, "update")}
           />
           <EditNoteIcon
-            color="secondary"
-            onClick={() => handleClickOpen(params.row, "update")}
+            color="warning"
+            onClick={() =>  navigate(`/ownerCourt/court/update/${params.row.courtID}`)}
           />
           <DeleteIcon
             color="error"

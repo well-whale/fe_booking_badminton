@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -33,6 +33,8 @@ const ListCourtForOwnerPending = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(15);
   const user = useSelector(selectUser).user;
+  const navigate = useNavigate();
+
 console.log(user)
   const fetchData = async () => {
     try {
@@ -98,13 +100,13 @@ console.log(user)
             onClick={() => handleClickOpen(params.row, "view")}
           />
           <EditNoteIcon
-            color="secondary"
-            onClick={() => handleClickOpen(params.row, "update")}
+            color="warning"
+            onClick={() =>  navigate(`/ownerCourt/court/update/${params.row.courtID}`)}
           />
-          <DeleteIcon
+          {/* <DeleteIcon
             color="error"
             onClick={() => handleDelete(params.row.courtID)}
-          />
+          /> */}
         </div>
       ),
     },

@@ -28,7 +28,7 @@ const SearchList = () => {
       setSelectedDistrict(district);
       searchByDistrict(district)
         .then((response) => {
-          setListSearchCourts(response.data);
+          setListSearchCourts(response.data.filter((court) => court.statusCourt === 1));
           console.log(response.data)
         })
         

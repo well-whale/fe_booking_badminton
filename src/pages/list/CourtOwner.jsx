@@ -18,7 +18,7 @@ import "./Customer.css";
 import UserDetail from "../single/UserDetail";
 import NewUser from "../new/NewUser";
 import UpdateUser from "../update/UpdateUser";
-import { deleteByUserID, fetchAllUsers } from "../../services/UserServices";
+import { deleteAccount, deleteByUserID, fetchAllUsers } from "../../services/UserServices";
 
 const Alert = React.forwardRef((props, ref) => {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -59,7 +59,7 @@ const CourtOwner = () => {
 
   const confirmDelete = async () => {
     try {
-      await deleteByUserID(deleteId);
+      await deleteAccount(deleteId);
       setSnackbarMessage("User deleted successfully!");
       setSnackbarSeverity("success");
       fetchData();

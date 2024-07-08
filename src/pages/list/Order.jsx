@@ -12,13 +12,14 @@ import Sidebar from "../../components/courtowner/sidebar/Sidebar";
 import SearchIcon from '@mui/icons-material/Search';
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
+import BookedDetail from "../single/BookedDetail";
 
 const ListOrder = () => {
   const [data, setData] = useState([]);
   const [court, setCourt] = useState([]);
   const [open, setOpen] = useState(false);
   const [dialogType, setDialogType] = useState("");
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedBooked, setSelectedBooked] = useState(null);
   const [selectedCourt, setSelectedCourt] = useState(null);
   const user = useSelector(selectUser).user;
 
@@ -66,15 +67,15 @@ const ListOrder = () => {
     fetchData(value ? value.courtID : null);
   };
 
-  const handleClickOpen = (user, type) => {
-    setSelectedUser(user);
+  const handleClickOpen = (booked, type) => {
+    setSelectedBooked(booked);
     setDialogType(type);
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
-    setSelectedUser(null);
+    setSelectedBooked(null);
   };
 
   const actionColumn = [
@@ -92,14 +93,7 @@ const ListOrder = () => {
           >
             View
           </Button>
-          <Button
-            variant="outlined"
-            color="warning"
-            startIcon={<UpdateIcon />}
-            onClick={() => handleClickOpen(params.row, "update")}
-          >
-            Update
-          </Button>
+          
         </div>
       ),
     },
@@ -146,18 +140,11 @@ const ListOrder = () => {
           />
         </div>
       </div>
-      {dialogType === "view" && selectedUser && (
-        <UserDetail open={open} onClose={handleClose} user={selectedUser} />
+      {dialogType === "view" && selectedBooked && (
+        <BookedDetail open={open} onClose={handleClose} booking={selectedBooked} />
       )}
       
-      {dialogType === "update" && (
-        <UpdateUser
-          open={open}
-          handleClose={handleClose}
-          user={selectedUser}
-          refreshData={() => fetchData(selectedCourt)}
-        />
-      )}
+     
     </div>
   );
 };

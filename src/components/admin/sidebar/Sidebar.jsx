@@ -25,6 +25,10 @@ import {
   ExpandLess,
   ExpandMore
 } from "@mui/icons-material";
+import { PiCourtBasketballFill } from "react-icons/pi";
+import TimerSharpIcon from '@mui/icons-material/TimerSharp';
+import CreditScoreSharpIcon from '@mui/icons-material/CreditScoreSharp';
+import CreditCardOffSharpIcon from '@mui/icons-material/CreditCardOffSharp';
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { routes } from "../../../router/routes";
@@ -123,25 +127,25 @@ const Sidebar = () => {
             <NavLink to="/admin/listCourtActive" className={({ isActive }) => (isActive ? "active" : "")}>
               <ListItem button sx={{ pl: 4 }}>
                 <ListItemIcon>
-                  <AdminPanelSettingsIcon />
+                  <CreditScoreSharpIcon />
                 </ListItemIcon>
-                <ListItemText primary="Hoạt Động" />
+                <ListItemText primary="Court Open" />
               </ListItem>
             </NavLink>
             <NavLink to="/admin/listCourtPending" className={({ isActive }) => (isActive ? "active" : "")}>
               <ListItem button sx={{ pl: 4 }}>
                 <ListItemIcon>
-                  <ManageAccountsIcon />
+                  <TimerSharpIcon />
                 </ListItemIcon>
-                <ListItemText primary="Chờ Duyệt" />
+                <ListItemText primary="Court Pendding" />
               </ListItem>
             </NavLink>
             <NavLink to="/admin/listCourtPause" className={({ isActive }) => (isActive ? "active" : "")}>
               <ListItem button sx={{ pl: 4 }}>
                 <ListItemIcon>
-                  <PeopleIcon />
+                  <CreditCardOffSharpIcon />
                 </ListItemIcon>
-                <ListItemText primary="Tạm Ngưng" />
+                <ListItemText primary="Court Close" />
               </ListItem>
             </NavLink>
           </List>

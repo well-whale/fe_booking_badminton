@@ -28,7 +28,7 @@ import {
 } from "@mui/material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import dayjs from "dayjs";
-import { getCourtByIdCourt, checkSubCourt } from "../../services/UserServices";
+import { getCourtByIdCourt, checkSubCourt, GetAvailableSubCourtRecure } from "../../services/UserServices";
 import CourtPrice from "../single/CourtPrice";
 
 const generateTimeSlots = (startTime, endTime, interval, selectedDate) => {
@@ -80,13 +80,18 @@ const BookMonth = () => {
   const [courtAvailability, setCourtAvailability] = useState([]);
   const [selectedCourts, setSelectedCourts] = useState([]);
   const [isPricingModalOpen, setPricingModalOpen] = useState(false);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const formattedDate = selectedDate.format("YYYY-MM-DD");
+
 
   const handleBooking = () => {
     const bookingDetails = {
-      courtID,
-      selectedCourts,
-      selectedDate: selectedDate.format("YYYY-MM-DD"),
-      totalPrice,
+      
+      courtId: court.courtID,
+        startDate: dateNow.format("YYYY-MM-DD"),
+        selectedCourts,
+        endDate: formattedDate,
+        dayOfWeek: selectedDays,
     };
     console.log(bookingDetails);
     localStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
@@ -152,34 +157,37 @@ const BookMonth = () => {
       setEndTime(end);
     }
   };
-
   useEffect(() => {
     const checkAvailability = async () => {
-      if (startTime === null || endTime === null || !selectedDate) {
+      if (startTime === null || endTime === null || !selectedDate || selectedDays.length === 0) {
         return;
       }
-
+  
       const formattedDate = selectedDate.format("YYYY-MM-DD");
       const startTimeStr = `${String(Math.floor(startTime / 60)).padStart(
         2,
         "0"
-      )}:${String(startTime % 60).padStart(2, "0")}`;
+      )}:${String(startTime % 60).padStart(2, "0")}:00`;
       const endTimeStr = `${String(Math.floor(endTime / 60)).padStart(
         2,
         "0"
-      )}:${String(endTime % 60).padStart(2, "0")}`;
-
+      )}:${String(endTime % 60).padStart(2, "0")}:00`;
+  
       const requestData = {
-        courtID: court.courtID,
-        bookingDate: formattedDate,
+        courtId: court.courtID,
+        startDate: dateNow.format("YYYY-MM-DD"),
+        endDate: formattedDate,
+        dayOfWeek: selectedDays,
+
         startTime: startTimeStr,
         endTime: endTimeStr,
       };
-
+  
       try {
-        const response = await checkSubCourt(requestData);
-        setCourtAvailability(response.data.subCourt); // Assuming the server returns an array of subCourt objects
-        console.log(response);
+        console.log(requestData)
+        const response =   await GetAvailableSubCourtRecure(requestData);
+        console.log(response.data);
+        setCourtAvailability(response.data); // Assuming the server returns an array of subCourt objects
       } catch (error) {
         if (error.response) {
           console.error("Error response from server:", error.response.data);
@@ -189,11 +197,12 @@ const BookMonth = () => {
         }
       }
     };
-
+    
     if (startTime !== null && endTime !== null) {
       checkAvailability();
     }
-  }, [startTime, endTime, selectedDate, court]);
+  }, [startTime, endTime, selectedDate, court, selectedDays]);
+  
 
   const areas = generateAreas(court?.courtQuantity || 0);
 
@@ -326,55 +335,37 @@ const BookMonth = () => {
             </div>
           ))}
         </div>
-        <label>Chọn Ngày:</label>
-        <div>
-          <FormGroup>
-            <Grid container spacing={2}>
-              <Grid item xs={3}>
-                <FormControlLabel
-                  control={<Checkbox color="success" />}
-                  label="Thứ 2"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <FormControlLabel
-                  control={<Checkbox color="success" />}
-                  label="Thứ 3"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <FormControlLabel
-                  control={<Checkbox color="success" />}
-                  label="Thứ 4"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <FormControlLabel
-                  control={<Checkbox color="success" />}
-                  label="Thứ 5"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <FormControlLabel
-                  control={<Checkbox color="success" />}
-                  label="Thứ 6"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <FormControlLabel
-                  control={<Checkbox color="success" />}
-                  label="Thứ 7"
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <FormControlLabel
-                  control={<Checkbox color="success" />}
-                  label="Chủ Nhật"
-                />
-              </Grid>
-            </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h6">Chọn các ngày trong tuần:</Typography>
+          <FormGroup row>
+            {[
+              { day: "Monday", value: "MONDAY" },
+              { day: "Tuesday", value: "TUESDAY" },
+              { day: "Wednesday", value: "WEDNESDAY" },
+              { day: "Thursday", value: "THURSDAY" },
+              { day: "Friday", value: "FRIDAY" },
+              { day: "Saturday", value: "SATURDAY" },
+              { day: "Sunday", value: "SUNDAY" },
+            ].map(({ day, value }) => (
+              <FormControlLabel
+                key={day}
+                control={
+                  <Checkbox
+                    checked={selectedDays.includes(value)}
+                    onChange={(e) => {
+                      const newSelectedDays = e.target.checked
+                        ? [...selectedDays, value]
+                        : selectedDays.filter((d) => d !== value);
+                      setSelectedDays(newSelectedDays);
+                    }}
+                  />
+                }
+                label={day}
+              />
+            ))}
           </FormGroup>
-        </div>
+        </Grid>
+
         <label>Chọn Sân:</label>
         <div>
           {areas.map(({ name, id }) => (
@@ -405,7 +396,11 @@ const BookMonth = () => {
             <CardMedia
               component="img"
               height="140"
-              image={court.images.length > 0 ? court.images[0].image : 'default-image-url'}
+              image={
+                court.images.length > 0
+                  ? court.images[0].image
+                  : "default-image-url"
+              }
               alt="green iguana"
             />
 
@@ -454,7 +449,7 @@ const BookMonth = () => {
         >
           <NavLink
             to={{
-              pathname: "/payment",
+              pathname: "/paymentMonth",
             }}
             onClick={() => window.scrollTo(0, 200)}
             style={{ textDecoration: "none", color: "white" }}

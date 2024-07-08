@@ -95,10 +95,10 @@ const CourtsActive = () => {
             color="secondary"
             onClick={() => handleClickOpen(params.row, "update")}
           />
-          <DeleteIcon
+          {/* <DeleteIcon
             color="error"
             onClick={() => handleDelete(params.row.courtID)}
-          />
+          /> */}
         </div>
       ),
     },

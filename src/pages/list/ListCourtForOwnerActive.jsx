@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -29,6 +29,8 @@ import Sidebar from "../../components/courtowner/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import UpdateCourt from "../update/UpdateCourt";
+
 const ListCourtForOwnerActive = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -38,11 +40,12 @@ const ListCourtForOwnerActive = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(15);
   const user = useSelector(selectUser).user;
-  console.log(user);
+  const navigate = useNavigate();
+
+
   const fetchData = async () => {
     try {
       const response = await getAllCourtOfOwner(user.userID);
-      console.log(response.data);
       if (Array.isArray(response.data)) {
         const preprocessedData = response.data.map((court) => ({
           ...court,
@@ -54,9 +57,6 @@ const ListCourtForOwnerActive = () => {
               : "Chờ duyệt",
         }));
         setData(preprocessedData.filter((court) => court.statusCourt === 1));
-        // setData(preprocessedData);
-
-        console.log(data);
       } else {
         console.error("Expected an array but got:", response.data);
         setData([]);
@@ -81,7 +81,6 @@ const ListCourtForOwnerActive = () => {
     setData(data.filter((item) => item.courtID !== deleteId));
     handleClose();
   };
-
   const handleClickOpen = (court, type) => {
     setSelectedCourt(court);
     setDialogType(type);
@@ -110,13 +109,13 @@ const ListCourtForOwnerActive = () => {
             onClick={() => handleClickOpen(params.row, "update")}
           />
           <EditNoteIcon
-            color="secondary"
-            onClick={() => handleClickOpen(params.row, "update")}
+            color="warning"
+            onClick={() =>  navigate(`/ownerCourt/court/update/${params.row.courtID}`)}
           />
-          <DeleteIcon
+          {/* <DeleteIcon
             color="error"
             onClick={() => handleDelete(params.row.courtID)}
-          />
+          /> */}
         </div>
       ),
     },
@@ -140,18 +139,16 @@ const ListCourtForOwnerActive = () => {
 
     const handleUpdate = async () => {
       try {
-        const res = await updateStatusCourt({
+        await updateStatusCourt({
           courtID: court.courtID,
           statusCourt: status,
         });
-        console.log(res.status)
         fetchData();
         onClose();
       } catch (error) {
         console.error("Error updating court status:", error);
       }
     };
-
 
     return (
       <Dialog open={open} onClose={onClose}>
@@ -160,7 +157,6 @@ const ListCourtForOwnerActive = () => {
           <Select value={status} onChange={handleChange} fullWidth>
             <MenuItem value={1}>Hoạt động</MenuItem>
             <MenuItem value={-1}>Tạm ngưng</MenuItem>
-            {/* <MenuItem value={0}>Chờ duyệt</MenuItem> */}
           </Select>
         </DialogContent>
         <DialogActions>
@@ -174,6 +170,7 @@ const ListCourtForOwnerActive = () => {
       </Dialog>
     );
   };
+
   return (
     <div className="customer">
       <Sidebar />
@@ -212,6 +209,12 @@ const ListCourtForOwnerActive = () => {
           onClose={handleClose}
           court={selectedCourt}
           fetchData={fetchData}
+        />
+      )}
+      {dialogType === "updateDetail" && selectedCourt && (
+        <UpdateCourt
+          courtId={selectedCourt.courtID}
+          onClose={handleClose}
         />
       )}
       {dialogType === "delete" && (

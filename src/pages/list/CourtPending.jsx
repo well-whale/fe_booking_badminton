@@ -21,7 +21,7 @@ import UpdateIcon from "@mui/icons-material/Update";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
 import NewCourt from "../new/NewCourt";
-import { fetchAllCourts, updateStatusCourt } from "../../services/UserServices";
+import { deleteCourt, fetchAllCourts, updateStatusCourt } from "../../services/UserServices";
 import { dataCOurt, datacourt } from "../../datatableSource";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 const CourtsPending = () => {
@@ -68,9 +68,14 @@ const CourtsPending = () => {
     setOpen(true);
   };
 
-  const confirmDelete = () => {
-    setData(data.filter((item) => item.courtID !== deleteId));
-    handleClose();
+  const confirmDelete = async () => {
+    try {
+      await deleteCourt(deleteId);
+      fetchData();
+      handleClose();
+    } catch (error) {
+      console.error("Error deleting court:", error);
+    }
   };
 
   const handleClickOpen = (court, type) => {
@@ -145,7 +150,7 @@ const CourtsPending = () => {
         <DialogContent>
           <Select value={status} onChange={handleChange} fullWidth>
             <MenuItem value={1}>Hoạt động</MenuItem>
-            {/* <MenuItem value={-1}>Tạm ngưng</MenuItem> */}
+            <MenuItem value={-1}>Tạm ngưng</MenuItem>
             <MenuItem value={0}>Chờ duyệt</MenuItem>
           </Select>
         </DialogContent>

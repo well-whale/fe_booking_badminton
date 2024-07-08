@@ -39,6 +39,7 @@ import NewCourt from './pages/new/NewCourt';
 import Profile from './pages/single/Profile';
 import ProfileAdmin from './pages/single/Profile';
 import ProfileOwner from './pages/single/ProfileOwner';
+import PaymentMonthPage from './pages/payment/PaymentMonth';
 
 function App() {
   const dispatch = useDispatch();
@@ -69,6 +70,8 @@ function App() {
                 <Route path={routes.bookingday} element={<><Header /><BookDay/> <Footer /></>} />
                 <Route path={routes.bookingmonth} element={<><Header /><BookMonth/> <Footer /></>} />
                 <Route path={routes.payment} element={<><ProtectedRoute role="Customer"><Header/><Payment /><Footer/></ProtectedRoute></>} />
+                <Route path={routes.paymentMonth} element={<><ProtectedRoute role="Customer"><Header/><PaymentMonthPage /><Footer/></ProtectedRoute></>} />
+
                 {/* <Route path={routes.payment} element={<><Header/><Payment /><Footer/><></>} /> */}
 
                 <Route path={routes.bill} element={<><Header /><Invoice /><Footer /></>} />
@@ -82,8 +85,9 @@ function App() {
                 <Route path={routes.adminListCourtPending} element={<ProtectedRoute role="Admin"><CourtsPending/></ProtectedRoute>} />
                 <Route path={routes.adminListCourtPause} element={<ProtectedRoute role="Admin"><CourtsPause/></ProtectedRoute>} />
                 <Route path={routes.adminNewUser} element={<ProtectedRoute role="Admin"><NewUser /></ProtectedRoute>} />
-                <Route path={routes.adminUpdateCourt} element={<ProtectedRoute role="Admin"><UpdateCourt /></ProtectedRoute>} />
                 <Route path={routes.adminProfile} element={<ProtectedRoute role="Admin"><ProfileAdmin/></ProtectedRoute>} />
+                <Route path={routes.adminUpdateCourt} element={<ProtectedRoute role="Admin"><UpdateCourt /></ProtectedRoute>} />
+
 
 
                 <Route path={routes.ownerHome} element={<ProtectedRoute role="Court Owner"><OwnerHome/></ProtectedRoute>} />
@@ -94,6 +98,8 @@ function App() {
                 <Route path={routes.listOrder} element={<ProtectedRoute role="Court Owner"><ListOrder/></ProtectedRoute>} />
                 <Route path={routes.newCourt} element={<ProtectedRoute role="Court Owner"><NewCourt/></ProtectedRoute>} />
                 <Route path={routes.ownerProfile} element={<ProtectedRoute role="Court Owner"><ProfileOwner/></ProtectedRoute>} />
+                <Route path={routes.ownerUpdateCourt} element={<ProtectedRoute role="Court Owner"><UpdateCourt/></ProtectedRoute>} />
+
 
             </Routes>
         </React.StrictMode>

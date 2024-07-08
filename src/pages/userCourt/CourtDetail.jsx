@@ -81,7 +81,7 @@ const CourtDetail = () => {
     // { name: "Nước uống", icon: <GiWaterBottle /> },
     // { name: "Căng tin", icon: <IoMdRestaurant /> },
     // { name: "Đồ ăn", icon: <c /> },
-    court.serviceCourt
+    court.serviceCourt,
   ];
 
   const getPriceRange = (prices) => {
@@ -106,7 +106,10 @@ const CourtDetail = () => {
 
   const formatTime = (time) => {
     const [hours, minutes] = time.split(":").map(Number);
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}`;
   };
 
   return (
@@ -150,25 +153,31 @@ const CourtDetail = () => {
           </p>
         </div>
 
-<div className="amenities-container">
+        <div className="amenities-container">
           <h5>Dịch vụ tiện ích</h5>
           <ul className="amenities-list">
             {court.serviceCourt.map((amenity, index) => (
               <li key={index} className="amenity-item">
-                <div className="amenity-icon">{
-                  amenity.serviceName ==="WIFI" ?<CiWifiOn />:
-                  amenity.serviceName ==="WATER" ?<GiWaterBottle />:
-                  amenity.serviceName ==="PARKING" ?<FaMotorcycle />:
-                  amenity.serviceName ==="RESTAURANT" ?<IoMdRestaurant />:
-                  amenity.serviceName ==="FOOD" ?<MdOutlineFastfood />:
-                  "Không có tiện ích"
-              }</div>
+                <div className="amenity-icon">
+                  {amenity.serviceName === "WIFI" ? (
+                    <CiWifiOn />
+                  ) : amenity.serviceName === "WATER" ? (
+                    <GiWaterBottle />
+                  ) : amenity.serviceName === "PARKING" ? (
+                    <FaMotorcycle />
+                  ) : amenity.serviceName === "RESTAURANT" ? (
+                    <IoMdRestaurant />
+                  ) : amenity.serviceName === "FOOD" ? (
+                    <MdOutlineFastfood />
+                  ) : (
+                    "Không có tiện ích"
+                  )}
+                </div>
                 <div>{amenity.serviceName}</div>
               </li>
             ))}
           </ul>
         </div>
-        
 
         <button className="btn-book" onClick={handleClickOpen}>
           Đặt sân

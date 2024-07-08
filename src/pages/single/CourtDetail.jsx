@@ -13,6 +13,11 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
+import { CiWifiOn } from "react-icons/ci";
+import { FaMotorcycle } from "react-icons/fa";
+import { GiWaterBottle } from "react-icons/gi";
+import { MdOutlineFastfood } from "react-icons/md";
+import { IoMdRestaurant } from "react-icons/io";
 import "./CourtDetail.css";
 import { getPriceByIdCourt } from "../../services/UserServices";
 
@@ -23,7 +28,6 @@ const CourtDetail = ({ open, onClose, court }) => {
 
   const itemData = court.images;
   console.log(itemData);
-
 
   const [listPrice, setListPrice] = useState([]);
 
@@ -56,7 +60,7 @@ const CourtDetail = ({ open, onClose, court }) => {
             <div className="courtTitle">Information Court</div>
             <div className="courtBody">
               <div className="courtImage">
-                <ImageList sx={{ width: "full", height: "full" }} cols={3} >
+                <ImageList sx={{ width: "full", height: "full" }} cols={3}>
                   {itemData.map((item) => (
                     <ImageListItem key={item.imageID}>
                       <img
@@ -70,7 +74,9 @@ const CourtDetail = ({ open, onClose, court }) => {
               </div>
               <div className="courtDetails">
                 <div className="courtDetail">
-                  <div className="courtDetailItem">
+                <div className="amenities-container">
+
+                <div className="courtDetailItem">
                     <span className="courtItemKey">ID Sân: </span>
                     <span className="courtItemValue">{court.courtID}</span>
                   </div>
@@ -88,14 +94,45 @@ const CourtDetail = ({ open, onClose, court }) => {
                   </div>
                   <div className="courtDetailItem">
                     <span className="courtItemKey">Quy Mô: </span>
-                    <span className="courtItemValue">{court.courtQuantity} Sân</span>
+                    <span className="courtItemValue">
+                      {court.courtQuantity} Sân
+                    </span>
                   </div>
                   <div className="courtDetailItem">
                     <span className="courtItemKey">Thời Gian Mỗi Slot: </span>
-                    <span className="courtItemValue">{court.duration} phút</span>
+                    <span className="courtItemValue">
+                      {court.duration} phút
+                    </span>
                   </div>
                 </div>
+
+                </div>
+
                 <div className="courtPriceSlot">
+                  <div className="amenities-container">
+                    <ul className="amenities-list">
+                      {court.serviceCourt.map((amenity, index) => (
+                        <li key={index} className="amenity-item">
+                          <div className="amenity-icon">
+                            {amenity.serviceName === "WIFI" ? (
+                              <CiWifiOn />
+                            ) : amenity.serviceName === "WATER" ? (
+                              <GiWaterBottle />
+                            ) : amenity.serviceName === "PARKING" ? (
+                              <FaMotorcycle />
+                            ) : amenity.serviceName === "RESTAURANT" ? (
+                              <IoMdRestaurant />
+                            ) : amenity.serviceName === "FOOD" ? (
+                              <MdOutlineFastfood />
+                            ) : (
+                              "Không có tiện ích"
+                            )}
+                          </div>
+                          <div>{amenity.serviceName}</div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   <Table>
                     <TableHead>
                       <TableRow>

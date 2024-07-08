@@ -60,7 +60,7 @@ const BookingList = () => {
                 <div key={paymentHistory.id} className="booking-card">
                     <div className="month">{formatDate(paymentHistory.paymentResDTO.paymentDate)}</div>
                     <div className="booking-info">
-                        <div className="booking-id">Mã giao dịch <b>{paymentHistory.paymentResDTO.trasactionCode}</b></div>
+                        <div className="booking-id">Mã giao dịch <b>{paymentHistory.paymentResDTO.transactionCode}</b></div>
                         <div className="route">
                             {paymentHistory.courtName}
                         </div>

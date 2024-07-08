@@ -93,7 +93,7 @@ const Sidebar = () => {
             <ListItemIcon>
               <PiCourtBasketballBold />
             </ListItemIcon>
-            <ListItemText primary="Court Active" />
+            <ListItemText primary="Court Open" />
           </ListItem>
         </NavLink>
         <NavLink to="/ownerCourt/listCourtPending" className={({ isActive }) => (isActive ? "active" : "")}>
@@ -109,7 +109,7 @@ const Sidebar = () => {
             <ListItemIcon>
               <PiCourtBasketballBold />
             </ListItemIcon>
-            <ListItemText primary="Court Pause" />
+            <ListItemText primary="Court Close" />
           </ListItem>
         </NavLink>
 

@@ -10,7 +10,10 @@
     flex: 1;
     padding: 20px;
   }
-  
+  .imageUpload img{
+    height: 50%;
+    width: 50%;
+  }
   .newCourtHeader {
     display: flex;
     align-items: center;

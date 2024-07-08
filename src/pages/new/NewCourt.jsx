@@ -24,10 +24,28 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 
 const districtList = [
-  "Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8",
-  "Quận 10", "Quận 11", "Quận 12", "Phú Nhuận", "Bình Thạnh",
-  "Gò Vấp", "Tân Bình", "Bình Tân", "Tân Phú",
-  "Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Cần Giờ", "Nhà Bè"
+  "Quận 1",
+  "Quận 3",
+  "Quận 4",
+  "Quận 5",
+  "Quận 6",
+  "Quận 7",
+  "Quận 8",
+  "Quận 10",
+  "Quận 11",
+  "Quận 12",
+  "Phú Nhuận",
+  "Bình Thạnh",
+  "Gò Vấp",
+  "Tân Bình",
+  "Bình Tân",
+  "Tân Phú",
+  "Thủ Đức",
+  "Bình Chánh",
+  "Hóc Môn",
+  "Củ Chi",
+  "Cần Giờ",
+  "Nhà Bè",
 ];
 
 const NewCourt = () => {
@@ -188,7 +206,7 @@ const NewCourt = () => {
           ? formData.startTime.format("HH:00:00")
           : "",
         endTime: formData.endTime ? formData.endTime.format("HH:00:00") : "",
-        prices: formData.prices.map((price) => ({
+        price: formData.prices.map((price) => ({
           ...price,
           startTime: price.startTime ? price.startTime.format("HH:00:00") : "",
           endTime: price.endTime ? price.endTime.format("HH:00:00") : "",
@@ -247,7 +265,7 @@ const NewCourt = () => {
               <FormControl fullWidth margin="normal">
                 <InputLabel id="districtLabel">District*</InputLabel>
                 <Select
-                label= 'District'
+                  label="District"
                   labelId="districtLabel"
                   id="district"
                   name="district"
@@ -282,21 +300,42 @@ const NewCourt = () => {
                 fullWidth
                 margin="normal"
               />
-              {[...Array(5)].map((_, index) => (
-                <div key={index} style={{ marginBottom: "15px" }}>
-                  <input type="file" onChange={handleImageChange(index)} />
-                  {/* {imageURLs[index] && (
-                    <img
-                      src={imageURLs[index]}
-                      alt={`Uploaded ${index + 1}`}
-                      style={{ maxWidth: 150 }}
+              <div className="formSection top-right">
+                <h2 style={{ textAlign: "center" }}>Images</h2>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="imageUpload">
+                    <input
+                      accept="image/*"
+                      type="file"
+                      onChange={handleImageChange(index)}
+                      id={`image-upload-${index}`}
+                      style={{ display: "none" }}
                     />
-                  )} */}
-                </div>
-              ))}
+                    <label htmlFor={`image-upload-${index}`}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        component="span"
+                      >
+                        Upload Image {index + 1}
+                      </Button>
+                    </label>
+                    {imageFiles[index] && (
+                      <img
+                        src={URL.createObjectURL(imageFiles[index])}
+                        alt={`uploaded ${index + 1}`}
+                        className="uploadedImage"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="formSection top-right">
+            
+          </div>
+          <div className="colum">
+            <div className="formSection bottom-left">
               <h2 style={{ textAlign: "center" }}>Services</h2>
 
               <FormControlLabel
@@ -344,14 +383,12 @@ const NewCourt = () => {
                   <Checkbox
                     checked={services.FOOD}
                     onChange={handleServiceChange}
-                    name="RESTAURANT"
+                    name="FOOD"
                   />
                 }
                 label="Đồ ăn"
               />
             </div>
-          </div>
-          <div className="colum">
             <div className="formSection bottom-left">
               <h2 style={{ textAlign: "center" }}>Time</h2>
               <div className="aaaaaa">
@@ -382,7 +419,7 @@ const NewCourt = () => {
                   Slot Duration (minutes)*
                 </InputLabel>
                 <Select
-                label='Slot Duration (minutes)*'
+                  label="Slot Duration (minutes)*"
                   labelId="slotDurationLabel"
                   id="slotDuration"
                   value={formData.duration}
@@ -423,7 +460,7 @@ const NewCourt = () => {
                 </div>
 
                 <TextField
-                  label="Unit Price AM"
+                  label="Unit Price AM (VND)"
                   type="number"
                   value={formData.prices[0].unitPrice}
                   onChange={handlePriceChange(0, "unitPrice")}
@@ -442,7 +479,7 @@ const NewCourt = () => {
                     disabled
                   />
                   <TimePicker
-                    label="End Time PM"
+                    label="End Time PM (VND)"
                     views={["hours"]}
                     value={formData.endTime}
                     onChange={handleTimeChange("endTime")}
