@@ -49,7 +49,7 @@ const SearchList = () => {
       const minPrice = Math.min(...unitPrices);
       const maxPrice = Math.max(...unitPrices);
 
-      return `${minPrice} - ${maxPrice} VND`;
+      return `${minPrice*1000} - ${maxPrice*1000} VND`;
     }
     return "Đang Cập Nhật....";
   };
