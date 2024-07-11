@@ -5,6 +5,7 @@ import BackupTableIcon from '@mui/icons-material/BackupTable';
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+
 import "./Widget.css";
 
 const Widget = ({ type }) => {

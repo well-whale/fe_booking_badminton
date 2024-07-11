@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link, useNavigate } from "react-router-dom";
 import {
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -9,14 +10,17 @@ import {
   DialogTitle,
   MenuItem,
   Select,
+  TextField,
+  CircularProgress,
+  Box,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import DeleteIcon from "@mui/icons-material/Delete";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import UpdateIcon from "@mui/icons-material/Update";
+import {
+  Visibility as VisibilityIcon,
+  Autorenew as AutorenewIcon,
+  EditNote as EditNoteIcon,
+  NoteAdd as NoteAddIcon,
+  Update as UpdateIcon,
+} from "@mui/icons-material";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
 import {
@@ -28,22 +32,50 @@ import {
 import Sidebar from "../../components/courtowner/sidebar/Sidebar";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
-import AutorenewIcon from '@mui/icons-material/Autorenew';
 import UpdateCourt from "../update/UpdateCourt";
+
+const districtList = [
+  "Quận 1",
+  "Quận 3",
+  "Quận 4",
+  "Quận 5",
+  "Quận 6",
+  "Quận 7",
+  "Quận 8",
+  "Quận 10",
+  "Quận 11",
+  "Quận 12",
+  "Phú Nhuận",
+  "Bình Thạnh",
+  "Gò Vấp",
+  "Tân Bình",
+  "Bình Tân",
+  "Tân Phú",
+  "Thủ Đức",
+  "Bình Chánh",
+  "Hóc Môn",
+  "Củ Chi",
+  "Cần Giờ",
+  "Nhà Bè",
+];
 
 const ListCourtForOwnerActive = () => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [dialogType, setDialogType] = useState("");
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(15);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
   const user = useSelector(selectUser).user;
   const navigate = useNavigate();
 
-
   const fetchData = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await getAllCourtOfOwner(user.userID);
       if (Array.isArray(response.data)) {
@@ -63,7 +95,10 @@ const ListCourtForOwnerActive = () => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setError("Error fetching data");
       setData([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,6 +116,7 @@ const ListCourtForOwnerActive = () => {
     setData(data.filter((item) => item.courtID !== deleteId));
     handleClose();
   };
+
   const handleClickOpen = (court, type) => {
     setSelectedCourt(court);
     setDialogType(type);
@@ -91,6 +127,15 @@ const ListCourtForOwnerActive = () => {
     setOpen(false);
     setSelectedCourt(null);
     setDeleteId(null);
+  };
+
+  const handleDistrictChange = (event, value) => {
+    setSelectedDistrict(value);
+    if (value) {
+      setData(data.filter((court) => court.district === value));
+    } else {
+      fetchData();
+    }
   };
 
   const actionColumn = [
@@ -110,24 +155,19 @@ const ListCourtForOwnerActive = () => {
           />
           <EditNoteIcon
             color="warning"
-            onClick={() =>  navigate(`/ownerCourt/court/update/${params.row.courtID}`)}
+            onClick={() => navigate(`/ownerCourt/court/update/${params.row.courtID}`)}
           />
-          {/* <DeleteIcon
-            color="error"
-            onClick={() => handleDelete(params.row.courtID)}
-          /> */}
         </div>
       ),
     },
   ];
 
   const courtColumns = [
-    { field: "courtID", headerName: "ID Sân", width: 70 },
-    { field: "courtName", headerName: "Tên Sân", width: 200 },
-    { field: "district", headerName: "Khu Vực", width: 140 },
-    { field: "courtAddress", headerName: "Địa Chỉ", width: 200 },
-    { field: "courtQuantity", headerName: "Quy Mô", width: 150 },
-    { field: "status", headerName: "Trạng Thái", width: 150 },
+    { field: "courtID", headerName: "Court ID", width: 70 },
+    { field: "courtName", headerName: "Court Name", width: 200 },
+    { field: "district", headerName: "District", width: 140 },
+    { field: "courtAddress", headerName: "Court Address", width: 200 },
+    { field: "courtQuantity", headerName: "Arena", width: 150 },
   ];
 
   const UpdateCourtStatusDialog = ({ open, onClose, court, fetchData }) => {
@@ -175,31 +215,52 @@ const ListCourtForOwnerActive = () => {
     <div className="customer">
       <Sidebar />
       <div className="customerContainer">
+        {districtList.length > 0 && (
+          <Autocomplete
+            sx={{ width: 300 }}
+            id="district-selector"
+            options={districtList}
+            getOptionLabel={(option) => option}
+            onChange={handleDistrictChange}
+            renderInput={(params) => (
+              <TextField {...params} label="District" />
+            )}
+          />
+        )}
         <div className="datatable">
           <div className="datatableTitle">
             <span>Courts Active</span>
           </div>
-          <DataGrid
-            rows={data}
-            columns={courtColumns.concat(actionColumn)}
-            pageSize={5}
-            rowsPerPageOptions={[15]}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <CircularProgress />
+            </Box>
+          ) : error ? (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <span>{error}</span>
+            </Box>
+          ) : (
+            <DataGrid
+              rows={data}
+              columns={courtColumns.concat(actionColumn)}
+              pageSize={5}
+              rowsPerPageOptions={[15]}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 10,
+                  },
                 },
-              },
-            }}
-            pagination
-            page={page}
-            onPageChange={(newPage) => setPage(newPage)}
-            disableSelectionOnClick
-            getRowId={(row) => row.courtID}
-          />
+              }}
+              pagination
+              page={page}
+              onPageChange={(newPage) => setPage(newPage)}
+              disableSelectionOnClick
+              getRowId={(row) => row.courtID}
+            />
+          )}
         </div>
       </div>
-
       {dialogType === "view" && selectedCourt && (
         <CourtDetail open={open} onClose={handleClose} court={selectedCourt} />
       )}

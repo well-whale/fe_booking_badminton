@@ -33,6 +33,10 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
 import PeopleIcon from "@mui/icons-material/People";
+import { MdOutlinePayment } from "react-icons/md";
+import { IoCalendarOutline } from "react-icons/io5";
+
+
 import "./Sidebar.css";
 
 const Sidebar = () => {
@@ -117,7 +121,7 @@ const Sidebar = () => {
         <NavLink to="/ownerCourt/listOrder" className={({ isActive }) => (isActive ? "active" : "")}>
           <ListItem button>
             <ListItemIcon>
-              <CreditCardOutlinedIcon />
+              <MdOutlinePayment />
             </ListItemIcon>
             <ListItemText primary="Orders" />
           </ListItem>
@@ -125,7 +129,7 @@ const Sidebar = () => {
         <NavLink to="/calendar" className={({ isActive }) => (isActive ? "active" : "")}>
           <ListItem button>
             <ListItemIcon>
-              <CalendarMonthOutlinedIcon />
+              <IoCalendarOutline />
             </ListItemIcon>
             <ListItemText primary="Calendar" />
           </ListItem>
@@ -140,14 +144,14 @@ const Sidebar = () => {
             <ListItemText primary="Profile" />
           </ListItem>
         </NavLink>
-        <NavLink to="/helper" className={({ isActive }) => (isActive ? "active" : "")}>
+        {/* <NavLink to="/helper" className={({ isActive }) => (isActive ? "active" : "")}>
           <ListItem button>
             <ListItemIcon>
               <DiamondOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary="Helper" />
           </ListItem>
-        </NavLink>
+        </NavLink> */}
         <ListItem button onClick={handleLogout}>
           <ListItemIcon>
             <ExitToAppOutlinedIcon />

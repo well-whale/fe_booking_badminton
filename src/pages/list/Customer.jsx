@@ -123,12 +123,12 @@ const Customer = () => {
     { field: "lastName", headerName: "Last Name", width: 140 },
     { field: "email", headerName: "Email", width: 200 },
     { field: "phone", headerName: "Phone", width: 100 },
-    {
-      field: "role",
-      headerName: "Role",
-      width: 100,
-      renderCell: (params) => params.row.role.roleName,
-    },
+    // {
+    //   field: "role",
+    //   headerName: "Role",
+    //   width: 100,
+    //   renderCell: (params) => params.row.role.roleName,
+    // },
   ];
 
   return (

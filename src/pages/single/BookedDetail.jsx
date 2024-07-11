@@ -24,7 +24,7 @@ const BookedDetail = ({ open, onClose, booking }) => {
       <div key={booking.id} className="booking-card">
                     <div className="month">{formatDate(booking.paymentResDTO.paymentDate)}</div>
                     <div className="booking-info">
-                        <div className="booking-id">Mã giao dịch <b>{booking.paymentResDTO.trasactionCode}</b></div>
+                        <div className="booking-id">Mã giao dịch <b>{booking.paymentResDTO.transactionCode}</b></div>
                         <div className="route">
                             {booking.courtName}
                         </div>

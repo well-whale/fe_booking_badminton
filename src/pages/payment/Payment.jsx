@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import "./tailwindcss-colors.css";
 import "./Payment.css";
-import { getCourtByIdCourt, payment } from "../../services/UserServices";
+import { getCourtByIdCourt, getSubCourtByIdCourt, payment } from "../../services/UserServices";
 import VNPAGE from "../../img/VNPAGE.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -89,6 +89,33 @@ const PaymentPage = () => {
   useEffect(() => {
     getDetailCourt();
   }, [orderDetail.courtID]);
+
+  const [subCourtNames, setSubCourtNames] = useState([]);
+  const fetchSubCourtNames = async () => {
+    setLoading(true);
+    try {
+      const subCourtPromises = orderDetail.selectedCourts.map(async (court) => {
+        const res = await getSubCourtByIdCourt(court.subCourtID);
+        if (res.status === 200) {
+          return res.data.subCourtName;
+        } else {
+          throw new Error("Failed to fetch sub-court details");
+        }
+      });
+
+      const names = await Promise.all(subCourtPromises);
+      setSubCourtNames(names);
+    } catch (err) {
+      setError("An error occurred while fetching sub-court details");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (orderDetail.selectedCourts.length > 0) {
+      fetchSubCourtNames();
+    }
+  }, [orderDetail.selectedCourts]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -223,7 +250,7 @@ const PaymentPage = () => {
                 {orderDetail.selectedCourts.map((detail, index) => (
                   <Box key={index} className="payment-summary-item">
                     <Typography className="payment-summary-name">
-                      Court {detail.subCourtID}
+                    {subCourtNames[index]}
                     </Typography>
                     <Typography className="payment-summary-time">
                       {detail.startTime} - {detail.endTime}
@@ -233,10 +260,10 @@ const PaymentPage = () => {
                 <Divider className="payment-summary-divider" />
                 <Box className="payment-summary-item payment-summary-total">
                   <Typography className="payment-summary-name">
-                    Total
+                    Tổng tiền
                   </Typography>
                   <Typography className="payment-summary-price">
-                    {orderDetail.totalPrice * 1000} VND
+                    {orderDetail.totalPrice}.000 VND
                   </Typography>
                 </Box>
               </Box>
@@ -318,7 +345,7 @@ const PaymentPage = () => {
                 id="totalPrice"
                 label="Total Price"
                 variant="outlined"
-                value={orderDetail.totalPrice * 1000 || ""}
+                value={`${orderDetail.totalPrice}.000` || ""}
                 onChange={handleInputChange}
                 disabled
               />

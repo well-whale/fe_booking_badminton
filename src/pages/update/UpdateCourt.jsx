@@ -52,7 +52,6 @@ const districtList = [
 const UpdateCourt = () => {
   const user = useSelector(selectUser)?.user;
   const { courtId } = useParams();
-  console.log(courtId)
   const initialFormData = {
     courtName: "",
     district: "",
@@ -74,7 +73,6 @@ const UpdateCourt = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [imageFiles, setImageFiles] = useState(new Array(5).fill(null));
   const [upLoading, setUploading] = useState(false);
-  const [imageURLs, setImageURLs] = useState([]);
   const [services, setServices] = useState({
     WIFI: false,
     WATER: false,
@@ -82,13 +80,11 @@ const UpdateCourt = () => {
     RESTAURANT: false,
     FOOD: false,
   });
+
   useEffect(() => {
     const fetchCourtData = async () => {
       try {
         const courtData = await getCourtByIdCourt(courtId);
-        console.log(courtData.data);
-
-        // Populate form data
         setFormData({
           ...courtData.data,
           startTime: dayjs(courtData.data.startTime, "HH:mm:ss"),
@@ -100,15 +96,12 @@ const UpdateCourt = () => {
           })),
         });
 
-        // Populate services
         const serviceMap = courtData.data.serviceCourt.reduce(
           (acc, service) => ({ ...acc, [service.serviceName]: true }),
           {}
         );
         setServices(prevServices => ({ ...prevServices, ...serviceMap }));
-        // Populate images
         setImageFiles(courtData.data.images.map((image) => image.image));
-        console.log(imageFiles)
       } catch (error) {
         toast.error("Failed to fetch court data");
       }
@@ -116,8 +109,6 @@ const UpdateCourt = () => {
 
     fetchCourtData();
   }, [courtId]);
-
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -147,12 +138,12 @@ const UpdateCourt = () => {
     setFormData((prevFormData) => {
       let updatedPrices = [...prevFormData.prices];
       if (name === "startTime") {
-        updatedPrices[0].startTime = newValue; // Start Time AM
+        updatedPrices[0].startTime = newValue; 
       } else if (name === "endTime") {
-        updatedPrices[1].endTime = newValue; // End Time PM
+        updatedPrices[1].endTime = newValue; 
       } else if (name === "end_time_am") {
-        updatedPrices[0].endTime = newValue; // End Time AM
-        updatedPrices[1].startTime = newValue; // Start Time PM
+        updatedPrices[0].endTime = newValue; 
+        updatedPrices[1].startTime = newValue; 
       }
       return {
         ...prevFormData,
@@ -184,13 +175,13 @@ const UpdateCourt = () => {
   const uploadImages = async () => {
     const storage = getStorage(app);
     const uploadPromises = imageFiles.map(async (image) => {
-      if (image) {
+      if (image && typeof image !== 'string') {
         const storageRef = ref(storage, `images/${Date.now()}_${image.name}`);
         await uploadBytes(storageRef, image);
         const downloadURL = await getDownloadURL(storageRef);
         return downloadURL;
       }
-      return null;
+      return image;
     });
 
     return Promise.all(uploadPromises);
@@ -199,7 +190,6 @@ const UpdateCourt = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation
     if (
       !formData.courtName ||
       !formData.district ||
@@ -238,7 +228,7 @@ const UpdateCourt = () => {
 
       const { end_time_am, ...finalFormData } = {
         ...formData,
-        images: uploadedImageURLs.filter((url) => url !== null),
+        images: uploadedImageURLs,
         serviceCourt: selectedServices,
         startTime: formData.startTime
           ? formData.startTime.format("HH:00:00")
@@ -252,23 +242,16 @@ const UpdateCourt = () => {
         })),
       };
 
-      console.log(finalFormData);
       const res = await updateCourt(finalFormData);
-      console.log(res.status);
       if (res.status === 200) {
-        toast.success("Court created successfully!");
+        toast.success("Court updated successfully!");
         setFormData(initialFormData);
         setImageFiles(new Array(5).fill(null));
-        setImageURLs(uploadedImageURLs.filter((url) => url !== null));
       } else {
-        toast.error("Failed to fetch court details");
+        toast.error("Failed to update court");
       }
-
-      setFormData(initialFormData);
-      setImageFiles(new Array(5).fill(null));
-      setImageURLs(uploadedImageURLs.filter((url) => url !== null));
     } catch (err) {
-      toast.error("An error occurred while fetching court details");
+      toast.error("An error occurred while updating court details");
     } finally {
       setUploading(false);
     }
@@ -327,7 +310,7 @@ const UpdateCourt = () => {
                 fullWidth
                 margin="normal"
               />
-                <InputLabel id="districtLabel">Court Quantity*</InputLabel>
+              <InputLabel id="districtLabel">Court Quantity*</InputLabel>
 
               <TextField
                 id="courtQuantity"
@@ -340,39 +323,26 @@ const UpdateCourt = () => {
                 fullWidth
                 margin="normal"
               />
-              <div className="formSection top-right">
-                <h2 style={{ textAlign: "center" }}>Images</h2>
-                {Array.from({ length: 5 }).map((_, index) => (
-        <div key={index} className="imageUpload">
-          <input
-            accept="image/*"
-            type="file"
-            onChange={handleImageChange(index)}
-            id={`image-upload-${index}`}
-            style={{ display: "none" }}
-          />
-          <label htmlFor={`image-upload-${index}`}>
-            <Button
-              variant="contained"
-              color="primary"
-              component="span"
-            >
-              Upload Image {index + 1}
-            </Button>
-          </label>
-          {imageFiles[index] && (
-            <img
-              src={typeof imageFiles[index] === 'string' ? imageFiles[index] : URL.createObjectURL(imageFiles[index])}
-              alt={`uploaded ${index + 1}`}
-              className="uploadedImage"
-            />
-          )}
-        </div>
-      ))}
+              <div className="formItem">
+                <h4>Upload Images</h4>
+                {imageFiles.map((image, index) => (
+                  <div key={index} className="imageUpload">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange(index)}
+                    />
+                    {image && (
+                      <img
+                        src={typeof image === "string" ? image : URL.createObjectURL(image)}
+                        alt={`Court Image ${index + 1}`}
+                        style={{ width: "100px", height: "100px", objectFit: "cover", marginTop: "10px" }}
+                      />
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-
-            
           </div>
           <div className="colum">
             <div className="formSection bottom-left">
@@ -455,10 +425,9 @@ const UpdateCourt = () => {
                 </LocalizationProvider>
               </div>
               <InputLabel id="slotDurationLabel">
-                  Slot Duration (minutes)*
-                </InputLabel>
+                Slot Duration (minutes)*
+              </InputLabel>
               <FormControl fullWidth margin="normal">
-               
                 <Select
                   // label="Slot Duration (minutes)*"
                   labelId="slotDurationLabel"
@@ -499,9 +468,7 @@ const UpdateCourt = () => {
                     )}
                   />
                 </div>
-                <InputLabel id="slotDurationLabel">
-                Unit Price AM*
-                </InputLabel>
+                <InputLabel id="slotDurationLabel">Unit Price AM*</InputLabel>
                 <TextField
                   // label="Unit Price AM"
                   type="number"
@@ -532,11 +499,8 @@ const UpdateCourt = () => {
                     disabled
                   />
                 </div>
-                <InputLabel id="slotDurationLabel">
-                Unit Price PM*
-                </InputLabel>
+                <InputLabel id="slotDurationLabel">Unit Price PM*</InputLabel>
                 <TextField
-                
                   // label="Unit Price PM"
                   type="number"
                   value={formData.prices[1].unitPrice}

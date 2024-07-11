@@ -81,14 +81,14 @@ const ListOrder = () => {
   const actionColumn = [
     {
       field: "action",
-      headerName: "Action",
+      headerName: "",
       width: 300,
       renderCell: (params) => (
         <div className="cellAction">
           <Button
             variant="outlined"
             color="info"
-            startIcon={<VisibilityIcon />}
+            // startIcon={<VisibilityIcon />}
             onClick={() => handleClickOpen(params.row, "view")}
           >
             View
@@ -128,7 +128,6 @@ const ListOrder = () => {
             )}
           />
         )}
-        <SearchIcon/>
         <div className="datatable">
           <DataGrid
             className="datagrid"

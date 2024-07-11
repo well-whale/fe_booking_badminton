@@ -70,16 +70,15 @@ const Sidebar = () => {
       <List className="bottom">
         <Typography variant="overline" display="block" gutterBottom>Main</Typography>
         <NavLink to="/admin/home" className={({ isActive }) => (isActive ? "active" : "")}>
-          <ListItem button>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItem>
-        </NavLink>
-
-        <Typography variant="overline" display="block" gutterBottom>Lists</Typography>
-        <ListItemButton onClick={handleAccountClick}>
+              <ListItem button sx={{ pl: 4 }}>
+                <ListItemIcon>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText primary="Dashboard" />
+              </ListItem>
+            </NavLink>
+        <Typography variant="overline" display="block" gutterBottom>Account</Typography>
+        {/* <ListItemButton onClick={handleAccountClick}>
           <ListItemIcon>
             <SwitchAccountIcon />
           </ListItemIcon>
@@ -87,7 +86,7 @@ const Sidebar = () => {
           {openAccounts ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openAccounts} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
+          <List component="div" disablePadding> */}
             <NavLink to="/admin/listAdmin" className={({ isActive }) => (isActive ? "active" : "")}>
               <ListItem button sx={{ pl: 4 }}>
                 <ListItemIcon>
@@ -112,24 +111,25 @@ const Sidebar = () => {
                 <ListItemText primary="Customer" />
               </ListItem>
             </NavLink>
-          </List>
-        </Collapse>
+          {/* </List>
+        </Collapse> */}
+        <Typography variant="overline" display="block" gutterBottom>Court</Typography>
 
-        <ListItemButton onClick={handleCourtClick}>
+        {/* <ListItemButton onClick={handleCourtClick}>
           <ListItemIcon>
-            <SwitchAccountIcon />
+            <CreditCardOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary="Court" />
           {openCourts ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openCourts} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
+          <List component="div" disablePadding> */}
             <NavLink to="/admin/listCourtActive" className={({ isActive }) => (isActive ? "active" : "")}>
               <ListItem button sx={{ pl: 4 }}>
                 <ListItemIcon>
                   <CreditScoreSharpIcon />
                 </ListItemIcon>
-                <ListItemText primary="Court Open" />
+                <ListItemText primary="Court Active" />
               </ListItem>
             </NavLink>
             <NavLink to="/admin/listCourtPending" className={({ isActive }) => (isActive ? "active" : "")}>
@@ -148,10 +148,10 @@ const Sidebar = () => {
                 <ListItemText primary="Court Close" />
               </ListItem>
             </NavLink>
-          </List>
-        </Collapse>
+          {/* </List>
+        </Collapse> */}
 
-        <Typography variant="overline" display="block" gutterBottom>Booked</Typography>
+        {/* <Typography variant="overline" display="block" gutterBottom>Booked</Typography>
         <NavLink to="/orders" className={({ isActive }) => (isActive ? "active" : "")}>
           <ListItem button>
             <ListItemIcon>
@@ -167,7 +167,7 @@ const Sidebar = () => {
             </ListItemIcon>
             <ListItemText primary="Calendar" />
           </ListItem>
-        </NavLink>
+        </NavLink> */}
 
         <Typography variant="overline" display="block" gutterBottom>User Interface</Typography>
         <NavLink to="/admin/Profile" className={({ isActive }) => (isActive ? "active" : "")}>
@@ -178,14 +178,14 @@ const Sidebar = () => {
             <ListItemText primary="Profile" />
           </ListItem>
         </NavLink>
-        <NavLink to="/helper" className={({ isActive }) => (isActive ? "active" : "")}>
+        {/* <NavLink to="/helper" className={({ isActive }) => (isActive ? "active" : "")}>
           <ListItem button>
             <ListItemIcon>
               <DiamondOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary="Helper" />
           </ListItem>
-        </NavLink>
+        </NavLink> */}
         <ListItem button onClick={handleLogout}>
           <ListItemIcon>
             <ExitToAppOutlinedIcon />

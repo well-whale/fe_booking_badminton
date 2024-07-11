@@ -83,7 +83,7 @@ const checkSubCourt = (data) => {
   return axios.put(`court/updatestatuscourt`,dataCourt)
  }
  const updateCourt = (dataCourt)=>{
-  return axios.put(`court`,dataCourt)
+  return axios.put(`court/updatecourt`,dataCourt)
  }
   
  const deleteCourt = (courtID) => {

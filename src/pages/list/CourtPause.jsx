@@ -113,12 +113,12 @@ const CourtsPause = () => {
   ];
 
   const courtColumns = [
-    { field: "courtID", headerName: "ID Sân", width: 70 },
-    { field: "courtName", headerName: "Tên Sân", width: 200 },
-    { field: "district", headerName: "Khu Vực", width: 140 },
-    { field: "courtAddress", headerName: "Địa Chỉ", width: 200 },
-    { field: "courtQuantity", headerName: "Quy Mô", width: 150 },
-    { field: "status", headerName: "Trạng Thái", width: 150 },
+    { field: "courtID", headerName: "Court ID", width: 70 },
+    { field: "courtName", headerName: "Court Name", width: 200 },
+    { field: "district", headerName: "District", width: 140 },
+    { field: "courtAddress", headerName: "Court Address", width: 200 },
+    { field: "courtQuantity", headerName: "Arena", width: 150 },
+    // { field: "status", headerName: "Trạng Thái", width: 150 },
   ];
 
   const UpdateCourtStatusDialog = ({ open, onClose, court, fetchData }) => {
@@ -170,7 +170,7 @@ const CourtsPause = () => {
       <div className="customerContainer">
         <div className="datatable">
           <div className="datatableTitle">
-            <span>Courts Active</span>
+            <span>Courts Pause</span>
           </div>
           <DataGrid
             rows={data}
