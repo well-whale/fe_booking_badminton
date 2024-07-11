@@ -37,7 +37,7 @@ const Search = () => {
               renderInput={(params) => <TextField {...params} label="Khu vực" />}
             />
           </div>
-          <p>Where are you playing?</p>
+          <p>Hãy chọn khu vực bạn muốn chơi?</p>
         </div>
         <button className="search" type="submit">
           <div id="s-circle"></div>

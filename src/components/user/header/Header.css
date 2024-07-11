@@ -34,15 +34,6 @@ img {
   display: flex;
 }
 
-nav {
-  max-width: var(--max-width);
-  margin: auto;
-  padding: 2rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 90px;
-}
 
 .nav__logo {
   font-size: 1.5rem;
@@ -71,6 +62,7 @@ nav {
   align-items: center;
   gap: 2rem;
   padding: 1rem;
+  margin-bottom: 0;
 }
 
 .link a {

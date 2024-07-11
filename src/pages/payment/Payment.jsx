@@ -215,7 +215,7 @@ const PaymentPage = () => {
                     <h6 className="payment-plan-info">
                       {orderDetail.selectedDate}
                     </h6>
-                    <h5 className="payment-plan-info">{court.phone}</h5>
+                    {/* <h5 className="payment-plan-info">{court.phone}</h5> */}
                   </Box>
                 )}
               </Box>

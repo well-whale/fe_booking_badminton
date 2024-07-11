@@ -7,7 +7,7 @@ export const routes = {
     search: "/search",
     bookingday: "/bookingday/:idCourt",
     bookingmonth: "/bookingmonth/:idCourt",
-    payment: "/payment",
+    payment: "/bookingday/payment",
     paymentMonth: "/paymentMonth",
 
     adminHome: "/admin/home",

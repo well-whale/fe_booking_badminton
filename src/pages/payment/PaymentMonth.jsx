@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import "./tailwindcss-colors.css";
 import "./Payment.css";
-import { getCourtByIdCourt, payment } from "../../services/UserServices";
+import { getCourtByIdCourt, getSubCourtByIdCourt, payment } from "../../services/UserServices";
 import VNPAGE from "../../img/VNPAGE.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -56,29 +56,29 @@ const PaymentMonthPage = () => {
 
   useEffect(() => {
     const storedDetails = localStorage.getItem("bookingDetails");
-    console.log(storedDetails);
     if (storedDetails) {
+      const parsedDetails = JSON.parse(storedDetails);
       setOrderDetail((prevState) => ({
         ...prevState,
-        ...JSON.parse(storedDetails),
-        selectedCourts: JSON.parse(storedDetails).selectedCourts || [],
-        endTime: JSON.parse(storedDetails).selectedCourts[0].endTime || "",
-        courtId: JSON.parse(storedDetails).courtId || "",
-
-        listDayOfWeek: JSON.parse(storedDetails).dayOfWeek || [],
-        startTime: JSON.parse(storedDetails).selectedCourts[0].startTime || "",
+        ...parsedDetails,
+        selectedCourts: parsedDetails.selectedCourts || [],
+        endTime: parsedDetails.selectedCourts?.[0]?.endTime || "",
+        courtId: parsedDetails.courtId || "",
+        listDayOfWeek: parsedDetails.dayOfWeek || [],
+        startTime: parsedDetails.selectedCourts?.[0]?.startTime || "",
       }));
     }
   }, []);
+
   const [court, setCourt] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
 
   const navigate = useNavigate();
+
   const getDetailCourt = async () => {
     try {
-      console.log(orderDetail);
       const res = await getCourtByIdCourt(orderDetail.courtId);
       if (res.status === 200) {
         setCourt(res.data);
@@ -93,8 +93,39 @@ const PaymentMonthPage = () => {
   };
 
   useEffect(() => {
-    getDetailCourt();
+    if (orderDetail.courtId) {
+      getDetailCourt();
+    }
   }, [orderDetail.courtId]);
+
+  const [subCourtNames, setSubCourtNames] = useState([]);
+
+  const fetchSubCourtNames = async () => {
+    setLoading(true);
+    try {
+      const subCourtPromises = orderDetail.selectedCourts.map(async (court) => {
+        const res = await getSubCourtByIdCourt(court.subCourtID);
+        if (res.status === 200) {
+          return res.data.subCourtName;
+        } else {
+          throw new Error("Failed to fetch sub-court details");
+        }
+      });
+
+      const names = await Promise.all(subCourtPromises);
+      setSubCourtNames(names);
+    } catch (err) {
+      setError("An error occurred while fetching sub-court details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (orderDetail.selectedCourts.length > 0) {
+      fetchSubCourtNames();
+    }
+  }, [orderDetail.selectedCourts]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -104,6 +135,7 @@ const PaymentMonthPage = () => {
   const handlePaymentMethodChange = (e) => {
     setOrderDetail({ ...orderDetail, paymentMethod: e.target.value });
   };
+
   const dataToPrice = {
     courtId: orderDetail.courtId,
     endDate: orderDetail.endDate,
@@ -113,32 +145,27 @@ const PaymentMonthPage = () => {
     listDayOfWeek: orderDetail.listDayOfWeek,
     listSubCourt: orderDetail.selectedCourts.map((court) => court.subCourtID),
   };
-  const tien = async (data) => {
+
+  const fetchTotalPrice = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/recure-booking/totalPrice",
-        data
-      );
-      //   const Price = response.data.totalPrice;
-      // console.log(response.data);
-
+      const response = await axios.post("http://localhost:8080/recure-booking/totalPrice", dataToPrice);
       if (response.status === 200 || response.status === 201) {
-        // console.log(response.data);
-
         setOrderDetail((prevState) => ({
           ...prevState,
           totalPrice: response.data,
         }));
       } else {
-        console.error(" failed:", response.data);
+        console.error("Failed to fetch total price:", response.data);
       }
     } catch (error) {
-      console.error("Error during :", error);
+      console.error("Error fetching total price:", error);
     }
   };
 
-  // console.log(dataToPrice)
-  tien(dataToPrice);
+  useEffect(() => {
+    fetchTotalPrice();
+  }, [dataToPrice]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSubmit = {
@@ -157,17 +184,8 @@ const PaymentMonthPage = () => {
     };
     localStorage.setItem("bookingData", JSON.stringify(dataToSubmit));
 
-    console.log(orderDetail);
-    console.log(dataToSubmit);
-
     try {
-      const res = await payment(
-        orderDetail.totalPrice * 1000,
-        orderDetail.customerId
-      );
-      console.log(res.data);
-
-      // Redirect to VNPay
+      const res = await payment(orderDetail.totalPrice * 1000, orderDetail.customerId);
       window.location.href = res.data;
     } catch (error) {
       console.error("Payment failed:", error);
@@ -176,7 +194,7 @@ const PaymentMonthPage = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    navigate(`/booking/${orderDetail.courtID}`); // Navigate to the booking page with the specific court ID
+    navigate(`/booking/${orderDetail.courtID}`);
   };
 
   if (loadingUser) {
@@ -191,16 +209,16 @@ const PaymentMonthPage = () => {
             <Box className="payment-header-icon">
               <i className="ri-flashlight-fill"></i>
             </Box>
-            <h1 className="payment-header-title">Order Summary</h1>
+            <h1 className="payment-header-title">Chi tiết đặt sân</h1>
             <Box className="payment-plan-info">
               <h5 className="payment-plan-info-name">
-                Customer: {orderDetail.firstname} {orderDetail.lastName}
+                Tên khách hàng: {orderDetail.firstname} {orderDetail.lastName}
               </h5>
               <h5 className="payment-plan-info-email">
                 Email: {orderDetail.email}
               </h5>
               <h5 className="payment-plan-info-phone">
-                Phone: {orderDetail.phone}
+                Điện thoại: {orderDetail.phone}
               </h5>
             </Box>
           </Box>
@@ -219,12 +237,11 @@ const PaymentMonthPage = () => {
                     <h6 className="payment-plan-info">
                       {orderDetail.selectedDate}
                     </h6>
-                    {/* <h5 className="payment-plan-info">{court.phone}</h5> */}
-                    <Typography className="payment-summary-name">
-                      {orderDetail.startDate}
-                      {" đến "}
-                      {orderDetail.endDate}{" "}
-                    </Typography>
+                    <h5 className="payment-plan-info">
+                      {orderDetail.startDate}{" "}
+                      {" đến "} 
+                      {orderDetail.endDate} 
+                    </h5>
                     {orderDetail.dayOfWeek.map((detail, index) => (
                       <Box key={index} className="payment-summary-item">
                         <Typography className="payment-summary-name">
@@ -239,7 +256,7 @@ const PaymentMonthPage = () => {
                 {orderDetail.selectedCourts.map((detail, index) => (
                   <Box key={index} className="payment-summary-item">
                     <Typography className="payment-summary-name">
-                      Court {detail.subCourtID}
+                      {subCourtNames[index]}
                     </Typography>
                     <Typography className="payment-summary-time">
                       {detail.startTime} - {detail.endTime}
@@ -249,10 +266,10 @@ const PaymentMonthPage = () => {
                 <Divider className="payment-summary-divider" />
                 <Box className="payment-summary-item payment-summary-total">
                   <Typography className="payment-summary-name">
-                    Total
+                    Tổng tiền
                   </Typography>
                   <Typography className="payment-summary-price">
-                    {orderDetail.totalPrice * 1000} VND
+                    {orderDetail.totalPrice}.000 VND
                   </Typography>
                 </Box>
               </Box>
@@ -262,7 +279,7 @@ const PaymentMonthPage = () => {
         <Box className="payment-right">
           <form className="payment-form" onSubmit={handleSubmit}>
             <Typography variant="h5" className="payment-title">
-              Payment Details
+             Chi tiết thanh toán
             </Typography>
             <FormControl component="fieldset" className="formControl">
               <RadioGroup
@@ -282,11 +299,6 @@ const PaymentMonthPage = () => {
                     />
                   }
                 />
-                {/* <FormControlLabel
-                  value="method-2"
-                  control={<Radio />}
-                  label={<img src="images/mastercard.png" alt="Momo" />}
-                /> */}
               </RadioGroup>
             </FormControl>
             <FormControl fullWidth className="formControl">
@@ -334,7 +346,7 @@ const PaymentMonthPage = () => {
                 id="totalPrice"
                 label="Total Price"
                 variant="outlined"
-                value={orderDetail.totalPrice * 1000 || ""}
+                value={`${orderDetail.totalPrice}.000` || ""}
                 onChange={handleInputChange}
                 disabled
               />

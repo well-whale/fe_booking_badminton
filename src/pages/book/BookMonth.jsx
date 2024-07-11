@@ -57,10 +57,10 @@ const disablePastDates = (date) => {
   return date.isBefore(dayjs(), "day");
 };
 
-const generateAreas = (numCourts) => {
-  return Array.from({ length: numCourts }, (_, i) => ({
+const generateAreas = (subCourts) => {
+  return subCourts.map(({ subCourtID }, i) => ({
     name: `Sân ${i + 1}`,
-    id: i + 1,
+    subCourtID: subCourtID,
   }));
 };
 
@@ -204,7 +204,7 @@ const BookMonth = () => {
   }, [startTime, endTime, selectedDate, court, selectedDays]);
   
 
-  const areas = generateAreas(court?.courtQuantity || 0);
+  const areas = generateAreas(court?.subCourts || []);
 
   const selectedTimeRange =
     startTime !== null && endTime !== null
@@ -223,27 +223,23 @@ const BookMonth = () => {
         selectedCourts.length
       : 0;
 
-  const getButtonColor = (index) => {
-    if (!courtAvailability || courtAvailability.length === 0) {
-      return "warning"; // Or any default color you prefer
-    }
+      const getButtonColor = (subCourtID) => {
+        const subCourt = courtAvailability.find(
+          (court) => court.subCourtID === subCourtID
+        );
+        if (subCourt) {
+          return subCourt.subCourtStatus ? "success" : "error";
+        }
+        return "warning";
+      };
 
-    const subCourt = courtAvailability.find(
-      (court) => court.subCourtID === index + 1
-    );
-    if (subCourt) {
-      return subCourt.subCourtStatus ? "success" : "error";
-    }
-    return "warning";
-  };
-
-  const handleCourtSelection = (index) => {
+  const handleCourtSelection = (subCourtID) => {
     if (startTime === null || endTime === null) {
-      return; // Disable court selection if startTime or endTime is not selected
+      return;
     }
 
     const selectedSubCourt = courtAvailability.find(
-      (court) => court.subCourtID === index + 1 && court.subCourtStatus
+      (court) => court.subCourtID === subCourtID && court.subCourtStatus
     );
 
     if (selectedSubCourt) {
@@ -277,7 +273,10 @@ const BookMonth = () => {
   const closePricingModal = () => {
     setPricingModalOpen(false);
   };
-
+  const getCourtName = (subCourtID) => {
+    const area = areas.find((area) => area.subCourtID === subCourtID);
+    return area ? area.name : `Sân ${subCourtID}`;
+  };
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -368,21 +367,26 @@ const BookMonth = () => {
 
         <label>Chọn Sân:</label>
         <div>
-          {areas.map(({ name, id }) => (
+          {areas.map(({ name, subCourtID }) => (
             <Button
-              key={id}
+              key={subCourtID}
               color={
-                selectedCourts.some((court) => court.subCourtID === id)
-                  ? "primary"
-                  : getButtonColor(id - 1)
+                selectedCourts.some((court) => court.subCourtID === subCourtID)
+                  ? "success"
+                  : getButtonColor(subCourtID)
               }
-              variant="contained"
+              variant={
+                selectedCourts.some((court) => court.subCourtID === subCourtID)
+                  ? "contained"
+                  : "outlined"
+              }
+              
               disabled={
-                getButtonColor(id - 1) === "error" ||
+                getButtonColor(subCourtID) === "error" ||
                 startTime === null ||
                 endTime === null
               }
-              onClick={() => handleCourtSelection(id - 1)}
+              onClick={() => handleCourtSelection(subCourtID)}
             >
               {name}
             </Button>
@@ -432,7 +436,7 @@ const BookMonth = () => {
                       >
                         {" "}
                         <PiCourtBasketball fontSize={"24px"} />
-                        {` Sân ${court.subCourtID}`}
+                        {getCourtName(court.subCourtID)}
                       </Typography>
                     ))}
                   </Typography>

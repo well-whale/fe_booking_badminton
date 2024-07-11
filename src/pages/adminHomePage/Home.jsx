@@ -1,3 +1,5 @@
+import ChartCourt from "../../components/admin/chart/ChartCourt";
+import ChartProfit from "../../components/admin/chart/ChartProfit";
 import Navbar from "../../components/admin/navbar/Navbar";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Widget from "../../components/admin/widget/Widget";
@@ -15,7 +17,8 @@ const adminHome = () => {
           <Widget type="court" />
           <Widget type="earnings" />
         </div>
-        
+        <ChartCourt/>
+        <ChartProfit/>
       </div>
     </>
   </div>

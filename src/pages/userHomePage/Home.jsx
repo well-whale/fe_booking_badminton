@@ -4,14 +4,17 @@ import { NavLink } from "react-router-dom";
 import { GiTennisCourt } from "react-icons/gi";
 import Search from '../../components/user/search/Search';
 import { fetchAllCourts } from '../../services/UserServices';
+import Pagination from '@mui/material/Pagination';
 
 const HomePage = () => {
-  const [courts, setCourt] = useState([]);
+  const [courts, setCourts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const courtsPerPage = 6;
 
   const getListCourt = async () => {
     const res = await fetchAllCourts();
     if (res.status === 200) {
-      setCourt(res.data.filter((court) => court.statusCourt === 1));
+      setCourts(res.data.filter((court) => court.statusCourt === 1));
       console.log(res.data);
     }
   };
@@ -26,16 +29,19 @@ const HomePage = () => {
       const minPrice = Math.min(...unitPrices);
       const maxPrice = Math.max(...unitPrices);
 
-      return `${minPrice*1000} - ${maxPrice*1000} VND`;
+      return `${minPrice}.000 - ${maxPrice}.000 VND`;
     }
     return "Đang Cập Nhật....";
   };
-   const getRandomCourts = (courtsArray) => {
-    const shuffled = courtsArray.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 9);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
   };
 
-  const randomCourts = getRandomCourts(courts);
+  const indexOfLastCourt = currentPage * courtsPerPage;
+  const indexOfFirstCourt = indexOfLastCourt - courtsPerPage;
+  const currentCourts = courts.slice(indexOfFirstCourt, indexOfLastCourt);
+
   return (
     <div className="section__container header__container">
       <div className="header__image__container">
@@ -46,16 +52,15 @@ const HomePage = () => {
         <Search />
       </div>
       <section className="section__container popular__container">
-        <h2 className="section__header">Popular Badminton Courts</h2>
+        <h2 className="section__header">Danh sách sân cầu lông</h2>
         <div className="popular__grid">
-          {randomCourts.map((court, index) => (
+          {currentCourts.map((court, index) => (
             <NavLink
               key={index}
               to={`/view/${court.courtID}`}
               className="popular__card"
-              onClick={() => window.scrollTo(0, 100)}
+              onClick={() => window.scrollTo(0, 0)}
             >
-              {/* <img src={court.images[0] || 'default-image-url'} alt={court.courtName} /> */}
               <img src={court.images.length > 0 ? court.images[0].image : 'default-image-url'} alt={court.courtName} />
               <div className="popular__content">
                 <div className="popular__card__header">
@@ -65,24 +70,30 @@ const HomePage = () => {
                 <div className="subcourt-container">
                   <div className="subcourt">
                     <p className="subcourt-icon"><GiTennisCourt /></p>
-                    <p> {court.courtQuantity} sân </p>
+                    <p>{court.courtQuantity} sân</p>
                   </div>
                   <div className="rater-container price">
-                    <p>
-                      {getPriceRange(court.price)}
-                    </p>
+                    <p>{getPriceRange(court.price)}</p>
                   </div>
                 </div>
               </div>
             </NavLink>
           ))}
         </div>
+        <Pagination 
+        className='pagination'
+          count={Math.ceil(courts.length / courtsPerPage)} 
+          variant="outlined" 
+          shape="rounded" 
+          page={currentPage} 
+          onChange={handlePageChange} 
+        />
       </section>
       <section className="section__container">
         <div className="reward__container">
-          <p>20+ badminton courts</p>
-          <h4>"Join BadmintonHub and unlock unbeatable discounts on your court bookings!"</h4>
-          <NavLink to="/search"><button className="reward__btn">Book Now</button></NavLink>
+          <p>20+ Sân cầu lông</p>
+          <h4>"Join Badminton Hub and book your yard faster and more conveniently!"</h4>
+          <NavLink to="/search" onClick={() => window.scrollTo(0, 0)}><button className="reward__btn">Đặt Ngay</button></NavLink>
         </div>
       </section>
     </div>

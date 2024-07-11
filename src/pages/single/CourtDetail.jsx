@@ -146,7 +146,7 @@ const CourtDetail = ({ open, onClose, court }) => {
                         <TableRow key={price.priceID}>
                           <TableCell>{price.startTime}</TableCell>
                           <TableCell>{price.endTime}</TableCell>
-                          <TableCell>{price.unitPrice * 1000}</TableCell>
+                          <TableCell>{price.unitPrice}.000</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

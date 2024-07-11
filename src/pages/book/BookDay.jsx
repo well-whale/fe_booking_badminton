@@ -119,7 +119,9 @@ const BookDay = () => {
       const interval = 30;
 
       if (startTime !== null && endTime !== null) {
-        setTimeSlots(generateTimeSlots(startTime, endTime, interval, selectedDate));
+        setTimeSlots(
+          generateTimeSlots(startTime, endTime, interval, selectedDate)
+        );
       }
     }
   }, [court, selectedDate]);
@@ -219,7 +221,7 @@ const BookDay = () => {
 
   const handleCourtSelection = (subCourtID) => {
     if (startTime === null || endTime === null) {
-      return; 
+      return;
     }
 
     const selectedSubCourt = courtAvailability.find(
@@ -259,7 +261,7 @@ const BookDay = () => {
   };
 
   const getCourtName = (subCourtID) => {
-    const area = areas.find(area => area.subCourtID === subCourtID);
+    const area = areas.find((area) => area.subCourtID === subCourtID);
     return area ? area.name : `Sân ${subCourtID}`;
   };
 
@@ -303,9 +305,9 @@ const BookDay = () => {
           {timeSlots.map(({ timeString, id, isPast }) => (
             <div
               key={id}
-              className={`time ${selectedTimes.includes(id) ? "selected" : ""} ${
-                isPast ? "disabled" : ""
-              }`}
+              className={`time ${
+                selectedTimes.includes(id) ? "selected" : ""
+              } ${isPast ? "disabled" : ""}`}
               onClick={() => toggleTimeSlot(id, isPast)}
             >
               {timeString}
@@ -319,10 +321,15 @@ const BookDay = () => {
               key={subCourtID}
               color={
                 selectedCourts.some((court) => court.subCourtID === subCourtID)
-                  ? "primary"
+                  ? "success"
                   : getButtonColor(subCourtID)
               }
-              variant="contained"
+              variant={
+                selectedCourts.some((court) => court.subCourtID === subCourtID)
+                  ? "contained"
+                  : "outlined"
+              }
+              
               disabled={
                 getButtonColor(subCourtID) === "error" ||
                 startTime === null ||
@@ -342,7 +349,11 @@ const BookDay = () => {
             <CardMedia
               component="img"
               height="140"
-              image={court.images.length > 0 ? court.images[0].image : 'default-image-url'}
+              image={
+                court.images.length > 0
+                  ? court.images[0].image
+                  : "default-image-url"
+              }
               alt="green iguana"
             />
 
@@ -390,7 +401,7 @@ const BookDay = () => {
         >
           <NavLink
             to={{
-              pathname: "/payment",
+              pathname: "/bookingday/payment",
             }}
             onClick={() => window.scrollTo(0, 200)}
             style={{ textDecoration: "none", color: "white" }}
