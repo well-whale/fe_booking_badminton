@@ -15,12 +15,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import "./NewUser.css";
 import { newUser } from "../../services/UserServices";
+import { useNavigate } from "react-router-dom";
+import { routes } from "../../router/routes";
 
 const Transition = React.forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
 ));
 
-const NewUser = ({ open, handleClose, refreshData }) => {
+const NewStaff = ({ open, handleClose, refreshData }) => {
   const initialFormData = {
     userName: "",
     firstName: "",
@@ -35,6 +37,7 @@ const NewUser = ({ open, handleClose, refreshData }) => {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -96,6 +99,7 @@ const NewUser = ({ open, handleClose, refreshData }) => {
       setFormData(initialFormData);
       handleClose();
       refreshData();
+      navigate(routes.adminListStaff)
     } catch (error) {
       if (
         error.response &&
@@ -123,7 +127,7 @@ const NewUser = ({ open, handleClose, refreshData }) => {
         <div className="newContainer">
           <div className="header">
             <h3>
-              <PersonAddAlt1Icon style={{ fontSize: "70px" }} /> Add User Form
+              <PersonAddAlt1Icon style={{ fontSize: "70px" }} /> Add Staff Form
             </h3>
             <IconButton
               aria-label="close"
@@ -226,8 +230,8 @@ const NewUser = ({ open, handleClose, refreshData }) => {
                     label="Role"
                     onChange={handleRoleChange}
                   >
-                    <MenuItem value={2}>Admin</MenuItem>
-                    <MenuItem value={3}>Owner Court</MenuItem>
+                    <MenuItem value={4}>Staff</MenuItem>
+                   
                     
                   </Select>
                   {errors.roleID && (
@@ -262,4 +266,4 @@ const NewUser = ({ open, handleClose, refreshData }) => {
   );
 };
 
-export default NewUser;
+export default NewStaff;

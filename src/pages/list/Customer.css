@@ -47,6 +47,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-top: 9px;
 }
 
 /* View and delete button styles */

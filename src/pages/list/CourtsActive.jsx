@@ -11,6 +11,8 @@ import {
   Select,
   CircularProgress,
   Box,
+  TextField,
+  Autocomplete,
 } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,7 +20,33 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
 import { fetchAllCourts, updateStatusCourt } from "../../services/UserServices";
-import AutorenewIcon from '@mui/icons-material/Autorenew';
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+
+const districtList = [
+  "Quận 1",
+  "Quận 3",
+  "Quận 4",
+  "Quận 5",
+  "Quận 6",
+  "Quận 7",
+  "Quận 8",
+  "Quận 10",
+  "Quận 11",
+  "Quận 12",
+  "Phú Nhuận",
+  "Bình Thạnh",
+  "Gò Vấp",
+  "Tân Bình",
+  "Bình Tân",
+  "Tân Phú",
+  "Thủ Đức",
+  "Bình Chánh",
+  "Hóc Môn",
+  "Củ Chi",
+  "Cần Giờ",
+  "Nhà Bè",
+];
+
 const CourtsActive = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -27,11 +55,13 @@ const CourtsActive = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(15);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchData = async () => {
     try {
       const response = await fetchAllCourts();
-      console.log(response.data);
       if (Array.isArray(response.data)) {
         const preprocessedData = response.data.map((court) => ({
           ...court,
@@ -43,20 +73,31 @@ const CourtsActive = () => {
               : "Chờ duyệt",
         }));
         setData(preprocessedData.filter((court) => court.statusCourt === 1));
-        console.log(data);
       } else {
         console.error("Expected an array but got:", response.data);
         setData([]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setError("Error fetching data");
       setData([]);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDistrictChange = (event, value) => {
+    setSelectedDistrict(value);
+    if (value) {
+      setData(data.filter((court) => court.district === value));
+    } else {
+      fetchData();
+    }
+  };
 
   const handleDelete = (courtId) => {
     setDeleteId(courtId);
@@ -95,22 +136,18 @@ const CourtsActive = () => {
             color="secondary"
             onClick={() => handleClickOpen(params.row, "update")}
           />
-          {/* <DeleteIcon
-            color="error"
-            onClick={() => handleDelete(params.row.courtID)}
-          /> */}
         </div>
       ),
     },
   ];
 
   const courtColumns = [
-    { field: "courtID", headerName: "Court ID", width: 70 },
-    { field: "courtName", headerName: "Court Name", width: 200 },
-    { field: "district", headerName: "District", width: 140 },
-    { field: "courtAddress", headerName: "Court Address", width: 200 },
-    { field: "courtQuantity", headerName: "Arena", width: 150 },
-    // { field: "status", headerName: "Trạng Thái", width: 150 },
+    { field: "courtID", headerName: "ID Sân", width: 70 },
+    { field: "courtName", headerName: "Tên Sân", width: 200 },
+    { field: "district", headerName: "Khu Vực", width: 140 },
+    { field: "courtAddress", headerName: "Địa Chỉ", width: 200 },
+    { field: "courtQuantity", headerName: "Quy Mô", width: 150 },
+    { field: "status", headerName: "Trạng Thái", width: 150 },
   ];
 
   const UpdateCourtStatusDialog = ({ open, onClose, court, fetchData }) => {
@@ -122,11 +159,10 @@ const CourtsActive = () => {
 
     const handleUpdate = async () => {
       try {
-        const res = await updateStatusCourt({
+        await updateStatusCourt({
           courtID: court.courtID,
           statusCourt: status,
         });
-        console.log(res.status)
         fetchData();
         onClose();
       } catch (error) {
@@ -141,7 +177,6 @@ const CourtsActive = () => {
           <Select value={status} onChange={handleChange} fullWidth>
             <MenuItem value={1}>Hoạt động</MenuItem>
             <MenuItem value={-1}>Tạm ngưng</MenuItem>
-            {/* <MenuItem value={0}>Chờ duyệt</MenuItem> */}
           </Select>
         </DialogContent>
         <DialogActions>
@@ -160,28 +195,51 @@ const CourtsActive = () => {
     <div className="customer">
       <Sidebar />
       <div className="customerContainer">
+        {districtList.length > 0 && (
+          <Autocomplete
+          sx={{ width: 300 }}
+
+            id="district-selector"
+            options={districtList}
+            getOptionLabel={(option) => option}
+            onChange={handleDistrictChange}
+            renderInput={(params) => (
+              <TextField {...params} label="Khu Vực" />
+            )}
+          />
+        )}
         <div className="datatable">
           <div className="datatableTitle">
             <span>Courts Active</span>
           </div>
-          <DataGrid
-            rows={data}
-            columns={courtColumns.concat(actionColumn)}
-            pageSize={5}
-            rowsPerPageOptions={[15]}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 10,
+          {loading ? (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <CircularProgress />
+            </Box>
+          ) : error ? (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <span>{error}</span>
+            </Box>
+          ) : (
+            <DataGrid
+              rows={data}
+              columns={courtColumns.concat(actionColumn)}
+              pageSize={5}
+              rowsPerPageOptions={[15]}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 10,
+                  },
                 },
-              },
-            }}
-            pagination
-            page={page}
-            onPageChange={(newPage) => setPage(newPage)}
-            disableSelectionOnClick
-            getRowId={(row) => row.courtID}
-          />
+              }}
+              pagination
+              page={page}
+              onPageChange={(newPage) => setPage(newPage)}
+              disableSelectionOnClick
+              getRowId={(row) => row.courtID}
+            />
+          )}
         </div>
       </div>
 

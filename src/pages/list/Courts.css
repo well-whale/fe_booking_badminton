@@ -4,4 +4,6 @@
     align-items: center;
     gap: 10px; /* Adjust the spacing between icons */
   }
-  
+  .cellAction{
+    justify-content: center;
+  }

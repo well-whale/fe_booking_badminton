@@ -39,6 +39,7 @@ import ProfileAdmin from './pages/single/Profile';
 import ProfileOwner from './pages/single/ProfileOwner';
 import PaymentMonthPage from './pages/payment/PaymentMonth';
 import CustomizedBreadcrumbs from './components/breadcrumb/Breadcrumb';
+import Staff from './pages/list/Staff';
 
 function App() {
   const dispatch = useDispatch();
@@ -77,6 +78,8 @@ function App() {
         <Route path={routes.adminListUsers} element={<ProtectedRoute role="Admin"><Customer /></ProtectedRoute>} />
         <Route path={routes.adminListAdmins} element={<ProtectedRoute role="Admin"><ListAdmin /></ProtectedRoute>} />
         <Route path={routes.adminListOwners} element={<ProtectedRoute role="Admin"><CourtOwner /></ProtectedRoute>} />
+        <Route path={routes.adminListStaff} element={<ProtectedRoute role="Admin"><Staff/></ProtectedRoute>} />
+
         <Route path={routes.adminCourtActive} element={<ProtectedRoute role="Admin"><CourtsActive /></ProtectedRoute>} />
         <Route path={routes.adminListCourtPending} element={<ProtectedRoute role="Admin"><CourtsPending /></ProtectedRoute>} />
         <Route path={routes.adminListCourtPause} element={<ProtectedRoute role="Admin"><CourtsPause /></ProtectedRoute>} />

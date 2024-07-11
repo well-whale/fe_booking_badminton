@@ -24,6 +24,7 @@ import {
 import "../list/Customer.css";
 import CourtDetail from "../single/CourtDetail";
 import {
+  deleteCourt,
   fetchAllCourts,
   getAllBookingsOfCourt,
   getAllCourtOfOwner,
@@ -112,9 +113,14 @@ const ListCourtForOwnerActive = () => {
     setOpen(true);
   };
 
-  const confirmDelete = () => {
-    setData(data.filter((item) => item.courtID !== deleteId));
-    handleClose();
+  const confirmDelete = async () => {
+    try {
+      await deleteCourt(deleteId);
+      fetchData();
+      handleClose();
+    } catch (error) {
+      console.error("Error deleting court:", error);
+    }
   };
 
   const handleClickOpen = (court, type) => {

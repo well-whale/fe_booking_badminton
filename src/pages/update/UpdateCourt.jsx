@@ -241,7 +241,7 @@ const UpdateCourt = () => {
           unitPrice: price.unitPrice !== null ? Number(price.unitPrice) : null,
         })),
       };
-
+console.log(finalFormData)
       const res = await updateCourt(finalFormData);
       if (res.status === 200) {
         toast.success("Court updated successfully!");
@@ -393,7 +393,7 @@ const UpdateCourt = () => {
                   <Checkbox
                     checked={services.FOOD}
                     onChange={handleServiceChange}
-                    name="RESTAURANT"
+                    name="FOOD"
                   />
                 }
                 label="Đồ ăn"

@@ -14,6 +14,7 @@ export const routes = {
     adminListUsers: "/admin/listUsers",
     adminListAdmins: "/admin/listAdmin",
     adminListOwners: "/admin/listOwners",
+    adminListStaff: "/admin/listStaff",
     adminListCourtPending: "/admin/listCourtPending",
     adminListCourtPause: "/admin/listCourtPause",
     adminCourtActive: "/admin/listCourtActive",

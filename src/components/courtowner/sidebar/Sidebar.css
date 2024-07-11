@@ -22,7 +22,11 @@
   align-items: center;
   justify-content: center;
 }
-
+.sidebar img {
+  width: 90px;
+  height: 90px;
+  margin: auto;
+}
 .sidebar .top .logo {
   font-size: 22px;
   font-weight: bold;
