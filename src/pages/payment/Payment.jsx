@@ -23,6 +23,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
+import VND from "../../components/price/PriceFormat";
 
 const PaymentPage = () => {
   const user = useSelector(selectUser)?.user;
@@ -185,7 +186,7 @@ const PaymentPage = () => {
 
     try {
       const res = await payment(
-        orderDetail.totalPrice * 1000,
+        orderDetail.totalPrice ,
         orderDetail.customerId
       );
       console.log(res.data);
@@ -263,7 +264,7 @@ const PaymentPage = () => {
                     Tổng tiền
                   </Typography>
                   <Typography className="payment-summary-price">
-                    {orderDetail.totalPrice}.000 VND
+                    {VND.format(orderDetail.totalPrice)}
                   </Typography>
                 </Box>
               </Box>
@@ -356,7 +357,7 @@ const PaymentPage = () => {
               color="primary"
               className="payment-submit-button"
             >
-              Proceed to Pay
+              Thanh Toán 
             </Button>
           </form>
         </Box>

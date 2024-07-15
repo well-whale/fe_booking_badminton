@@ -7,12 +7,34 @@ import { Autocomplete, TextField } from "@mui/material";
 import { GiTennisCourt } from "react-icons/gi";
 import "./SearchList.css";
 import { searchByDistrict } from "../../services/UserServices";
+import VND from "../../components/price/PriceFormat";
+import { TbReportMoney  } from "react-icons/tb";
+import { PiCourtBasketball } from "react-icons/pi";
+
 
 const address = [
-  "Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8",
-  "Quận 10", "Quận 11", "Quận 12", "Phú Nhuận", "Bình Thạnh",
-  "Gò Vấp", "Tân Bình", "Bình Tân", "Tân Phú",
-  "Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Cần Giờ", "Nhà Bè"
+  "Quận 1",
+  "Quận 3",
+  "Quận 4",
+  "Quận 5",
+  "Quận 6",
+  "Quận 7",
+  "Quận 8",
+  "Quận 10",
+  "Quận 11",
+  "Quận 12",
+  "Phú Nhuận",
+  "Bình Thạnh",
+  "Gò Vấp",
+  "Tân Bình",
+  "Bình Tân",
+  "Tân Phú",
+  "Thủ Đức",
+  "Bình Chánh",
+  "Hóc Môn",
+  "Củ Chi",
+  "Cần Giờ",
+  "Nhà Bè",
 ];
 
 const SearchList = () => {
@@ -28,10 +50,12 @@ const SearchList = () => {
       setSelectedDistrict(district);
       searchByDistrict(district)
         .then((response) => {
-          setListSearchCourts(response.data.filter((court) => court.statusCourt === 1));
-          console.log(response.data)
+          setListSearchCourts(
+            response.data.filter((court) => court.statusCourt === 1)
+          );
+          console.log(response.data);
         })
-        
+
         .catch((error) => {
           console.error("There was an error making the request!", error);
         });
@@ -45,11 +69,11 @@ const SearchList = () => {
 
   const getPriceRange = (prices) => {
     if (Array.isArray(prices) && prices.length > 0) {
-      const unitPrices = prices.map(price => price.unitPrice);
+      const unitPrices = prices.map((price) => price.unitPrice);
       const minPrice = Math.min(...unitPrices);
       const maxPrice = Math.max(...unitPrices);
 
-      return `${minPrice*1000} - ${maxPrice*1000} VND`;
+      return `${VND.format(minPrice)} - ${VND.format(maxPrice)}`;
     }
     return "Đang Cập Nhật....";
   };
@@ -67,8 +91,11 @@ const SearchList = () => {
                   sx={{ width: 300 }}
                   value={selectedDistrict}
                   onChange={(event, newValue) => {
-                    setSelectedDistrict(newValue);
+                    setSelectedDistrict(newValue || ""); // Ensure newValue is never null
                   }}
+                  isOptionEqualToValue={(option, value) =>
+                    option === value || value === ""
+                  }
                   renderInput={(params) => (
                     <TextField {...params} label="Khu vực" />
                   )}
@@ -96,24 +123,31 @@ const SearchList = () => {
                   className="popular__card"
                   onClick={() => window.scrollTo(0, 100)}
                 >
-              <img src={court.images.length > 0 ? court.images[0].image : 'default-image-url'} alt={court.courtName} />
-              <div className="popular__content">
-                    <div className="popular__card__header">
-                      <h4 style={{ display: "flex" }}>{court.courtName}</h4>
-                    </div>
-                    <p>{court.courtAddress}</p>
-                    <div className="subcourt-container">
-                      <div className="subcourt">
-                        <p className="subcourt-icon">
-                          <GiTennisCourt />
-                        </p>
-                        <p>{court.courtQuantity} Sân</p>
-                      </div>
-                      <div className="rater-container">
-                        <p>{getPriceRange(court.price)}</p>
-                      </div>
-                    </div>
+                  <img
+                    src={
+                      court.images.length > 0
+                        ? court.images[0].image
+                        : "default-image-url"
+                    }
+                    alt={court.courtName}
+                  />
+                  <div className="popular__content">
+                <div className="popular__card__header">
+                  <h4 style={{ display: 'flex' }}>{court.courtName}</h4>
+                </div>
+                <p className='popular__card__address'>{court.courtAddress}</p>
+                <div className="subcourt-container">
+                  <div className=" rater-container price">
+                    <p className="subcourt-icon " ><PiCourtBasketball style={{width:"30px", height:"30px"}}/></p>
+                    <p>{court.courtQuantity} sân</p>
                   </div>
+                  <div className="rater-container price">
+                  <p className="subcourt-icon " ><TbReportMoney  style={{width:"30px", height:"30px"}}/></p>
+
+                    <p>{getPriceRange(court.price)}</p>
+                  </div>
+                </div>
+              </div>
                 </NavLink>
               ))
             )}

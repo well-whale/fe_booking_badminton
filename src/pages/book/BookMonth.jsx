@@ -338,13 +338,13 @@ const BookMonth = () => {
           <Typography variant="h6">Chọn các ngày trong tuần:</Typography>
           <FormGroup row>
             {[
-              { day: "Monday", value: "MONDAY" },
-              { day: "Tuesday", value: "TUESDAY" },
-              { day: "Wednesday", value: "WEDNESDAY" },
-              { day: "Thursday", value: "THURSDAY" },
-              { day: "Friday", value: "FRIDAY" },
-              { day: "Saturday", value: "SATURDAY" },
-              { day: "Sunday", value: "SUNDAY" },
+              { day: "Thứ 2", value: "MONDAY" },
+              { day: "Thứ 3", value: "TUESDAY" },
+              { day: "Thứ 4", value: "WEDNESDAY" },
+              { day: "Thứ 5", value: "THURSDAY" },
+              { day: "Thứ 6", value: "FRIDAY" },
+              { day: "Thứ 7", value: "SATURDAY" },
+              { day: "Chủ Nhật", value: "SUNDAY" },
             ].map(({ day, value }) => (
               <FormControlLabel
                 key={day}

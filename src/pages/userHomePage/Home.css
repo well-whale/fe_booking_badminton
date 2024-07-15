@@ -96,6 +96,7 @@ nav {
   align-items: center;
   font-size: larger;
 }
+
 .Breadcrumbs nav{
     margin: auto;
     padding: 2rem 1rem;
@@ -182,6 +183,11 @@ nav {
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.5rem;
+  height: 50px;
+
+}
+.popular__card__address{
+  height: 50px;
 }
 
 .popular__card__header h4 {

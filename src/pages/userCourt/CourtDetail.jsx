@@ -23,7 +23,7 @@ import {
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CustomizedBreadcrumbs from "../../components/breadcrumb/Breadcrumb";
-
+import VND from "../../components/price/PriceFormat";
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -91,7 +91,7 @@ const CourtDetail = () => {
       const minPrice = Math.min(...unitPrices);
       const maxPrice = Math.max(...unitPrices);
 
-      return `${minPrice}.000 - ${maxPrice}.000 VND`;
+      return `${VND.format(minPrice)} - ${VND.format(maxPrice)}`;
     }
     return "Đang Cập Nhật....";
   };

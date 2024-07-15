@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { getPriceByIdCourt } from '../../services/UserServices';
+import VND from '../../components/price/PriceFormat';
 
 const CourtPrice = ({ courtID }) => {
   const [listPrice, setListPrice] = useState([]);
@@ -35,7 +36,7 @@ const CourtPrice = ({ courtID }) => {
           <TableRow key={price.priceID}>
             <TableCell>{price.startTime}</TableCell>
             <TableCell>{price.endTime}</TableCell>
-            <TableCell>{price.unitPrice}.000</TableCell>
+            <TableCell>{VND.format(price.unitPrice)}</TableCell>
           </TableRow>
         ))}
       </TableBody>

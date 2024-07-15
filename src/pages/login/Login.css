@@ -3,6 +3,8 @@
     .App {
         font-family: sans-serif;
         text-align: center;
+        padding-top: 4%;
+
     }
 
     .App * {
@@ -110,10 +112,10 @@
     }
 
     .App input {
-        background-color: #eee;
+        /* background-color: #eee; */
         border: none;
-        padding: 12px 15px;
-        margin: 8px 0;
+        /* padding: 12px 15px;
+        margin: 8px 0; */
         width: auto;
     }
 

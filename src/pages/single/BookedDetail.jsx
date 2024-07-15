@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import VND from '../../components/price/PriceFormat';
 
 const BookedDetail = ({ open, onClose, booking }) => {
     const [selectedBooking, setSelectedBooking] = useState(null);
@@ -32,7 +33,8 @@ const BookedDetail = ({ open, onClose, booking }) => {
                     </div>
                         <div className="booking-details">
                             <div className="transaction-success">
-                                <div className="transaction-amount">{booking.totalPrice * 1000} VND</div>
+
+                                <div className="transaction-amount">{VND.format(booking.totalPrice)} </div>
                                 <div className="transaction-info">
                                     <p>GIAO DỊCH VÀO</p>
                                     <div>{formatDate(booking.paymentResDTO.paymentDate)}</div>

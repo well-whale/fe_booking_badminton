@@ -40,29 +40,30 @@ import ProfileOwner from './pages/single/ProfileOwner';
 import PaymentMonthPage from './pages/payment/PaymentMonth';
 import CustomizedBreadcrumbs from './components/breadcrumb/Breadcrumb';
 import Staff from './pages/list/Staff';
+import StaffHome from './pages/StaffHome/Home';
+import Checkin from './pages/booked/CheckIn';
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const token = localStorage.getItem('token');
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedToken = localStorage.getItem('token');
 
-    if (user && token) {
-      dispatch(loginSuccess({ user, token }));
-    }
+      if (storedUser && storedToken) {
+          dispatch(loginSuccess({ user: storedUser, token: storedToken }));
+      }
   }, [dispatch]);
 
   return (
-    <React.StrictMode>
       <Routes>
         <Route path={routes.home} element={<><Header /><HomePage /><Footer /></>} />
-        <Route path={routes.login} element={<><Header /><LoginAndSignupForm /><Footer /></>} />
-        <Route path={routes.googleOAuth} element={
+        <Route path={routes.login} element={<><LoginAndSignupForm /><Footer /></>} />
+        {/* <Route path={routes.googleOAuth} element={
           <GoogleOAuthProvider clientId="21328047732-02qfv7vb9ku5n0ov51v8d3k8vqb7e1ab.apps.googleusercontent.com">
             <GoogleOAuth />
           </GoogleOAuthProvider>
-        } />
+        } /> */}
         <Route path={routes.paymentSuccess} element={<><Header /><CustomizedBreadcrumbs /><PaymentSuccess /><Footer /></>} />
         <Route path={routes.booked} element={<><Header /><CustomizedBreadcrumbs page="booked" /><BookingList /><Footer /></>} />
         <Route path={routes.loginOTP} element={<LoginOTP />} />
@@ -95,8 +96,12 @@ function App() {
         <Route path={routes.newCourt} element={<ProtectedRoute role="Court Owner"><NewCourt /></ProtectedRoute>} />
         <Route path={routes.ownerProfile} element={<ProtectedRoute role="Court Owner"><ProfileOwner /></ProtectedRoute>} />
         <Route path={routes.ownerUpdateCourt} element={<ProtectedRoute role="Court Owner"><UpdateCourt /></ProtectedRoute>} />
+
+
+
+        <Route path={routes.staffHome} element={<ProtectedRoute role="Staff"><StaffHome/></ProtectedRoute>} />
+        <Route path={routes.checkIn} element={<ProtectedRoute role="Staff"><Checkin/></ProtectedRoute>} />
       </Routes>
-    </React.StrictMode>
   );
 }
 

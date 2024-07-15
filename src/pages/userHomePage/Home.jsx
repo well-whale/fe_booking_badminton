@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import "./Home.css";
 import { NavLink } from "react-router-dom";
 import { GiTennisCourt } from "react-icons/gi";
+import { BiMoneyWithdraw } from "react-icons/bi";
+
 import Search from '../../components/user/search/Search';
 import { fetchAllCourts } from '../../services/UserServices';
 import Pagination from '@mui/material/Pagination';
+import { TbReportMoney  } from "react-icons/tb";
+import { PiCourtBasketball } from "react-icons/pi";
 
+import VND from '../../components/price/PriceFormat';
 const HomePage = () => {
   const [courts, setCourts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +34,7 @@ const HomePage = () => {
       const minPrice = Math.min(...unitPrices);
       const maxPrice = Math.max(...unitPrices);
 
-      return `${minPrice}.000 - ${maxPrice}.000 VND`;
+      return `${VND.format(minPrice)} - ${VND.format(maxPrice)}`;
     }
     return "Đang Cập Nhật....";
   };
@@ -66,13 +71,15 @@ const HomePage = () => {
                 <div className="popular__card__header">
                   <h4 style={{ display: 'flex' }}>{court.courtName}</h4>
                 </div>
-                <p>{court.courtAddress}</p>
+                <p className='popular__card__address'>{court.courtAddress}</p>
                 <div className="subcourt-container">
-                  <div className="subcourt">
-                    <p className="subcourt-icon"><GiTennisCourt /></p>
+                  <div className=" rater-container price">
+                    <p className="subcourt-icon " ><PiCourtBasketball style={{width:"30px", height:"30px"}}/></p>
                     <p>{court.courtQuantity} sân</p>
                   </div>
                   <div className="rater-container price">
+                  <p className="subcourt-icon " ><TbReportMoney  style={{width:"30px", height:"30px"}}/></p>
+
                     <p>{getPriceRange(court.price)}</p>
                   </div>
                 </div>

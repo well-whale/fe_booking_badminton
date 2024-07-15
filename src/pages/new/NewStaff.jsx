@@ -1,22 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
   Dialog,
   Slide,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  FormHelperText,
+  Autocomplete,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import "./NewUser.css";
-import { newUser } from "../../services/UserServices";
+import { addStaff, getAllCourtOfOwner, newUser } from "../../services/UserServices";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../router/routes";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/userSlice";
 
 const Transition = React.forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
@@ -30,7 +28,7 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
     email: "",
     password: "",
     phone: "",
-    roleID: 1,
+    courtID: null,
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -38,6 +36,20 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
   const navigate = useNavigate();
+  const [court, setCourt] = useState([]);
+  const user = useSelector(selectUser).user;
+
+  useEffect(() => {
+    const fetchCourtData = async () => {
+      try {
+        const response = await getAllCourtOfOwner(user.userID);
+        setCourt(response.data);
+      } catch (error) {
+        console.error("Error fetching court data:", error);
+      }
+    };
+    fetchCourtData();
+  }, [user.userID]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -47,16 +59,9 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
     });
   };
 
-  const handleRoleChange = (e) => {
-    setFormData({
-      ...formData,
-      roleID: e.target.value,
-    });
-  };
-
   const validate = () => {
     const newErrors = {};
-    
+
     if (!formData.userName) {
       newErrors.userName = "User Name is required";
     }
@@ -79,9 +84,6 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
     } else if (!/^\d+$/.test(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
     }
-    if (!formData.roleID) {
-      newErrors.roleID = "Role is required";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -92,27 +94,36 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
     if (!validate()) return;
 
     setSubmitting(true);
-    setApiError(""); // Reset API error message before submitting
+    setApiError("");
     try {
-      console.log(formData);
-      await newUser(formData);
+      console.log(formData)
+      await addStaff(formData);
       setFormData(initialFormData);
       handleClose();
       refreshData();
-      navigate(routes.adminListStaff)
+      navigate(routes.adminListStaff);
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setApiError(error.response.data.message);
-      } else {
-        setApiError("An error occurred while adding the user.");
-      }
+      setApiError(
+        error.response?.data?.message || "An error occurred while adding the user."
+      );
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const options = court.map((option) => {
+    const firstLetter = option.courtName ? option.courtName[0].toUpperCase() : "";
+    return {
+      firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
+      ...option,
+    };
+  });
+
+  const handleCourtChange = (event, value) => {
+    setFormData({
+      ...formData,
+      courtID: value ? value.courtID : null,
+    });
   };
 
   return (
@@ -221,23 +232,21 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                <FormControl fullWidth margin="normal" error={!!errors.roleID}>
-                  <InputLabel id="role-select-label">Role</InputLabel>
-                  <Select
-                    labelId="role-select-label"
-                    id="role-select"
-                    value={formData.roleID}
-                    label="Role"
-                    onChange={handleRoleChange}
-                  >
-                    <MenuItem value={4}>Staff</MenuItem>
-                   
-                    
-                  </Select>
-                  {errors.roleID && (
-                    <FormHelperText>{errors.roleID}</FormHelperText>
+                <Autocomplete
+                  id="grouped-demo"
+                  options={options.sort(
+                    (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
                   )}
-                </FormControl>
+                  groupBy={(option) => option.firstLetter}
+                  getOptionLabel={(option) => option.courtName}
+                  isOptionEqualToValue={(option, value) =>
+                    option.courtID === value.courtID
+                  }
+                  onChange={handleCourtChange}
+                  renderInput={(params) => (
+                    <TextField {...params} label="CourtName" />
+                  )}
+                />
                 <div className="form-buttons">
                   <Button
                     type="submit"

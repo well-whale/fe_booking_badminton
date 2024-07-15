@@ -21,7 +21,7 @@ function SignupForm() {
     firstName: "",
     lastName: "",
     email: "",
-    phone: ""
+    phone: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -35,12 +35,12 @@ function SignupForm() {
     const { name, value } = evt.target;
     setState((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
 
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [name]: !value
+      [name]: !value,
     }));
   };
 
@@ -77,7 +77,7 @@ function SignupForm() {
             firstName: "",
             lastName: "",
             email: "",
-            phone: ""
+            phone: "",
           });
           navigate("/login");
         } else {
@@ -104,77 +104,86 @@ function SignupForm() {
     <Container className="form-container sign-up-container">
       <ToastContainer />
       <form onSubmit={handleOnSubmit}>
-        <Typography variant="h4">Create Account</Typography>
-        <Box mb={2}>
-          <TextField
-            fullWidth
-            id="userName"
-            name="userName"
-            label="User Name*"
-            value={state.userName}
-            onChange={handleChange}
-            error={Boolean(errors.userName)}
-          />
-        </Box>
-        <Box mb={2}>
-          <TextField
-            fullWidth
-            id="password"
-            name="password"
-            label="Password*"
-            type="password"
-            value={state.password}
-            onChange={handleChange}
-            error={Boolean(errors.password)}
-          />
-        </Box>
-        <Box mb={2}>
-          <TextField
-            fullWidth
-            id="firstName"
-            name="firstName"
-            label="First Name*"
-            value={state.firstName}
-            onChange={handleChange}
-            error={Boolean(errors.firstName)}
-          />
-        </Box>
-        <Box mb={2}>
-          <TextField
-            fullWidth
-            id="lastName"
-            name="lastName"
-            label="Last Name*"
-            value={state.lastName}
-            onChange={handleChange}
-            error={Boolean(errors.lastName)}
-          />
-        </Box>
-        <Box mb={2}>
-          <TextField
-            fullWidth
-            id="email"
-            name="email"
-            label="Email*"
-            value={state.email}
-            onChange={handleChange}
-            error={Boolean(errors.email)}
-          />
-        </Box>
-        <Box mb={2}>
-          <TextField
-            fullWidth
-            id="phone"
-            name="phone"
-            label="Phone*"
-            value={state.phone}
-            onChange={handleChange}
-            error={Boolean(errors.phone)}
-          />
-        </Box>
-        <Button color="primary" variant="contained" type="submit">
+        <h1>Đăng kí</h1>
+        <div style={{display:"flex", gap:"10px"}}>
+        <div>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              id="userName"
+              name="userName"
+              label="User Name*"
+              value={state.userName}
+              onChange={handleChange}
+              error={Boolean(errors.userName)}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              id="password"
+              name="password"
+              label="Password*"
+              type="password"
+              value={state.password}
+              onChange={handleChange}
+              error={Boolean(errors.password)}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              id="email"
+              name="email"
+              label="Email*"
+              value={state.email}
+              onChange={handleChange}
+              error={Boolean(errors.email)}
+            />
+          </Box>
+        </div>
+        <div>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              id="firstName"
+              name="firstName"
+              label="First Name*"
+              value={state.firstName}
+              onChange={handleChange}
+              error={Boolean(errors.firstName)}
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              id="lastName"
+              name="lastName"
+              label="Last Name*"
+              value={state.lastName}
+              onChange={handleChange}
+              error={Boolean(errors.lastName)}
+            />
+          </Box>
+
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              id="phone"
+              name="phone"
+              label="Phone*"
+              value={state.phone}
+              onChange={handleChange}
+              error={Boolean(errors.phone)}
+            />
+          </Box>
+        </div>
+
+        </div>
+       
+        <button className="submit" type="submit">
           Signup
-        </Button>
+        </button>
       </form>
       <Snackbar
         open={snackbarOpen}

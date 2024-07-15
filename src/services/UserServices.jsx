@@ -115,6 +115,13 @@ const GetAvailableSubCourtRecure = (dataBooking) =>{
   return axios.post('recure-booking/totalPrice',dataBooking)
  }
  
-
-
-export {addRecureBooking,GetAvailableSubCourtRecure,getTotalPriceRecureBooking,deleteAccount,deleteCourt,updateCourt,updateStatusCourt,createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};
+ const addStaff = (data) =>{
+  return axios.post('api/v1/user/registerStaff',data)
+ }
+ const getAllOrderStaff = (userId) =>{
+  return axios.get(`booking/Staff/${userId}`);
+ }
+const UpdateStatusOrder = (bookingId) =>{
+  return axios.put(`booking/checkin?bookingID=${bookingId}`);
+}
+export {UpdateStatusOrder,getAllOrderStaff,addStaff,addRecureBooking,GetAvailableSubCourtRecure,getTotalPriceRecureBooking,deleteAccount,deleteCourt,updateCourt,updateStatusCourt,createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};

@@ -23,6 +23,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
+import VND from "../../components/price/PriceFormat";
 
 const PaymentMonthPage = () => {
   const user = useSelector(selectUser)?.user;
@@ -185,7 +186,7 @@ const PaymentMonthPage = () => {
     localStorage.setItem("bookingData", JSON.stringify(dataToSubmit));
 
     try {
-      const res = await payment(orderDetail.totalPrice * 1000, orderDetail.customerId);
+      const res = await payment(orderDetail.totalPrice , orderDetail.customerId);
       window.location.href = res.data;
     } catch (error) {
       console.error("Payment failed:", error);
@@ -269,7 +270,8 @@ const PaymentMonthPage = () => {
                     Tổng tiền
                   </Typography>
                   <Typography className="payment-summary-price">
-                    {orderDetail.totalPrice}.000 VND
+                    
+                    {VND.format(orderDetail.totalPrice)}
                   </Typography>
                 </Box>
               </Box>

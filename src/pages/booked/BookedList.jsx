@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 import Pagination from "@mui/material/Pagination";
 import { Box } from "@mui/material";
+import VND from "../../components/price/PriceFormat";
 
 const BookingList = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -74,7 +75,7 @@ const BookingList = () => {
             <div className="status">
               {paymentHistory.paymentResDTO.paymentStatus}
             </div>
-            <div className="price">{paymentHistory.totalPrice}.000 VND</div>
+            <div className="price">{VND.format(paymentHistory.totalPrice)}</div>
           </div>
           <div
             className="detail-link"
@@ -86,14 +87,14 @@ const BookingList = () => {
             <div className="booking-details">
               <div className="transaction-success">
                 <div className="transaction-amount">
-                  {paymentHistory.totalPrice }.000 VND
+                  {VND.format(paymentHistory.totalPrice )}
                 </div>
-                <div className="transaction-info">
-                  <p>GIAO DỊCH VÀO</p>
+                <div className="transaction-info ">
+                  <p className="route">GIAO DỊCH VÀO</p>
                   <div>
                     {formatDate(paymentHistory.paymentResDTO.paymentDate)}
                   </div>
-                  <p>PHƯƠNG THỨC THANH TOÁN</p>
+                  <p className="route">PHƯƠNG THỨC THANH TOÁN</p>
                   <p>VNPAY</p>
                 </div>
               </div>

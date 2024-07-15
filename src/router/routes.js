@@ -34,4 +34,9 @@ export const routes = {
     listOrder: "/ownerCourt/listOrder",
     newCourt: "/ownerCourt/newCourt",
     ownerProfile: "/ownerCourt/Profile",
+
+
+
+    staffHome: "/staff/home",
+    checkIn :"/staff/checkIn"
 };
