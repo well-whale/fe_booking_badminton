@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "./Home.css";
 import { NavLink } from "react-router-dom";
-import { GiTennisCourt } from "react-icons/gi";
-import { BiMoneyWithdraw } from "react-icons/bi";
-
 import Search from '../../components/user/search/Search';
 import { fetchAllCourts } from '../../services/UserServices';
 import Pagination from '@mui/material/Pagination';

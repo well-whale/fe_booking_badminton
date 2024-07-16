@@ -16,7 +16,7 @@
     "@mui/x-charts": "^7.9.0",
     "@mui/x-data-grid": "^7.10.0",
     "@mui/x-data-grid-pro": "^7.10.0",
-    "@mui/x-date-pickers": "^7.9.0",
+    "@mui/x-date-pickers": "^7.10.0",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.5",
     "@testing-library/jest-dom": "^5.17.0",

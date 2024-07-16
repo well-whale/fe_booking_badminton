@@ -9,6 +9,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import TodayIcon from "@mui/icons-material/Today";
 import { PiCourtBasketball } from "react-icons/pi";
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -134,6 +135,7 @@ const BookDay = () => {
       setSelectedTimes([id]);
       setStartTime(id);
       setEndTime(null);
+      setSelectedCourts([]); // Reset selected courts when only one time slot is selected
     } else {
       const newSelectedTimes = [];
       const start = Math.min(firstSelected, id);
@@ -314,6 +316,10 @@ const BookDay = () => {
             </div>
           ))}
         </div>
+        <div style={{ display: "flex", paddingTop: "5%", gap: "3%" }}>
+        <div className=" right-section weekdays ">
+        <Box component="section" sx={{ p: 3, border: "1px dashed grey" }}>
+
         <label>Chọn Sân:</label>
         <div>
           {areas.map(({ name, subCourtID }) => (
@@ -329,7 +335,6 @@ const BookDay = () => {
                   ? "contained"
                   : "outlined"
               }
-              
               disabled={
                 getButtonColor(subCourtID) === "error" ||
                 startTime === null ||
@@ -340,6 +345,9 @@ const BookDay = () => {
               {name}
             </Button>
           ))}
+        </div>
+        </Box>
+        </div>
         </div>
       </div>
 
@@ -358,38 +366,57 @@ const BookDay = () => {
             />
 
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {court.courtName}
-              </Typography>
-              <Typography variant="body2" color="ActiveBorder" display={"flex"}>
-                <HomeIcon />
-                {court.courtAddress}
-              </Typography>
-              <Typography variant="body2" color="ButtonText">
-                <TodayIcon />
-                {selectedDate.format("DD/MM/YYYY")}
-              </Typography>
-              <Typography variant="body2" color="ActiveBorder">
-                <AccessTimeIcon />
-                {selectedTimeRange}
-              </Typography>
-              {selectedCourts.length > 0 && (
-                <div>
-                  <Typography variant="body2" color="ButtonText">
-                    {selectedCourts.map((court) => (
-                      <Typography
-                        variant="body2"
-                        color="ButtonText"
-                        key={court.subCourtID}
-                      >
-                        {" "}
-                        <PiCourtBasketball fontSize={"24px"} />
-                        {getCourtName(court.subCourtID)}
-                      </Typography>
-                    ))}
-                  </Typography>
-                </div>
-              )}
+              <Box component="section" sx={{ p: 3, border: "2px dashed grey" }}>
+                <Typography gutterBottom variant="h5" component="div" style={{fontWeight:"600"}}>
+                  {court.courtName}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="ActiveBorder"
+                  style={{ gap: "20px" }}
+                  display={"flex"}
+                >
+                  <HomeIcon />
+                  {court.courtAddress}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="ButtonText"
+                  style={{ gap: "20px" }}
+                  display={"flex"}
+                >
+                  <TodayIcon />
+                  {selectedDate.format("DD/MM/YYYY")}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="ActiveBorder"
+                  style={{ gap: "20px" }}
+                  display={"flex"}
+                >
+                  <AccessTimeIcon />
+                  {selectedTimeRange}
+                </Typography>
+                {selectedCourts.length > 0 && (
+                  <div>
+                    <Typography variant="body2" color="ButtonText">
+                      {selectedCourts.map((court) => (
+                        <Typography
+                          variant="body2"
+                          color="ButtonText"
+                          key={court.subCourtID}
+                          style={{ gap: "20px" }}
+                          display={"flex"}
+                        >
+                          {" "}
+                          <PiCourtBasketball fontSize={"24px"} />
+                          {getCourtName(court.subCourtID)}
+                        </Typography>
+                      ))}
+                    </Typography>
+                  </div>
+                )}{" "}
+              </Box>
             </CardContent>
           </CardActionArea>
         </Card>

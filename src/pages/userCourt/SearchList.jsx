@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { NavLink } from "react-router-dom";
 import { Autocomplete, TextField } from "@mui/material";
-import { GiTennisCourt } from "react-icons/gi";
 import "./SearchList.css";
 import { searchByDistrict } from "../../services/UserServices";
 import VND from "../../components/price/PriceFormat";

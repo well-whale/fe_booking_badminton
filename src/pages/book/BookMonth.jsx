@@ -10,6 +10,7 @@ import TodayIcon from "@mui/icons-material/Today";
 import { PiCourtBasketball } from "react-icons/pi";
 
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -24,11 +25,16 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
+  Switch,
   Typography,
 } from "@mui/material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import dayjs from "dayjs";
-import { getCourtByIdCourt, checkSubCourt, GetAvailableSubCourtRecure } from "../../services/UserServices";
+import {
+  getCourtByIdCourt,
+  checkSubCourt,
+  GetAvailableSubCourtRecure,
+} from "../../services/UserServices";
 import CourtPrice from "../single/CourtPrice";
 
 const generateTimeSlots = (startTime, endTime, interval, selectedDate) => {
@@ -83,15 +89,13 @@ const BookMonth = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const formattedDate = selectedDate.format("YYYY-MM-DD");
 
-
   const handleBooking = () => {
     const bookingDetails = {
-      
       courtId: court.courtID,
-        startDate: dateNow.format("YYYY-MM-DD"),
-        selectedCourts,
-        endDate: formattedDate,
-        dayOfWeek: selectedDays,
+      startDate: dateNow.format("YYYY-MM-DD"),
+      selectedCourts,
+      endDate: formattedDate,
+      dayOfWeek: selectedDays,
     };
     console.log(bookingDetails);
     localStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
@@ -144,6 +148,7 @@ const BookMonth = () => {
       setSelectedTimes([id]);
       setStartTime(id);
       setEndTime(null);
+      setSelectedCourts([]); // Reset selected courts when only one time slot is selected
     } else {
       const newSelectedTimes = [];
       const start = Math.min(firstSelected, id);
@@ -159,10 +164,15 @@ const BookMonth = () => {
   };
   useEffect(() => {
     const checkAvailability = async () => {
-      if (startTime === null || endTime === null || !selectedDate || selectedDays.length === 0) {
+      if (
+        startTime === null ||
+        endTime === null ||
+        !selectedDate ||
+        selectedDays.length === 0
+      ) {
         return;
       }
-  
+
       const formattedDate = selectedDate.format("YYYY-MM-DD");
       const startTimeStr = `${String(Math.floor(startTime / 60)).padStart(
         2,
@@ -172,7 +182,7 @@ const BookMonth = () => {
         2,
         "0"
       )}:${String(endTime % 60).padStart(2, "0")}:00`;
-  
+
       const requestData = {
         courtId: court.courtID,
         startDate: dateNow.format("YYYY-MM-DD"),
@@ -182,10 +192,10 @@ const BookMonth = () => {
         startTime: startTimeStr,
         endTime: endTimeStr,
       };
-  
+
       try {
-        console.log(requestData)
-        const response =   await GetAvailableSubCourtRecure(requestData);
+        console.log(requestData);
+        const response = await GetAvailableSubCourtRecure(requestData);
         console.log(response.data);
         setCourtAvailability(response.data); // Assuming the server returns an array of subCourt objects
       } catch (error) {
@@ -197,12 +207,11 @@ const BookMonth = () => {
         }
       }
     };
-    
+
     if (startTime !== null && endTime !== null) {
       checkAvailability();
     }
   }, [startTime, endTime, selectedDate, court, selectedDays]);
-  
 
   const areas = generateAreas(court?.subCourts || []);
 
@@ -216,22 +225,15 @@ const BookMonth = () => {
         )}:${String(endTime % 60).padStart(2, "0")}`
       : "";
 
-  const totalPrice =
-    selectedTimes.length > 0
-      ? ((endTime - startTime) / 60) *
-        (court?.price?.[0]?.unitPrice || 0) *
-        selectedCourts.length
-      : 0;
-
-      const getButtonColor = (subCourtID) => {
-        const subCourt = courtAvailability.find(
-          (court) => court.subCourtID === subCourtID
-        );
-        if (subCourt) {
-          return subCourt.subCourtStatus ? "success" : "error";
-        }
-        return "warning";
-      };
+  const getButtonColor = (subCourtID) => {
+    const subCourt = courtAvailability.find(
+      (court) => court.subCourtID === subCourtID
+    );
+    if (subCourt) {
+      return subCourt.subCourtStatus ? "success" : "error";
+    }
+    return "warning";
+  };
 
   const handleCourtSelection = (subCourtID) => {
     if (startTime === null || endTime === null) {
@@ -334,63 +336,77 @@ const BookMonth = () => {
             </div>
           ))}
         </div>
-        <Grid item xs={12}>
-          <Typography variant="h6">Chọn các ngày trong tuần:</Typography>
-          <FormGroup row>
-            {[
-              { day: "Thứ 2", value: "MONDAY" },
-              { day: "Thứ 3", value: "TUESDAY" },
-              { day: "Thứ 4", value: "WEDNESDAY" },
-              { day: "Thứ 5", value: "THURSDAY" },
-              { day: "Thứ 6", value: "FRIDAY" },
-              { day: "Thứ 7", value: "SATURDAY" },
-              { day: "Chủ Nhật", value: "SUNDAY" },
-            ].map(({ day, value }) => (
-              <FormControlLabel
-                key={day}
-                control={
-                  <Checkbox
-                    checked={selectedDays.includes(value)}
-                    onChange={(e) => {
-                      const newSelectedDays = e.target.checked
-                        ? [...selectedDays, value]
-                        : selectedDays.filter((d) => d !== value);
-                      setSelectedDays(newSelectedDays);
-                    }}
+        <div style={{ display: "flex", paddingTop: "5%", gap: "3%" }}>
+          
+          <div className=" right-section weekdays ">
+            
+            <Grid item xs={12}>
+              <Typography variant="h6">Chọn các ngày trong tuần:</Typography>
+              <FormGroup row>
+                {[
+                  { day: "Thứ 2", value: "MONDAY" },
+                  { day: "Thứ 3", value: "TUESDAY" },
+                  { day: "Thứ 4", value: "WEDNESDAY" },
+                  { day: "Thứ 5", value: "THURSDAY" },
+                  { day: "Thứ 6", value: "FRIDAY" },
+                  { day: "Thứ 7", value: "SATURDAY" },
+                  { day: "Chủ Nhật", value: "SUNDAY" },
+                ].map(({ day, value }) => (
+                  <FormControlLabel
+                    key={day}
+                    control={
+                      <Checkbox
+                        checked={selectedDays.includes(value)}
+                        onChange={(e) => {
+                          const newSelectedDays = e.target.checked
+                            ? [...selectedDays, value]
+                            : selectedDays.filter((d) => d !== value);
+                          setSelectedDays(newSelectedDays);
+                          console.log(selectedDays)
+                          if (!selectedDays.length) {
+                            setSelectedCourts([]);
+                          }
+                        }}
+                      />
+                    }
+                    label={day}
                   />
-                }
-                label={day}
-              />
-            ))}
-          </FormGroup>
-        </Grid>
-
-        <label>Chọn Sân:</label>
-        <div>
-          {areas.map(({ name, subCourtID }) => (
-            <Button
-              key={subCourtID}
-              color={
-                selectedCourts.some((court) => court.subCourtID === subCourtID)
-                  ? "success"
-                  : getButtonColor(subCourtID)
-              }
-              variant={
-                selectedCourts.some((court) => court.subCourtID === subCourtID)
-                  ? "contained"
-                  : "outlined"
-              }
-              
-              disabled={
-                getButtonColor(subCourtID) === "error" ||
-                startTime === null ||
-                endTime === null
-              }
-              onClick={() => handleCourtSelection(subCourtID)}
-            >
-              {name}
-            </Button>
-          ))}
+                ))}
+              </FormGroup>
+            </Grid>
+          </div>
+          <div className=" right-section chose_court">
+            <label>Chọn Sân:</label>
+            <div>
+              {areas.map(({ name, subCourtID }) => (
+                <Button
+                  key={subCourtID}
+                  color={
+                    selectedCourts.some(
+                      (court) => court.subCourtID === subCourtID
+                    )
+                      ? "success"
+                      : getButtonColor(subCourtID)
+                  }
+                  variant={
+                    selectedCourts.some(
+                      (court) => court.subCourtID === subCourtID
+                    )
+                      ? "contained"
+                      : "outlined"
+                  }
+                  disabled={
+                    getButtonColor(subCourtID) === "error" ||
+                    startTime === null ||
+                    endTime === null
+                  }
+                  onClick={() => handleCourtSelection(subCourtID)}
+                >
+                  {name}
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -409,46 +425,75 @@ const BookMonth = () => {
             />
 
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {court.courtName}
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                <HomeIcon />
-                {court.courtAddress}
-              </Typography>
-              <Typography variant="body2" color="ButtonText">
-                <TodayIcon />
-                {dayjs().format("DD/MM/YYYY")} <KeyboardDoubleArrowRightIcon />
-                {selectedDate.format("DD/MM/YYYY")}
-              </Typography>
-              <Typography variant="body2" color="ActiveBorder">
-                <AccessTimeIcon />
-                {selectedTimeRange}
-              </Typography>
-              {selectedCourts.length > 0 && (
-                <div>
-                  <Typography variant="body2" color="ButtonText">
-                    {selectedCourts.map((court) => (
-                      <Typography
-                        variant="body2"
-                        color="ButtonText"
-                        key={court.subCourtID}
-                      >
-                        {" "}
-                        <PiCourtBasketball fontSize={"24px"} />
-                        {getCourtName(court.subCourtID)}
-                      </Typography>
-                    ))}
-                  </Typography>
-                </div>
-              )}
+              <Box component="section" sx={{ p: 3, border: "2px dashed grey" }}>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  style={{ fontWeight: "600" }}
+                >
+                  {court.courtName}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  color="ActiveBorder"
+                  style={{ gap: "20px" }}
+                  display={"flex"}
+                >
+                  <HomeIcon />
+                  {court.courtAddress}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="ButtonText"
+                  style={{ gap: "20px" }}
+                  display={"flex"}
+                >
+                  <TodayIcon />
+                  {dayjs().format("DD/MM/YYYY")}{""}
+                  <KeyboardDoubleArrowRightIcon />
+                  {selectedDate.format("DD/MM/YYYY")}
+                </Typography>
+
+                <Typography
+                  variant="body2"
+                  color="ActiveBorder"
+                  style={{ gap: "20px" }}
+                  display={"flex"}
+                >
+                  <AccessTimeIcon />
+                  {selectedTimeRange}
+                </Typography>
+                {selectedCourts.length > 0 && (
+                  <div>
+                    <Typography variant="body2" color="ButtonText">
+                      {selectedCourts.map((court) => (
+                        <Typography
+                          variant="body2"
+                          color="ButtonText"
+                          key={court.subCourtID}
+                          style={{ gap: "20px" }}
+                          display={"flex"}
+                        >
+                          <PiCourtBasketball fontSize={"24px"} />
+                          {getCourtName(court.subCourtID)}
+                        </Typography>
+                      ))}
+                    </Typography>
+                  </div>
+                )}
+              </Box>
             </CardContent>
           </CardActionArea>
         </Card>
         <Button
           variant="contained"
           color="primary"
-          disabled={!selectedTimes.length || !selectedCourts.length}
+          disabled={
+            !selectedTimes.length ||
+            !selectedCourts.length ||
+            !selectedDays.length
+          }
           onClick={handleBooking}
         >
           <NavLink
