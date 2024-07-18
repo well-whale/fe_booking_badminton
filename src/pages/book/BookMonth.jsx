@@ -363,9 +363,11 @@ const BookMonth = () => {
                             : selectedDays.filter((d) => d !== value);
                           setSelectedDays(newSelectedDays);
                           console.log(selectedDays)
-                          if (!selectedDays.length) {
+                          if (selectedDays.length===1) {
                             setSelectedCourts([]);
                           }
+                          console.log(selectedCourts)
+
                         }}
                       />
                     }
@@ -503,7 +505,7 @@ const BookMonth = () => {
             onClick={() => window.scrollTo(0, 200)}
             style={{ textDecoration: "none", color: "white" }}
           >
-            Thanh toán
+            Đặt Ngay
           </NavLink>
         </Button>
       </div>

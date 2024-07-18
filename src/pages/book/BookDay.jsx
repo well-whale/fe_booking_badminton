@@ -433,7 +433,7 @@ const BookDay = () => {
             onClick={() => window.scrollTo(0, 200)}
             style={{ textDecoration: "none", color: "white" }}
           >
-            Thanh toán
+            Đặt Ngay
           </NavLink>
         </Button>
       </div>

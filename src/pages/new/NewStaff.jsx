@@ -157,7 +157,7 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
             )}
             <div className="form-row">
               <div className="form-column">
-                <TextField
+                {/* <TextField
                   id="userName"
                   label="User Name*"
                   variant="outlined"
@@ -168,7 +168,7 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
                   helperText={errors.userName}
                   fullWidth
                   margin="normal"
-                />
+                /> */}
                 <TextField
                   id="firstName"
                   label="First Name*"

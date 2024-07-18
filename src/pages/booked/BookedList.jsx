@@ -18,7 +18,7 @@ const BookingList = () => {
   const [endDate, setEndDate] = useState(null);
   const user = useSelector(selectUser)?.user;
 
-  const itemsPerPage = 3;
+  const itemsPerPage = 6;
 
   const fetchData = async (userID) => {
     try {

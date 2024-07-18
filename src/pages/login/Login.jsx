@@ -13,7 +13,7 @@ import axios from "axios";
 import { routes } from "../../router/routes";
 import Header from "../../components/user/header/Header";
 import { Box, TextField } from "@mui/material";
-
+import LoginIcon from '@mui/icons-material/Login';
 function LoginForm() {
   const [userName, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -57,8 +57,8 @@ function LoginForm() {
   return (
     <div className="form-container sign-in-container">
       <form onSubmit={handleLogin}>
-        <h1>Đăng nhập</h1>
-        <Box mb={2}>
+        <h1 style={{paddingBottom:"20px"}}>Đăng nhập</h1>
+        {/* <Box mb={2}>
           <TextField
             fullWidth
             id="Username"
@@ -68,14 +68,26 @@ function LoginForm() {
             onChange={(e) => setUsername(e.target.value)}
             // error={Boolean(errors.userName)}
           />
+        </Box> */}
+        <Box mb={2}>
+          <TextField
+            fullWidth
+            id="Email"
+            name="Email"
+            label="Email*"
+            value={userName}
+            // type="email"
+            onChange={(e) => setUsername(e.target.value)}
+            // error={Boolean(errors.userName)}
+          />
         </Box>
         <div className="input-pass">
         <Box mb={2}>
           <TextField
             fullWidth
             id="Password"
-            name="Password"
-            label="Password*"
+            name="Mật khẩu"
+            label="Mật khẩu*"
             value={password}
             type={isShowPassword ? "text" : "password"}
             onChange={(e) => setPassword(e.target.value)}
@@ -91,9 +103,9 @@ function LoginForm() {
             onClick={() => setIsShowPassword(!isShowPassword)}
           />
         </div>
-        <a href="#">Forgot your password?</a>
+        <a href="#">Quên mật khẩu?</a>
         <button className="submit" type="submit">
-          Login
+          <LoginIcon/>
         </button>
       </form>
       <ToastContainer />

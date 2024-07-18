@@ -63,6 +63,7 @@ const Header = () => {
         dispatch(logout());
         localStorage.removeItem('user');
         localStorage.removeItem('token');
+        setUserInfor(null); // Clear user info on logout
         refreshData();
         navigate(routes.login);
     };
@@ -77,7 +78,19 @@ const Header = () => {
                 <ul className="nav__links">
                     <li className="link"><NavLink to="/">Trang chủ</NavLink></li>
                     <li className="link"><NavLink to="/search">Tìm kiếm</NavLink></li>
-                    <li className="link"><NavLink to="/booked">Lịch sử đặt</NavLink></li>
+                    {userInfor && (
+                        <>
+                            {userInfor.role.roleID === 4 ? (
+                                <li className="link"><NavLink to="/staff/home">Staff quản lí</NavLink></li>
+                            ) : userInfor.role.roleID === 2 ? (
+                                <li className="link"><NavLink to="/admin/home">Admin quản lí</NavLink></li>
+                            ) : userInfor.role.roleID === 3 ? (
+                                <li className="link"><NavLink to="/ownerCourt/home">Chủ sân quản lí</NavLink></li>
+                            ) : (
+                                <li className="link"><NavLink to="/booked">Lịch sử đặt</NavLink></li>
+                            )}
+                        </>
+                    )}
                     <li className="nav-item dropdown">
                         <span className="nav-link dropdown-toggle" role="button" onClick={toggleDropdown}>
                             <AccountCircleIcon /> 

@@ -43,7 +43,7 @@ const ListCourt = () => {
 
             <div className="carousel-card-body">
               <h5 className="carousel-card-title">{court.courtName}</h5>
-              <p className="carousel-card-text">{court.district}</p>
+              <p className="carousel-card-text">{court.courtAddress}</p>
               <NavLink key={index} to={`/view/${court.courtID}`} className="popular__card" >
               <button className="btn" onClick={() => window.scrollTo(0, 100)}>
               Xem Sân

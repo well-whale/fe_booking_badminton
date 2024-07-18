@@ -2,7 +2,7 @@
 
     .App {
         font-family: sans-serif;
-        text-align: center;
+        /* text-align: center; */
         padding-top: 4%;
 
     }
@@ -98,7 +98,7 @@
         flex-direction: column;
         padding: 0 50px;
         height: 100%;
-        text-align: center;
+        /* text-align: center; */
     }
 
     .input-pass {
@@ -107,8 +107,8 @@
 
     .input-pass i {
         position: absolute;
-        top: 20px;
-        right: 7px;
+        top: 29%;
+        right: 8%;
     }
 
     .App input {
