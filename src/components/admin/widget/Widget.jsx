@@ -4,7 +4,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import BackupTableIcon from "@mui/icons-material/BackupTable";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import "./Widget.css";
-import { fetchAllCourts, fetchAllUsers } from "../../../services/UserServices";
+import { fetchAllCourts, fetchAllUsers, getAllPayment } from "../../../services/UserServices";
 import { Link } from "react-router-dom";
 import VND from "../../price/PriceFormat";
 
@@ -55,24 +55,28 @@ const Widget = ({ type }) => {
             });
           }
           break;
-        case "earnings":
-          // result = await fetchTotalEarnings();
-          // if (result.status === 200) {
-          setData({
-            title: "TOTAL EARNINGS",
-            // isMoney: true,
-            link: "View net earnings",
-            icon: (
-              <MonetizationOnOutlinedIcon
-                className="icon"
-                style={{ color: "green", backgroundColor: "#00800033" }}
-              />
-            ),
-            // amount: result.data.total, // assuming the total earnings amount is returned
-            amount: VND.format(5000000) // Format the earnings amount
-          });
-          // }
-          break;
+          case "earnings":
+            result = await getAllPayment();
+            console.log(result.data);
+            if (result.status === 200) {
+              // Calculate the total earnings
+              const totalEarnings = result.data.reduce((acc, payment) => acc + payment.paymentAmount, 0);
+          
+              setData({
+                title: "TOTAL EARNINGS",
+                // isMoney: true,
+                link: "View net earnings",
+                icon: (
+                  <MonetizationOnOutlinedIcon
+                    className="icon"
+                    style={{ color: "green", backgroundColor: "#00800033" }}
+                  />
+                ),
+                // amount: totalEarnings, // Set the calculated total earnings amount
+                amount: VND.format(totalEarnings) // Format the earnings amount if needed
+              });
+            }
+            break;
         default:
           break;
       }

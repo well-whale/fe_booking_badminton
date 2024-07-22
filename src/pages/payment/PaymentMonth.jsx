@@ -207,10 +207,18 @@ const PaymentMonthPage = () => {
       <Box className="payment-wrapper">
         <Box className="payment-left">
           <Box className="payment-header">
-            <Box className="payment-header-icon">
-              <i className="ri-flashlight-fill"></i>
-            </Box>
-            <h1 className="payment-header-title">Chi tiết đặt sân</h1>
+          <div className="payment-header-type">
+              <h1 className="payment-header-title">Chi tiết đặt chỗ</h1>
+              <Box
+              padding={"2px"}
+                className="payment-header-icon"
+                component="section"
+                
+                sx={{ p: 1, border: "2px dashed white" }}
+              >
+                <i className="payment-plan-info-name"> Đặt sân cố định</i>
+              </Box>
+            </div>
             <Box className="payment-plan-info">
               <h5 className="payment-plan-info-name">
                 Tên khách hàng: {orderDetail.firstname} {orderDetail.lastName}
@@ -253,6 +261,8 @@ const PaymentMonthPage = () => {
                   </Box>
                 )}
               </Box>
+              <Divider className="payment-summary-divider" />
+
               <Box className="payment-summary">
                 {orderDetail.selectedCourts.map((detail, index) => (
                   <Box key={index} className="payment-summary-item">
@@ -359,7 +369,7 @@ const PaymentMonthPage = () => {
               color="primary"
               className="payment-submit-button"
             >
-              Proceed to Pay
+              Thanh Toán
             </Button>
           </form>
         </Box>

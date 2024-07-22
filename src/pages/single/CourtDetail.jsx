@@ -20,6 +20,7 @@ import { MdOutlineFastfood } from "react-icons/md";
 import { IoMdRestaurant } from "react-icons/io";
 import "./CourtDetail.css";
 import { getPriceByIdCourt } from "../../services/UserServices";
+import VND from "../../components/price/PriceFormat";
 
 const CourtDetail = ({ open, onClose, court }) => {
   const Transition = React.forwardRef((props, ref) => (
@@ -146,7 +147,7 @@ const CourtDetail = ({ open, onClose, court }) => {
                         <TableRow key={price.priceID}>
                           <TableCell>{price.startTime}</TableCell>
                           <TableCell>{price.endTime}</TableCell>
-                          <TableCell>{price.unitPrice}.000</TableCell>
+                          <TableCell>{VND.format(price.unitPrice)}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

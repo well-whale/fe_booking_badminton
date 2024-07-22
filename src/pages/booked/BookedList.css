@@ -6,9 +6,22 @@
   gap: 20px;
   padding: 20px;
   /* background-color: #f5f5f5;  */
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   margin: auto;
   width: 1200px;
+}
+.bookedlist{
+  width: 1200px;
+  display: flex;
+    padding: 20px;
+    /* align-items: center; */
+    gap: 20px;
+    padding: 20px;
+    /* background-color: #f5f5f5;  */
+    margin: auto;
+  
+    
+
 }
 .BookingList {
     justify-content: space-between;
@@ -22,6 +35,8 @@
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   transition: box-shadow 0.3s ease;
+  height: -webkit-fill-available;
+
 }
 
 .booking-card:hover {
@@ -151,4 +166,7 @@
 
 .product-details a:hover {
   text-decoration: underline;
+}
+.bookedlistfillter{
+  width: 30%;
 }

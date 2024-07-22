@@ -96,7 +96,7 @@ const HomePage = () => {
       <section className="section__container">
         <div className="reward__container">
           <p>20+ Sân cầu lông</p>
-          <h4>"Join Badminton Hub and book your yard faster and more conveniently!"</h4>
+          <h4>"Hãy tham gia Badminton Hub và đặt sân nhanh hơn và thuận tiện hơn!"</h4>
           <NavLink to="/search" onClick={() => window.scrollTo(0, 0)}><button className="reward__btn">Đặt Ngay</button></NavLink>
         </div>
       </section>

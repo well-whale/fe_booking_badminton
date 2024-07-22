@@ -90,7 +90,7 @@ const Sidebar = () => {
         >
           <Typography variant="h6">BadmintonHub</Typography>
           <Typography variant="subtitle1">
-            Owner {user.firstName} {user.lastName}
+            Owner
           </Typography>
         </Link>
       </Box>
@@ -183,7 +183,7 @@ const Sidebar = () => {
             <ListItemText primary="Orders" />
           </ListItem>
         </NavLink>
-        <NavLink
+        {/* <NavLink
           to="/calendar"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
@@ -193,7 +193,7 @@ const Sidebar = () => {
             </ListItemIcon>
             <ListItemText primary="Calendar" />
           </ListItem>
-        </NavLink>
+        </NavLink> */}
 
         <Typography variant="overline" display="block" gutterBottom>
           User Interface

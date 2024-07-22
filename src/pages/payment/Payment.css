@@ -24,18 +24,15 @@
   border-radius: 12px;
   padding-bottom: 72px;
 }
-
-.payment-header-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background-color: var(--indigo-600);
-  color: var(--white);
-  font-size: 24px;
+.payment-header-type{
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
+  gap:  5%;
+  justify-content: space-between;
+  align-items: end;
+  padding: 12px;
+}
+.payment-header-icon {
+ padding: 0%;
 }
 
 .payment-header-title {
@@ -45,6 +42,7 @@
   line-height: 2;
   margin-bottom: 4px;
   font-family: ui-monospace;
+  
 }
 
 .payment-content {
@@ -81,7 +79,7 @@
 }
 
 .payment-plan-type {
-  width: 40px;
+  /* width: 40px;
   height: 40px;
   background-color: var(--indigo-500);
   color: var(--white);
@@ -92,7 +90,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  margin-right: 8px;
+  margin-right: 8px; */
 }
 
 .payment-plan-info {

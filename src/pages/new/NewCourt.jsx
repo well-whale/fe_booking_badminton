@@ -22,6 +22,8 @@ import dayjs from "dayjs";
 import { createCourt } from "../../services/UserServices";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
+import { routes } from "../../router/routes";
+import { useNavigate } from "react-router-dom";
 
 const districtList = [
   "Quận 1",
@@ -50,6 +52,7 @@ const districtList = [
 
 const NewCourt = () => {
   const user = useSelector(selectUser)?.user;
+  const navigate = useNavigate();
 
   const initialFormData = {
     courtName: "",
@@ -190,7 +193,14 @@ const NewCourt = () => {
       toast.error("End Time AM must be between Start Time and End Time.");
       return;
     }
-
+    if (formData.prices[0].unitPrice <10000 ) {
+      toast.error("Please enter an amount greater than 10.000 đ");
+      return;
+    }
+    if ( formData.prices[1].unitPrice <10000) {
+      toast.error("Please enter an amount greater than 10.000 đ");
+      return;
+    }
     setUploading(true);
     try {
       const uploadedImageURLs = await uploadImages();
@@ -222,6 +232,7 @@ const NewCourt = () => {
         setFormData(initialFormData);
         setImageFiles(new Array(5).fill(null));
         setImageURLs(uploadedImageURLs.filter((url) => url !== null));
+        navigate(routes.listCourtForOwnerPending)
       } else {
         toast.error("Failed to fetch court details");
       }

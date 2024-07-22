@@ -59,7 +59,6 @@ const refreshData = () => {
           <div className="profile-details">
             {userInfor ? (
               <>
-                <Typography variant="h6">User Name: {userInfor.userName}</Typography>
                 <Typography variant="h6">First Name: {userInfor.firstName}</Typography>
                 <Typography variant="h6">Last Name: {userInfor.lastName}</Typography>
                 <Typography variant="h6">Email: {userInfor.email}</Typography>

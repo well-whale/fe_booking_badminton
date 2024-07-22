@@ -5,8 +5,7 @@ import {
   Container,
   Box,
   TextField,
-  Button,
-  Typography,
+
   Snackbar,
   Alert,
   InputLabel,
@@ -20,13 +19,12 @@ import { register } from "../../services/UserServices";
 
 function SignupForm() {
   const [state, setState] = useState({
-    userName: "",
     password: "",
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    role: "Customer",
+    roleName: "Customer",
   });
 
   const [errors, setErrors] = useState({});
@@ -51,17 +49,15 @@ function SignupForm() {
 
   const validate = () => {
     const newErrors = {};
-    if (!state.userName) newErrors.userName = true;
-    if (!state.password) newErrors.password = true;
-    if (!state.firstName) newErrors.firstName = true;
-    if (!state.lastName) newErrors.lastName = true;
+    if (!state.password) newErrors.password = "Password is required.";
+    if (!state.firstName) newErrors.firstName = "First name is required.";
+    if (!state.lastName) newErrors.lastName = "Last name is required.";
     if (!state.email) {
-      newErrors.email = true;
+      newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(state.email)) {
-      newErrors.email = true;
+      newErrors.email = "Email is invalid.";
     }
-    if (!state.phone) newErrors.phone = true;
-
+    if (!state.phone) newErrors.phone = "Phone number is required.";
     return newErrors;
   };
 
@@ -77,13 +73,12 @@ function SignupForm() {
           setSnackbarOpen(true);
           // Reset state to clear the form
           setState({
-            userName: "",
             password: "",
             firstName: "",
             lastName: "",
             email: "",
             phone: "",
-            // role:"Customer"
+            roleName:""
           });
           navigate("/login");
         } else {
@@ -92,10 +87,10 @@ function SignupForm() {
           setSnackbarOpen(true);
         }
       } catch (error) {
+        console.log(error.response.data.messages)
         setSnackbarSeverity("error");
-        setSnackbarMessage("Registration failed. Please try again.");
+        setSnackbarMessage(error.response.data.messages);
         setSnackbarOpen(true);
-        console.error("There was an error registering the user!", error);
       }
     } else {
       setErrors(newErrors);
@@ -113,17 +108,6 @@ function SignupForm() {
         <h1 style={{ paddingBottom: "20px" }}>Đăng kí</h1>
         <div style={{ display: "flex", gap: "10px" }}>
           <div>
-            {/* <Box mb={2}>
-              <TextField
-                fullWidth
-                id="userName"
-                name="userName"
-                label="User Name*"
-                value={state.userName}
-                onChange={handleChange}
-                error={Boolean(errors.userName)}
-              />
-            </Box> */}
             <Box mb={2}>
               <TextField
                 fullWidth
@@ -133,6 +117,8 @@ function SignupForm() {
                 value={state.email}
                 onChange={handleChange}
                 error={Boolean(errors.email)}
+                helperText={errors.email}
+
               />
             </Box>
             <Box mb={2}>
@@ -145,6 +131,8 @@ function SignupForm() {
                 value={state.password}
                 onChange={handleChange}
                 error={Boolean(errors.password)}
+                helperText={errors.password}
+
               />
             </Box>
             
@@ -153,10 +141,10 @@ function SignupForm() {
                 <InputLabel id="role-label">Vai trò</InputLabel>
                 <Select
                   labelId="role-label"
-                  id="role"
-                  name="role"
+                  id="roleName"
+                  name="roleName"
                   label="Vai trò*"
-                  value={state.role}
+                  value={state.roleName}
                   onChange={handleChange}
                 >
                   <MenuItem value={"Customer"}>Customer</MenuItem>
@@ -175,6 +163,8 @@ function SignupForm() {
                 value={state.firstName}
                 onChange={handleChange}
                 error={Boolean(errors.firstName)}
+                helperText={errors.firstName}
+
               />
             </Box>
             <Box mb={2}>
@@ -186,6 +176,8 @@ function SignupForm() {
                 value={state.lastName}
                 onChange={handleChange}
                 error={Boolean(errors.lastName)}
+                helperText={errors.lastName}
+
               />
             </Box>
 
@@ -198,6 +190,8 @@ function SignupForm() {
                 value={state.phone}
                 onChange={handleChange}
                 error={Boolean(errors.phone)}
+                helperText={errors.phone}
+
               />
             </Box>
           </div>

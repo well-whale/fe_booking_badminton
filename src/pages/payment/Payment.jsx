@@ -17,7 +17,11 @@ import {
 } from "@mui/material";
 import "./tailwindcss-colors.css";
 import "./Payment.css";
-import { getCourtByIdCourt, getSubCourtByIdCourt, payment } from "../../services/UserServices";
+import {
+  getCourtByIdCourt,
+  getSubCourtByIdCourt,
+  payment,
+} from "../../services/UserServices";
 import VNPAGE from "../../img/VNPAGE.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -185,10 +189,7 @@ const PaymentPage = () => {
     console.log(dataToSubmit);
 
     try {
-      const res = await payment(
-        orderDetail.totalPrice ,
-        orderDetail.customerId
-      );
+      const res = await payment(orderDetail.totalPrice, orderDetail.customerId);
       console.log(res.data);
 
       // Redirect to VNPay
@@ -212,19 +213,27 @@ const PaymentPage = () => {
       <Box className="payment-wrapper">
         <Box className="payment-left">
           <Box className="payment-header">
-            <Box className="payment-header-icon">
-              <i className="ri-flashlight-fill"></i>
-            </Box>
-            <h1 className="payment-header-title">Order Summary</h1>
+            <div className="payment-header-type">
+              <h1 className="payment-header-title">Chi tiết đặt chỗ</h1>
+              <Box
+              padding={"2px"}
+                className="payment-header-icon"
+                component="section"
+                
+                sx={{ p: 1, border: "2px dashed white" }}
+              >
+                <i className="payment-plan-info-name"> Đặt sân ngày</i>
+              </Box>
+            </div>
             <Box className="payment-plan-info">
               <h5 className="payment-plan-info-name">
-                Customer: {orderDetail.firstname} {orderDetail.lastName}
+                Khách hàng: {orderDetail.firstname} {orderDetail.lastName}
               </h5>
               <h5 className="payment-plan-info-email">
                 Email: {orderDetail.email}
               </h5>
               <h5 className="payment-plan-info-phone">
-                Phone: {orderDetail.phone}
+                Số điện thoại: {orderDetail.phone}
               </h5>
             </Box>
           </Box>
@@ -251,7 +260,7 @@ const PaymentPage = () => {
                 {orderDetail.selectedCourts.map((detail, index) => (
                   <Box key={index} className="payment-summary-item">
                     <Typography className="payment-summary-name">
-                    {subCourtNames[index]}
+                      {subCourtNames[index]}
                     </Typography>
                     <Typography className="payment-summary-time">
                       {detail.startTime} - {detail.endTime}
@@ -274,7 +283,7 @@ const PaymentPage = () => {
         <Box className="payment-right">
           <form className="payment-form" onSubmit={handleSubmit}>
             <Typography variant="h5" className="payment-title">
-              Payment Details
+              Chi tiết thanh toán
             </Typography>
             <FormControl component="fieldset" className="formControl">
               <RadioGroup
@@ -357,7 +366,7 @@ const PaymentPage = () => {
               color="primary"
               className="payment-submit-button"
             >
-              Thanh Toán 
+              Thanh Toán
             </Button>
           </form>
         </Box>

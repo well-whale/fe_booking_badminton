@@ -72,7 +72,7 @@ const Sidebar = () => {
         >
           <Typography variant="h6">BadmintonHub</Typography>
           <Typography variant="subtitle1">
-            Admin {user.firstName} {user.lastName}
+            Staff
           </Typography>
         </Link>
       </Box>

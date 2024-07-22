@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -37,12 +37,36 @@ import logo from "../../../img/Remove-bg.ai_1716950971549.png";
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 
 import "./Sidebar.css";
+import { getInfoUser } from "../../../services/UserServices";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(selectUser).user;
-
+  const [userInfor, setUserInfor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const fetchUserInfo = async () => {
+    if (user && user.userID) {
+      try {
+        const res = await getInfoUser(user.userID);
+        if (res.status === 200) {
+          setUserInfor(res.data.result);
+        } else {
+          setError("Failed to fetch user information");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching user information");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+  
+  useEffect(() => {
+    fetchUserInfo();
+  }, [user?.userID]);
+  console.log(userInfor)
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem("user");
@@ -72,14 +96,14 @@ const Sidebar = () => {
         >
           <Typography variant="h6">BadmintonHub</Typography>
           <Typography variant="subtitle1">
-            Admin {user.firstName} {user.lastName}
+            Admin 
           </Typography>
         </Link>
       </Box>
       <Divider />
       <List className="bottom">
         <Typography variant="overline" display="block" gutterBottom>
-          Main
+          Trang Chủ
         </Typography>
         <NavLink
           to="/admin/home"
@@ -93,17 +117,9 @@ const Sidebar = () => {
           </ListItem>
         </NavLink>
         <Typography variant="overline" display="block" gutterBottom>
-          Account
+          Tài Khoản
         </Typography>
-        {/* <ListItemButton onClick={handleAccountClick}>
-          <ListItemIcon>
-            <SwitchAccountIcon />
-          </ListItemIcon>
-          <ListItemText primary="Account" />
-          {openAccounts ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={openAccounts} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding> */}
+   
         <NavLink
           to="/admin/listAdmin"
           className={({ isActive }) => (isActive ? "active" : "")}
@@ -123,7 +139,7 @@ const Sidebar = () => {
             <ListItemIcon>
               <ManageAccountsIcon />
             </ListItemIcon>
-            <ListItemText primary="Court Owner" />
+            <ListItemText primary="Chủ Sân" />
           </ListItem>
         </NavLink>
         <NavLink
@@ -134,7 +150,7 @@ const Sidebar = () => {
             <ListItemIcon>
               <RecordVoiceOverIcon />
             </ListItemIcon>
-            <ListItemText primary="Staff" />
+            <ListItemText primary="Nhân Viên" />
           </ListItem>
         </NavLink>
         <NavLink
@@ -145,24 +161,15 @@ const Sidebar = () => {
             <ListItemIcon>
               <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Customer" />
+            <ListItemText primary="Khách Hàng" />
           </ListItem>
         </NavLink>
-        {/* </List>
-        </Collapse> */}
+     
         <Typography variant="overline" display="block" gutterBottom>
-          Court
+          Sân 
         </Typography>
 
-        {/* <ListItemButton onClick={handleCourtClick}>
-          <ListItemIcon>
-            <CreditCardOutlinedIcon />
-          </ListItemIcon>
-          <ListItemText primary="Court" />
-          {openCourts ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={openCourts} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding> */}
+   
         <NavLink
           to="/admin/listCourtActive"
           className={({ isActive }) => (isActive ? "active" : "")}
@@ -171,7 +178,7 @@ const Sidebar = () => {
             <ListItemIcon>
               <CreditScoreSharpIcon />
             </ListItemIcon>
-            <ListItemText primary="Court Active" />
+            <ListItemText primary="Sân Hoạt Động" />
           </ListItem>
         </NavLink>
         <NavLink
@@ -182,7 +189,7 @@ const Sidebar = () => {
             <ListItemIcon>
               <TimerSharpIcon />
             </ListItemIcon>
-            <ListItemText primary="Court Pendding" />
+            <ListItemText primary="Sân Chờ Duyệt" />
           </ListItem>
         </NavLink>
         <NavLink
@@ -193,32 +200,13 @@ const Sidebar = () => {
             <ListItemIcon>
               <CreditCardOffSharpIcon />
             </ListItemIcon>
-            <ListItemText primary="Court Close" />
+            <ListItemText primary="Sân Tạm Ngưng" />
           </ListItem>
         </NavLink>
-        {/* </List>
-        </Collapse> */}
-
-        {/* <Typography variant="overline" display="block" gutterBottom>Booked</Typography>
-        <NavLink to="/orders" className={({ isActive }) => (isActive ? "active" : "")}>
-          <ListItem button>
-            <ListItemIcon>
-              <CreditCardOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Orders" />
-          </ListItem>
-        </NavLink>
-        <NavLink to="/calendar" className={({ isActive }) => (isActive ? "active" : "")}>
-          <ListItem button>
-            <ListItemIcon>
-              <CalendarMonthOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Calendar" />
-          </ListItem>
-        </NavLink> */}
+       
 
         <Typography variant="overline" display="block" gutterBottom>
-          User Interface
+          Thông Tin
         </Typography>
         <NavLink
           to="/admin/Profile"
@@ -228,22 +216,15 @@ const Sidebar = () => {
             <ListItemIcon>
               <ManageAccountsOutlinedIcon />
             </ListItemIcon>
-            <ListItemText primary="Profile" />
+            <ListItemText primary="Hồ Sơ" />
           </ListItem>
         </NavLink>
-        {/* <NavLink to="/helper" className={({ isActive }) => (isActive ? "active" : "")}>
-          <ListItem button>
-            <ListItemIcon>
-              <DiamondOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Helper" />
-          </ListItem>
-        </NavLink> */}
+       
         <ListItem button onClick={handleLogout}>
           <ListItemIcon>
             <ExitToAppOutlinedIcon />
           </ListItemIcon>
-          <ListItemText primary="Logout" />
+          <ListItemText primary="Đăng Xuất" />
         </ListItem>
       </List>
     </Box>

@@ -1,6 +1,8 @@
 import ChartOrder from "../../components/admin/chart/ChartOrder";
+import ChartOrderType from "../../components/admin/chart/ChartOrderType";
 import ChartPrice from "../../components/admin/chart/ChartPrice";
 import ChartProfit from "../../components/admin/chart/ChartProfit";
+import ChartOrderOfCourt from "../../components/admin/chart/ChartTrenCourt";
 import Navbar from "../../components/admin/navbar/Navbar";
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Widget from "../../components/admin/widget/Widget";
@@ -23,6 +25,14 @@ const AdminHome = () => {
             </div>
             <div className="chart-item">
               <ChartPrice />
+            </div>
+          </div>
+          <div className="charts-container">
+            <div className="chart-item ">
+              <ChartOrderType />
+            </div>
+            <div className="chart-item">
+              <ChartOrderOfCourt />
             </div>
           </div>
         </div>

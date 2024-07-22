@@ -22,7 +22,8 @@ import dayjs from "dayjs";
 import { createCourt, getCourtByIdCourt, updateCourt } from "../../services/UserServices";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { routes } from "../../router/routes";
 
 const districtList = [
   "Quận 1",
@@ -52,6 +53,8 @@ const districtList = [
 const UpdateCourt = () => {
   const user = useSelector(selectUser)?.user;
   const { courtId } = useParams();
+  const navigate = useNavigate();
+
   const initialFormData = {
     courtName: "",
     district: "",
@@ -247,6 +250,7 @@ console.log(finalFormData)
         toast.success("Court updated successfully!");
         setFormData(initialFormData);
         setImageFiles(new Array(5).fill(null));
+        navigate(routes.listCourtForOwnerActive)
       } else {
         toast.error("Failed to update court");
       }

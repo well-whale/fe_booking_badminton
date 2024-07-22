@@ -8,13 +8,12 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  FormHelperText,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import "./NewUser.css";
-import { newUser } from "../../services/UserServices";
+import { newUser, register } from "../../services/UserServices";
 
 const Transition = React.forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
@@ -22,19 +21,19 @@ const Transition = React.forwardRef((props, ref) => (
 
 const NewUser = ({ open, handleClose, refreshData }) => {
   const initialFormData = {
-    userName: "",
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     phone: "",
-    roleID: 1,
+    roleName: "Court Owner",
   };
 
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,72 +41,59 @@ const NewUser = ({ open, handleClose, refreshData }) => {
       ...formData,
       [name]: value,
     });
-  };
-
-  const handleRoleChange = (e) => {
-    setFormData({
-      ...formData,
-      roleID: e.target.value,
-    });
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: !value,
+    }));
   };
 
   const validate = () => {
     const newErrors = {};
-    
-    if (!formData.userName) {
-      newErrors.userName = "User Name is required";
-    }
-    if (!formData.firstName) {
-      newErrors.firstName = "First Name is required";
-    }
-    if (!formData.lastName) {
-      newErrors.lastName = "Last Name is required";
-    }
+    if (!formData.password) newErrors.password = "Password is required.";
+    if (!formData.firstName) newErrors.firstName = "First name is required.";
+    if (!formData.lastName) newErrors.lastName = "Last name is required.";
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = "Email is invalid.";
     }
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    }
-    if (!formData.phone) {
-      newErrors.phone = "Phone number is required";
-    } else if (!/^\d+$/.test(formData.phone)) {
-      newErrors.phone = "Please enter a valid phone number";
-    }
-    if (!formData.roleID) {
-      newErrors.roleID = "Role is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (!formData.phone) newErrors.phone = "Phone number is required.";
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
-
     setSubmitting(true);
     setApiError(""); // Reset API error message before submitting
+    setSuccessMessage("");
+    const newErrors = validate();
+    if (Object.keys(newErrors).length === 0) {
     try {
-      console.log(formData);
-      await newUser(formData);
+      const response = await register(formData);
       setFormData(initialFormData);
+      setSuccessMessage("User successfully added!");
       handleClose();
       refreshData();
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setApiError(error.response.data.message);
-      } else {
-        setApiError("An error occurred while adding the user.");
-      }
+      
+       console.log(error.response.data.messages)
+        setApiError(`${error.response.data.messages}`);
+      
     } finally {
       setSubmitting(false);
+    };
+  }
+    else {
+      setErrors(newErrors);
+    }
+  };
+
+  const handleReset = () => {
+    if (window.confirm("Are you sure you want to reset the form?")) {
+      setFormData(initialFormData);
+      setErrors({});
+      setApiError("");
+      setSuccessMessage("");
     }
   };
 
@@ -140,20 +126,13 @@ const NewUser = ({ open, handleClose, refreshData }) => {
                 {apiError}
               </div>
             )}
+            {successMessage && (
+              <div className="success-message" style={{ color: "green" }}>
+                {successMessage}
+              </div>
+            )}
             <div className="form-row">
               <div className="form-column">
-                {/* <TextField
-                  id="userName"
-                  label="User Name*"
-                  variant="outlined"
-                  name="userName"
-                  value={formData.userName}
-                  onChange={handleInputChange}
-                  error={!!errors.userName}
-                  helperText={errors.userName}
-                  fullWidth
-                  margin="normal"
-                /> */}
                 <TextField
                   id="firstName"
                   label="First Name*"
@@ -217,22 +196,20 @@ const NewUser = ({ open, handleClose, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                <FormControl fullWidth margin="normal" error={!!errors.roleID}>
-                  <InputLabel id="role-select-label">Role</InputLabel>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel id="role-label">Role</InputLabel>
                   <Select
-                    labelId="role-select-label"
-                    id="role-select"
-                    value={formData.roleID}
-                    label="Role"
-                    onChange={handleRoleChange}
+                    labelId="role-label"
+                    id="roleName"
+                    name="roleName"
+                    label="Role*"
+                    value={formData.roleName}
+                    onChange={handleInputChange}
+                    error={!!errors.roleName}
                   >
-                    <MenuItem value={2}>Admin</MenuItem>
-                    <MenuItem value={3}>Owner Court</MenuItem>
-                    
+                    <MenuItem value={"Admin"}>Admin</MenuItem>
+                    <MenuItem value={"Court Owner"}>Court Owner</MenuItem>
                   </Select>
-                  {errors.roleID && (
-                    <FormHelperText>{errors.roleID}</FormHelperText>
-                  )}
                 </FormControl>
                 <div className="form-buttons">
                   <Button
@@ -248,7 +225,7 @@ const NewUser = ({ open, handleClose, refreshData }) => {
                     variant="outlined"
                     color="secondary"
                     className="form-button"
-                    onClick={() => setFormData(initialFormData)}
+                    onClick={handleReset}
                   >
                     Reset
                   </Button>

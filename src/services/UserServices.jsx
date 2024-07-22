@@ -34,8 +34,8 @@ const getCourtByIdCourt = (idcourt) => {
 const getPriceByIdCourt = (idcourt) => {
   return axios.get(`price/id/${idcourt}`);
 }
- const loginUser = async (userName, password) => {
-  return  axios.post(`auth/login`, { userName, password });
+ const loginUser = async (email, password) => {
+  return  axios.post(`auth/login`, { email, password });
   
 };
 
@@ -66,7 +66,7 @@ const checkSubCourt = (data) => {
     return axios.post(`booking/book/saveBookingV2`,data)
   }
   const getBookedByID = (idcustomer) =>{
-    return axios.get(`booking/booked/${idcustomer}`);
+    return axios.get(`booking/all-booked/${idcustomer}`);
   }
  const getAllBookingsOfCourt = (courtID) =>{
   return axios.get(`booking/AllBookingsOfCourt/${courtID}`);
@@ -124,4 +124,14 @@ const GetAvailableSubCourtRecure = (dataBooking) =>{
 const UpdateStatusOrder = (bookingId) =>{
   return axios.put(`booking/checkin?bookingID=${bookingId}`);
 }
-export {UpdateStatusOrder,getAllOrderStaff,addStaff,addRecureBooking,GetAvailableSubCourtRecure,getTotalPriceRecureBooking,deleteAccount,deleteCourt,updateCourt,updateStatusCourt,createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};
+const getAllPayment = () =>{
+  return axios.get('allPayment');
+}
+const getAllBooking = () =>{
+  return axios.get('booking/AllBookings');
+}
+const getAllBookingForCourtOwner = (userID) =>{
+  return axios.get(`booking/AllBookingForCourtOwner/${userID}`);
+}
+
+export {getAllBookingForCourtOwner,getAllBooking,getAllPayment,UpdateStatusOrder,getAllOrderStaff,addStaff,addRecureBooking,GetAvailableSubCourtRecure,getTotalPriceRecureBooking,deleteAccount,deleteCourt,updateCourt,updateStatusCourt,createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};

@@ -12,88 +12,114 @@ import { loginFailure, loginSuccess } from "../../redux/userSlice";
 import axios from "axios";
 import { routes } from "../../router/routes";
 import Header from "../../components/user/header/Header";
-import { Box, TextField } from "@mui/material";
-import LoginIcon from '@mui/icons-material/Login';
+import { Box, TextField, Snackbar, Alert } from "@mui/material";
+import LoginIcon from "@mui/icons-material/Login";
+import "../signup/Signup.css";
+
+import { Container } from "@mui/system";
 function LoginForm() {
-  const [userName, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!userName || !password) {
-      toast.error("Both username and password fields are required.");
-      return;
-    }
+    const newErrors = validate();
+    if (Object.keys(newErrors).length === 0) {
+      try {
+        const response = await loginUser(email, password);
+        const verifyResponse = await verifyToken(response.data.result.token);
+        console.log(response.data);
+        console.log(verifyResponse.data);
+        if (verifyResponse.data.result.valid === true) {
+          const user = response.data.result.userResponse;
+          const token = response.data.result.token;
+          dispatch(loginSuccess({ user, token }));
+          localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("token", token);
 
-    try {
-      const response = await loginUser(userName, password);
-      const verifyResponse = await verifyToken(response.data.result.token);
-      console.log(verifyResponse.data);
-      const user = response.data.result.response;
-      const token = response.data.result.token;
-      dispatch(loginSuccess({ user, token }));
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("token", token);
+          if (user.role.roleID === 1) {
+            navigate(routes.home);
+          } else if (user.role.roleID === 2) {
+            navigate(routes.adminHome);
+          } else if (user.role.roleID === 3) {
+            navigate(routes.ownerHome);
+          } else if (user.role.roleID === 4) {
+            navigate(routes.staffHome);
+          }
+        } else {
+          setSnackbarSeverity("error");
+          setSnackbarMessage(
+            "Đăng nhập thất bại. Vui lòng kiểm tra lại email hoặc mật khẩu!"
+          );
+          setSnackbarOpen(true);
 
-      if (user.role.roleID === 1) {
-        navigate(routes.home);
-      } else if (user.role.roleID === 2) {
-        navigate(routes.adminHome);
-      } else if (user.role.roleID === 3) {
-        navigate(routes.ownerHome);
-      } else if (user.role.roleID === 4) {
-        navigate(routes.staffHome);
+        }
+      } catch (error) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage(
+          "Đăng nhập thất bại. Vui lòng kiểm tra lại email hoặc mật khẩu!"
+        );
+        setSnackbarOpen(true);
+        dispatch(loginFailure(error.message));
       }
-    } catch (error) {
-      dispatch(loginFailure(error.message));
-      toast.error("Login failed. Please check your credentials.");
+    } else {
+      setErrors(newErrors);
     }
   };
 
+  const validate = () => {
+    const newErrors = {};
+    if (!password) newErrors.password = "Password is required.";
+    if (!email) {
+      newErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Email is invalid.";
+    }
+    return newErrors;
+  };
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
-    <div className="form-container sign-in-container">
+    <Container className="form-container sign-in-container">
       <form onSubmit={handleLogin}>
-        <h1 style={{paddingBottom:"20px"}}>Đăng nhập</h1>
-        {/* <Box mb={2}>
-          <TextField
-            fullWidth
-            id="Username"
-            name="Username"
-            label="User Name*"
-            value={userName}
-            onChange={(e) => setUsername(e.target.value)}
-            // error={Boolean(errors.userName)}
-          />
-        </Box> */}
+        <h1 style={{ paddingBottom: "20px" }}>Đăng nhập</h1>
         <Box mb={2}>
           <TextField
             fullWidth
             id="Email"
             name="Email"
             label="Email*"
-            value={userName}
-            // type="email"
-            onChange={(e) => setUsername(e.target.value)}
-            // error={Boolean(errors.userName)}
+            value={email}
+            type="email"
+            onChange={(e) => setEmail(e.target.value)}
+            error={Boolean(errors.email)}
+            helperText={errors.email}
           />
         </Box>
         <div className="input-pass">
-        <Box mb={2}>
-          <TextField
-            fullWidth
-            id="Password"
-            name="Mật khẩu"
-            label="Mật khẩu*"
-            value={password}
-            type={isShowPassword ? "text" : "password"}
-            onChange={(e) => setPassword(e.target.value)}
-            // error={Boolean(errors.userName)}
-          />
-        </Box>
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              id="Password"
+              name="Mật khẩu"
+              label="Mật khẩu*"
+              value={password}
+              type={isShowPassword ? "text" : "password"}
+              onChange={(e) => setPassword(e.target.value)}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
+            />
+          </Box>
           <i
             className={
               isShowPassword
@@ -105,11 +131,25 @@ function LoginForm() {
         </div>
         <a href="#">Quên mật khẩu?</a>
         <button className="submit" type="submit">
-          <LoginIcon/>
+          <LoginIcon />
         </button>
+        
       </form>
-      <ToastContainer />
-    </div>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>  
+    </Container>
+    
   );
 }
 
@@ -168,7 +208,9 @@ function LoginAndSignupForm() {
           </div>
         </div>
       </div>
+      
     </div>
+    
   );
 }
 
