@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { fetchAllCourts, getAllBooking, getAllBookingForCourtOwner } from '../../../services/UserServices';
-import { selectUser } from '../../../redux/userSlice';
+import { fetchAllCourts, getAllBooking, getAllBookingForCourtOwner, getAllCourtOfOwner } from '../../../services/UserServices';
 import { useSelector } from 'react-redux';
+import { selectUser } from '../../../redux/userSlice';
 
 const ChartOrderOfCourt = () => {
   const [courts, setCourts] = useState([]);
@@ -11,7 +11,7 @@ const ChartOrderOfCourt = () => {
 
   const getListCourt = async () => {
     try {
-      const res = await fetchAllCourts();
+      const res = await getAllCourtOfOwner(user.userID);
       if (res.status === 200) {
         const filteredCourts = res.data.filter(court => court.statusCourt === 1);
         setCourts(filteredCourts);

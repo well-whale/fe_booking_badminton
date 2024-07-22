@@ -22,7 +22,6 @@ const Transition = React.forwardRef((props, ref) => (
 
 const NewStaff = ({ open, handleClose, refreshData }) => {
   const initialFormData = {
-    userName: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -62,9 +61,7 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
   const validate = () => {
     const newErrors = {};
 
-    if (!formData.userName) {
-      newErrors.userName = "User Name is required";
-    }
+   
     if (!formData.firstName) {
       newErrors.firstName = "First Name is required";
     }
@@ -157,18 +154,6 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
             )}
             <div className="form-row">
               <div className="form-column">
-                {/* <TextField
-                  id="userName"
-                  label="User Name*"
-                  variant="outlined"
-                  name="userName"
-                  value={formData.userName}
-                  onChange={handleInputChange}
-                  error={!!errors.userName}
-                  helperText={errors.userName}
-                  fullWidth
-                  margin="normal"
-                /> */}
                 <TextField
                   id="firstName"
                   label="First Name*"

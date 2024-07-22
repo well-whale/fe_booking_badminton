@@ -42,6 +42,7 @@ import CustomizedBreadcrumbs from './components/breadcrumb/Breadcrumb';
 import Staff from './pages/list/Staff';
 import StaffHome from './pages/StaffHome/Home';
 import Checkin from './pages/booked/CheckIn';
+import ProfileStaff from './pages/single/ProfileStaff';
 
 function App() {
   const dispatch = useDispatch();
@@ -101,6 +102,8 @@ function App() {
 
         <Route path={routes.staffHome} element={<ProtectedRoute role="Staff"><StaffHome/></ProtectedRoute>} />
         <Route path={routes.checkIn} element={<ProtectedRoute role="Staff"><Checkin/></ProtectedRoute>} />
+        <Route path={routes.staffProfile} element={<ProtectedRoute role="Staff"><ProfileStaff /></ProtectedRoute>} />
+
       </Routes>
   );
 }

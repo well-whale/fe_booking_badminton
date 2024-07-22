@@ -34,9 +34,13 @@ export const routes = {
     listOrder: "/ownerCourt/listOrder",
     newCourt: "/ownerCourt/newCourt",
     ownerProfile: "/ownerCourt/Profile",
+    ownerProfile: "/ownerCourt/Profile",
+
 
 
 
     staffHome: "/staff/home",
-    checkIn :"/staff/checkIn"
+    checkIn :"/staff/checkIn",
+    staffProfile: "/staff/Profile",
+
 };

@@ -52,7 +52,7 @@ function LoginForm() {
           } else if (user.role.roleID === 3) {
             navigate(routes.ownerHome);
           } else if (user.role.roleID === 4) {
-            navigate(routes.staffHome);
+            navigate(routes.checkIn);
           }
         } else {
           setSnackbarSeverity("error");

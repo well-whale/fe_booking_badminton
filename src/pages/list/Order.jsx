@@ -73,6 +73,7 @@ const ListOrder = () => {
         const response = await getAllBookingsOfCourt(courtID);
         console.log(response.data)
         setData(response.data);  // Ensure this is an array
+        console.log(data)
       } catch (error) {
         console.error("Error fetching booking data:", error);
       }

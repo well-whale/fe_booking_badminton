@@ -4,7 +4,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import BackupTableIcon from "@mui/icons-material/BackupTable";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import "./Widget.css";
-import { fetchAllCourts, fetchAllUsers, getAllCourtOfOwner, getAllPayment } from "../../../services/UserServices";
+import { fetchAllCourts, fetchAllUsers, getAllCourtOfOwner, getAllPayment, getPayRevenueForCourtOwner } from "../../../services/UserServices";
 import { Link } from "react-router-dom";
 import VND from "../../price/PriceFormat";
 import { useSelector } from "react-redux";
@@ -59,7 +59,7 @@ const Widget = ({ type }) => {
           }
           break;
           case "earnings":
-            result = await getAllPayment();
+            result = await getPayRevenueForCourtOwner(user.userID);
             console.log(result.data);
             if (result.status === 200) {
               // Calculate the total earnings

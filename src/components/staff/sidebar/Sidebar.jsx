@@ -25,6 +25,7 @@ import {
   ExpandLess,
   ExpandMore,
 } from "@mui/icons-material";
+import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import { PiCourtBasketballFill } from "react-icons/pi";
 import TimerSharpIcon from "@mui/icons-material/TimerSharp";
 import CreditScoreSharpIcon from "@mui/icons-material/CreditScoreSharp";
@@ -67,7 +68,7 @@ const Sidebar = () => {
 
       <Box className="top" sx={{ p: 2, textAlign: "center" }}>
         <Link
-          to="/admin/home"
+          to=""
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <Typography variant="h6">BadmintonHub</Typography>
@@ -78,150 +79,21 @@ const Sidebar = () => {
       </Box>
       <Divider />
       <List className="bottom">
-        {/* <Typography variant="overline" display="block" gutterBottom>
-          Main
-        </Typography> */}
-        {/* <NavLink
-          to="/admin/home"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          <ListItem button sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItem>
-        </NavLink>
-        <Typography variant="overline" display="block" gutterBottom>
-          Account
-        </Typography> */}
-        {/* <ListItemButton onClick={handleAccountClick}>
-          <ListItemIcon>
-            <SwitchAccountIcon />
-          </ListItemIcon>
-          <ListItemText primary="Account" />
-          {openAccounts ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={openAccounts} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding> */}
-        {/* <NavLink
-          to="/admin/listAdmin"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          <ListItem button sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <AdminPanelSettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary="Admin" />
-          </ListItem>
-        </NavLink> */}
+      
         <NavLink
           to="/staff/checkIn"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
-          <ListItem button sx={{ pl: 4 }}>
+          <ListItem button >
             <ListItemIcon>
-              <ManageAccountsIcon />
+              <ChecklistRtlIcon />
             </ListItemIcon>
             <ListItemText primary="Check In" />
           </ListItem>
         </NavLink>
-        {/* <NavLink
-          to="/admin/listStaff"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          <ListItem button sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <RecordVoiceOverIcon />
-            </ListItemIcon>
-            <ListItemText primary="Staff" />
-          </ListItem>
-        </NavLink>
+        
         <NavLink
-          to="/admin/listUsers"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          <ListItem button sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Customer" />
-          </ListItem>
-        </NavLink> */}
-        {/* </List>
-        </Collapse> */}
-        {/* <Typography variant="overline" display="block" gutterBottom>
-          Court
-        </Typography> */}
-
-        {/* <ListItemButton onClick={handleCourtClick}>
-          <ListItemIcon>
-            <CreditCardOutlinedIcon />
-          </ListItemIcon>
-          <ListItemText primary="Court" />
-          {openCourts ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={openCourts} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding> */}
-        {/* <NavLink
-          to="/admin/listCourtActive"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          <ListItem button sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <CreditScoreSharpIcon />
-            </ListItemIcon>
-            <ListItemText primary="Court Active" />
-          </ListItem>
-        </NavLink>
-        <NavLink
-          to="/admin/listCourtPending"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          <ListItem button sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <TimerSharpIcon />
-            </ListItemIcon>
-            <ListItemText primary="Court Pendding" />
-          </ListItem>
-        </NavLink>
-        <NavLink
-          to="/admin/listCourtPause"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          <ListItem button sx={{ pl: 4 }}>
-            <ListItemIcon>
-              <CreditCardOffSharpIcon />
-            </ListItemIcon>
-            <ListItemText primary="Court Close" />
-          </ListItem>
-        </NavLink> */}
-        {/* </List>
-        </Collapse> */}
-
-        {/* <Typography variant="overline" display="block" gutterBottom>Booked</Typography>
-        <NavLink to="/orders" className={({ isActive }) => (isActive ? "active" : "")}>
-          <ListItem button>
-            <ListItemIcon>
-              <CreditCardOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Orders" />
-          </ListItem>
-        </NavLink>
-        <NavLink to="/calendar" className={({ isActive }) => (isActive ? "active" : "")}>
-          <ListItem button>
-            <ListItemIcon>
-              <CalendarMonthOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Calendar" />
-          </ListItem>
-        </NavLink> */}
-
-        {/* <Typography variant="overline" display="block" gutterBottom>
-          User Interface
-        </Typography> */}
-        <NavLink
-          to="/admin/Profile"
+          to="/staff/Profile"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
           <ListItem button>
@@ -231,14 +103,7 @@ const Sidebar = () => {
             <ListItemText primary="Profile" />
           </ListItem>
         </NavLink>
-        {/* <NavLink to="/helper" className={({ isActive }) => (isActive ? "active" : "")}>
-          <ListItem button>
-            <ListItemIcon>
-              <DiamondOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="Helper" />
-          </ListItem>
-        </NavLink> */}
+       
         <ListItem button onClick={handleLogout}>
           <ListItemIcon>
             <ExitToAppOutlinedIcon />

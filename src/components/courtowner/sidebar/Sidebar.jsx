@@ -99,14 +99,17 @@ const Sidebar = () => {
         <Typography variant="overline" display="block" gutterBottom>
           Main
         </Typography>
-
+        <Link
+          to="/ownerCourt/home"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
         <ListItem button>
           <ListItemIcon>
             <LuHome />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-
+        </Link>
         <Typography variant="overline" display="block" gutterBottom>
           Court
         </Typography>
