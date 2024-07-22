@@ -1,31 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box,Autocomplete, Button, styled, TextField } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import UpdateIcon from "@mui/icons-material/Update";
-import "./Customer.css";
-import UserDetail from "../single/UserDetail";
-import NewUser from "../new/NewUser";
-import UpdateUser from "../update/UpdateUser";
-import { getAllBookingsOfCourt, getAllCourtOfOwner } from "../../services/UserServices";
+import {
+  Box,
+  Autocomplete,
+  Button,
+  styled,
+  TextField,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Sidebar from "../../components/courtowner/sidebar/Sidebar";
-import SearchIcon from '@mui/icons-material/Search';
+import {
+  getAllBookingsOfCourt,
+  getAllBookingsOfCourt2,
+  getAllCourtOfOwner,
+} from "../../services/UserServices";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
+import dayjs from "dayjs";
 import BookedDetail from "../single/BookedDetail";
-const StyledGridOverlay = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '100%',
-  '& .no-rows-primary': {
-    fill: theme.palette.mode === 'light' ? '#AEB8C2' : '#3D4751',
+import "./Customer.css";
+
+const StyledGridOverlay = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%",
+  "& .no-rows-primary": {
+    fill: theme.palette.mode === "light" ? "#AEB8C2" : "#3D4751",
   },
-  '& .no-rows-secondary': {
-    fill: theme.palette.mode === 'light' ? '#E8EAED' : '#1D2126',
+  "& .no-rows-secondary": {
+    fill: theme.palette.mode === "light" ? "#E8EAED" : "#1D2126",
   },
 }));
+
 function CustomNoRowsOverlay() {
   return (
     <StyledGridOverlay>
@@ -37,27 +51,13 @@ function CustomNoRowsOverlay() {
         aria-hidden
         focusable="false"
       >
-        <path
-          className="no-rows-primary"
-          d="M348 69c-46.392 0-84 37.608-84 84s37.608 84 84 84 84-37.608 84-84-37.608-84-84-84Zm-104 84c0-57.438 46.562-104 104-104s104 46.562 104 104-46.562 104-104 104-104-46.562-104-104Z"
-        />
-        <path
-          className="no-rows-primary"
-          d="M308.929 113.929c3.905-3.905 10.237-3.905 14.142 0l63.64 63.64c3.905 3.905 3.905 10.236 0 14.142-3.906 3.905-10.237 3.905-14.142 0l-63.64-63.64c-3.905-3.905-3.905-10.237 0-14.142Z"
-        />
-        <path
-          className="no-rows-primary"
-          d="M308.929 191.711c-3.905-3.906-3.905-10.237 0-14.142l63.64-63.64c3.905-3.905 10.236-3.905 14.142 0 3.905 3.905 3.905 10.237 0 14.142l-63.64 63.64c-3.905 3.905-10.237 3.905-14.142 0Z"
-        />
-        <path
-          className="no-rows-secondary"
-          d="M0 10C0 4.477 4.477 0 10 0h380c5.523 0 10 4.477 10 10s-4.477 10-10 10H10C4.477 20 0 15.523 0 10ZM0 59c0-5.523 4.477-10 10-10h231c5.523 0 10 4.477 10 10s-4.477 10-10 10H10C4.477 69 0 64.523 0 59ZM0 106c0-5.523 4.477-10 10-10h203c5.523 0 10 4.477 10 10s-4.477 10-10 10H10c-5.523 0-10-4.477-10-10ZM0 153c0-5.523 4.477-10 10-10h195.5c5.523 0 10 4.477 10 10s-4.477 10-10 10H10c-5.523 0-10-4.477-10-10ZM0 200c0-5.523 4.477-10 10-10h203c5.523 0 10 4.477 10 10s-4.477 10-10 10H10c-5.523 0-10-4.477-10-10ZM0 247c0-5.523 4.477-10 10-10h231c5.523 0 10 4.477 10 10s-4.477 10-10 10H10c-5.523 0-10-4.477-10-10Z"
-        />
+        {/* SVG content */}
       </svg>
       <Box sx={{ mt: 2 }}>No rows</Box>
     </StyledGridOverlay>
   );
 }
+
 const ListOrder = () => {
   const [data, setData] = useState([]);
   const [court, setCourt] = useState([]);
@@ -65,15 +65,16 @@ const ListOrder = () => {
   const [dialogType, setDialogType] = useState("");
   const [selectedBooked, setSelectedBooked] = useState(null);
   const [selectedCourt, setSelectedCourt] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [bookingType, setBookingType] = useState("all");
   const user = useSelector(selectUser).user;
 
   const fetchData = async (courtID) => {
     if (courtID) {
       try {
         const response = await getAllBookingsOfCourt(courtID);
-        console.log(response.data)
-        setData(response.data);  // Ensure this is an array
-        console.log(data)
+        setData(response.data); // Ensure this is an array
       } catch (error) {
         console.error("Error fetching booking data:", error);
       }
@@ -82,9 +83,10 @@ const ListOrder = () => {
         // Fetch all bookings if no court is selected
         const allBookings = [];
         const response = await getAllCourtOfOwner(user.userID);
-        const courts = response.data;  // Ensure this is an array
+        const courts = response.data; // Ensure this is an array
         for (const court of courts) {
-          const courtBookings = await getAllBookingsOfCourt(court.courtID);
+          const courtBookings = await getAllBookingsOfCourt2(court.courtID);
+          console.log(courtBookings.data)
           allBookings.push(...courtBookings.data);
         }
         setData(allBookings);
@@ -94,13 +96,15 @@ const ListOrder = () => {
       }
     }
   };
-
+console.log(data)
   useEffect(() => {
     fetchData();
   }, []);
 
   const options = court.map((option) => {
-    const firstLetter = option.courtName ? option.courtName[0].toUpperCase() : "";
+    const firstLetter = option.courtName
+      ? option.courtName[0].toUpperCase()
+      : "";
     return {
       firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
       ...option,
@@ -123,6 +127,39 @@ const ListOrder = () => {
     setSelectedBooked(null);
   };
 
+  const handleStartDateChange = (date) => {
+    setStartDate(date ? dayjs(date).toDate() : null);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date ? dayjs(date).toDate() : null);
+  };
+
+  const handleResetDate = () => {
+    setStartDate(null);
+    setEndDate(null);
+  };
+
+  const handleBookingTypeChange = (event) => {
+    setBookingType(event.target.value);
+  };
+
+  const filteredItems = useMemo(() => {
+    return data.filter((item) => {
+      const itemDate = new Date(item.bookingDate);
+      const matchesDate =
+        (!startDate || itemDate >= startDate) &&
+        (!endDate || itemDate <= endDate);
+
+      const matchesType =
+        bookingType === "all" ||
+        (bookingType === "day" && item.bookingId) ||
+        (bookingType === "current" && item.recurringBookingID);
+
+      return matchesDate && matchesType;
+    });
+  }, [data, startDate, endDate, bookingType]);
+
   const actionColumn = [
     {
       field: "action",
@@ -133,12 +170,10 @@ const ListOrder = () => {
           <Button
             variant="outlined"
             color="info"
-            // startIcon={<VisibilityIcon />}
             onClick={() => handleClickOpen(params.row, "view")}
           >
             View
           </Button>
-          
         </div>
       ),
     },
@@ -157,42 +192,109 @@ const ListOrder = () => {
     <div className="customer">
       <Sidebar />
       <div className="customerContainer">
-        {court.length > 0 && (
-          <Autocomplete
-            id="grouped-demo"
-            options={options.sort(
-              (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
+        <div className="filters" style={{ display: "flex" }}>
+          <div>
+            {" "}
+            <FormControl style={{ padding: "20px", gap: "20px" }}>
+              <FormLabel id="demo-radio-buttons-group-label">
+                Booking Type
+              </FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                value={bookingType}
+                onChange={handleBookingTypeChange}
+                name="radio-buttons-group"
+              >
+                <FormControlLabel value="all" control={<Radio />} label="All" />
+                <FormControlLabel
+                  value="day"
+                  control={<Radio />}
+                  label="Day Booking"
+                />
+                <FormControlLabel
+                  value="current"
+                  control={<Radio />}
+                  label="Recurring Booking"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
+          <div>
+            <Box
+              display="grid"
+              alignItems="center"
+              style={{ padding: "20px", gap: "20px" }}
+              component="section"
+            >
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label="Start Date"
+                  value={startDate ? dayjs(startDate) : null}
+                  onChange={handleStartDateChange}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+                <DatePicker
+                  label="End Date"
+                  value={endDate ? dayjs(endDate) : null}
+                  onChange={handleEndDateChange}
+                  renderInput={(params) => <TextField {...params} />}
+                  style={{ marginLeft: 16 }}
+                />
+              </LocalizationProvider>
+              <Button
+                onClick={handleResetDate}
+                variant="outlined"
+                style={{ marginLeft: 8 }}
+              >
+                Reset
+              </Button>
+            </Box>
+          </div>
+          <div style={{paddingTop:"20px"}}>
+            {court.length > 0 && (
+              <Autocomplete
+                id="grouped-demo"
+                options={options.sort(
+                  (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
+                )}
+                groupBy={(option) => option.firstLetter}
+                getOptionLabel={(option) => option.courtName}
+                isOptionEqualToValue={(option, value) =>
+                  option.courtID === value.courtID
+                }
+                slots={{ noRowsOverlay: CustomNoRowsOverlay }}
+                sx={{ "--DataGrid-overlayHeight": "300px", width: 300 }}
+                onChange={handleCourtChange}
+                renderInput={(params) => (
+                  <TextField {...params} label="CourtName" />
+                )}
+              />
             )}
-            groupBy={(option) => option.firstLetter}
-            getOptionLabel={(option) => option.courtName}
-            isOptionEqualToValue={(option, value) => option.courtID === value.courtID}
-            // sx={{ width: 300 }}
-            slots={{ noRowsOverlay: CustomNoRowsOverlay }}
-              sx={{ '--DataGrid-overlayHeight': '300px' ,width: 300}}
-            onChange={handleCourtChange}
-            renderInput={(params) => (
-              <TextField {...params} label="CourtName" />
-            )}
-          />
-        )}
+          </div>
+        </div>
+
         <div className="datatable">
           <DataGrid
-                      autoHeight
-
+            autoHeight
             className="datagrid"
-            rows={Array.isArray(data) ? data : []}
+            rows={Array.isArray(filteredItems) ? filteredItems : []}
             columns={bookingColumns.concat(actionColumn)}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            getRowId={(row) => row.bookingId} // Assuming bookingDate and customerPhone combination is unique
+            pageSize={9}
+            rowsPerPageOptions={[9]}
+            getRowId={(row) => row.bookingId || row.recurringBookingID}
+            components={{
+              NoRowsOverlay: CustomNoRowsOverlay,
+            }}
           />
         </div>
+        {dialogType === "view" && selectedBooked && (
+          <BookedDetail
+            open={open}
+            onClose={handleClose}
+            booking={selectedBooked}
+          />
+        )}
       </div>
-      {dialogType === "view" && selectedBooked && (
-        <BookedDetail open={open} onClose={handleClose} booking={selectedBooked} />
-      )}
-      
-     
     </div>
   );
 };

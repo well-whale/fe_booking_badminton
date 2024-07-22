@@ -71,7 +71,9 @@ const checkSubCourt = (data) => {
  const getAllBookingsOfCourt = (courtID) =>{
   return axios.get(`booking/AllBookingsOfCourt/${courtID}`);
  }
-
+ const getAllBookingsOfCourt2 = (courtID) =>{
+  return axios.get(`booking/AllBookingsOfCourtV2/${courtID}`);
+ }
  const getAllCourtOfOwner = (ownerID) =>{
   return axios.get(`court/userid/${ownerID}`);
  }
@@ -136,4 +138,4 @@ const getAllBookingForCourtOwner = (userID) =>{
 const getPayRevenueForCourtOwner = (userID) =>{
   return axios.get(`RevenueForCourtOwner/${userID}`);
 }
-export {getPayRevenueForCourtOwner,getAllBookingForCourtOwner,getAllBooking,getAllPayment,UpdateStatusOrder,getAllOrderStaff,addStaff,addRecureBooking,GetAvailableSubCourtRecure,getTotalPriceRecureBooking,deleteAccount,deleteCourt,updateCourt,updateStatusCourt,createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};
+export {getAllBookingsOfCourt2,getPayRevenueForCourtOwner,getAllBookingForCourtOwner,getAllBooking,getAllPayment,UpdateStatusOrder,getAllOrderStaff,addStaff,addRecureBooking,GetAvailableSubCourtRecure,getTotalPriceRecureBooking,deleteAccount,deleteCourt,updateCourt,updateStatusCourt,createCourt,getSubCourtByIdCourt,getInfoUser,getAllCourtOfOwner,getAllBookingsOfCourt,getBookedByID,paymentSave,payment,verifyToken,loginUser, book,register,newUser, fetchAllUsers,fetchAllCourts,searchByDistrict,getCourtByIdCourt,deleteByUserID,updateByUserID,checkSubCourt,getSubCourtStatus,getPriceByIdCourt};
