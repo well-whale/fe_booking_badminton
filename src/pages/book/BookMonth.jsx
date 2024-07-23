@@ -308,7 +308,7 @@ const BookMonth = () => {
                   label="End Day"
                   value={selectedDate}
                   onChange={(newValue) =>
-                    setSelectedDate(dayjs(newValue).add(1, "month"))
+                    setSelectedDate(dayjs(newValue))
                   }
                   shouldDisableDate={disablePastDates}
                 />
