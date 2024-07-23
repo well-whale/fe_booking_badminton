@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 
 const districtList = [
   "Quận 1",
+  "Quận 2",
   "Quận 3",
   "Quận 4",
   "Quận 5",

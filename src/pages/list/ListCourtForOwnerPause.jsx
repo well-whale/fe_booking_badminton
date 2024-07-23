@@ -40,6 +40,7 @@ import UpdateCourt from "../update/UpdateCourt";
 
 const districtList = [
   "Quận 1",
+  "Quận 2",
   "Quận 3",
   "Quận 4",
   "Quận 5",

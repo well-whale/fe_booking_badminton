@@ -6,7 +6,7 @@ import { Autocomplete, TextField } from '@mui/material';
 import "../search/Search.css";
 
 const address = [
-  "Quận 1", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8",
+  "Quận 1", "Quận 2", "Quận 3", "Quận 4", "Quận 5", "Quận 6", "Quận 7", "Quận 8",
   "Quận 10", "Quận 11", "Quận 12", "Phú Nhuận", "Bình Thạnh",
   "Gò Vấp", "Tân Bình", "Bình Tân", "Tân Phú",
   "Thủ Đức", "Bình Chánh", "Hóc Môn", "Củ Chi", "Cần Giờ", "Nhà Bè"
