@@ -4,12 +4,12 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import BackupTableIcon from "@mui/icons-material/BackupTable";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import "./Widget.css";
-import { fetchAllCourts, fetchAllUsers, getAllCourtOfOwner, getAllPayment, getPayRevenueForCourtOwner } from "../../../services/UserServices";
+import { fetchAllCourts, fetchAllUsers, getAllBookingForCourtOwner, getAllCourtOfOwner, getAllPayment, getPayRevenueForCourtOwner } from "../../../services/UserServices";
 import { Link } from "react-router-dom";
 import VND from "../../price/PriceFormat";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/userSlice";
-
+import ListAltIcon from '@mui/icons-material/ListAlt';
 const Widget = ({ type }) => {
   const [data, setData] = useState({});
   const [amount, setAmount] = useState(0);
@@ -22,21 +22,27 @@ const Widget = ({ type }) => {
 
       switch (type) {
         case "customer":
-          result = await fetchAllUsers();
+          result  = await getAllBookingForCourtOwner(user.userID);
           console.log(result.data);
           if (result.status === 200) {
+            const bookingDayList = result.data.bookingDayList;
+        const recurringBookingList = result.data.recurringBookingList;
+
+        // Combine all bookings
+        const allBookings = [...bookingDayList, ...recurringBookingList];
+
             setData({
-              title: "Tài Khoản",
+              title: "Số đơn đặt",
               isMoney: false,
-              namelink: "Xem toàn bộ người dùng",
-              link: "/admin/listUsers",
+              namelink: "Xem đơn đặt",
+              link: "/ownerCourt/listOrderDay",
               icon: (
-                <PersonOutlineOutlinedIcon
+                <ListAltIcon
                   className="icon"
                   style={{ color: "crimson", backgroundColor: "#ff000033" }}
                 />
               ),
-              amount: result.data.result.length,
+              amount: allBookings.length,
             });
           }
           break;
@@ -47,7 +53,7 @@ const Widget = ({ type }) => {
               title: "Sân ",
               isMoney: false,
               namelink: "Xem toàn bộ sân cầu lông",
-              link: "/admin/listCourtActive",
+              link: "/ownerCourt/listCourtActive",
               icon: (
                 <BackupTableIcon
                   className="icon"
@@ -66,9 +72,9 @@ const Widget = ({ type }) => {
               const totalEarnings = result.data.reduce((acc, payment) => acc + payment.paymentAmount, 0);
           
               setData({
-                title: "TOTAL EARNINGS",
+                title: "Tổng doanh thu",
                 // isMoney: true,
-                link: "View net earnings",
+                // link: "View net earnings",
                 icon: (
                   <MonetizationOnOutlinedIcon
                     className="icon"
@@ -100,10 +106,10 @@ const Widget = ({ type }) => {
         </span>
       </div>
       <div className="right">
-        <div className="percentage positive">
+        {/* <div className="percentage positive">
           <KeyboardArrowUpIcon />
           {diff}%
-        </div>
+        </div> */}
         {data.icon}
       </div>
     </div>

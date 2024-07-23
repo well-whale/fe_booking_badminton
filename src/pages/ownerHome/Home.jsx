@@ -13,7 +13,7 @@ const OwnerHome = () => {
         <Sidebar />
         <div className="homeContainer">
           <div className="widgets">
-            {/* <Widget type="customer" /> */}
+            <Widget type="customer" />
             <Widget type="court" />
             <Widget type="earnings" />
           </div>

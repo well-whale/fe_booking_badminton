@@ -177,7 +177,7 @@ const ListOrderDay = () => {
   const bookingColumns = [
     { field: "courtName", headerName: "Court Name", width: 200 },
     { field: "address", headerName: "Address", width: 250 },
-    { field: "courtPhoneNumber", headerName: "courtPhoneNumber", width: 150 },
+    { field: "courtPhoneNumber", headerName: "Court Phone Number", width: 150 },
     { field: "customerPhone", headerName: "Customer Phone", width: 150 },
     { field: "totalPrice", headerName: "Total Price", width: 100 },
     { field: "bookingDate", headerName: "Booking Date", width: 150 },

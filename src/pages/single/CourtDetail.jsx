@@ -19,7 +19,7 @@ import { GiWaterBottle } from "react-icons/gi";
 import { MdOutlineFastfood } from "react-icons/md";
 import { IoMdRestaurant } from "react-icons/io";
 import "./CourtDetail.css";
-import { getPriceByIdCourt } from "../../services/UserServices";
+import { getCourtByIdCourt, getPriceByIdCourt } from "../../services/UserServices";
 import VND from "../../components/price/PriceFormat";
 
 const CourtDetail = ({ open, onClose, court }) => {
@@ -28,14 +28,20 @@ const CourtDetail = ({ open, onClose, court }) => {
   ));
 
   const itemData = court.images;
-  console.log(itemData);
+
+  console.log(court);
 
   const [listPrice, setListPrice] = useState([]);
+  const [itemDatastaff, setitemDatastaff] = useState([]);
 
   const fetchData = async () => {
     try {
       console.log(court.courtID);
       const response = await getPriceByIdCourt(court.courtID);
+      const res = await getCourtByIdCourt(court.courtID);
+      console.log(res.data)
+
+      setitemDatastaff(res.data.staffDTO)
       setListPrice(response.data);
       console.log(response.data);
     } catch (error) {
@@ -75,38 +81,56 @@ const CourtDetail = ({ open, onClose, court }) => {
               </div>
               <div className="courtDetails">
                 <div className="courtDetail">
-                <div className="amenities-container">
-
-                <div className="courtDetailItem">
-                    <span className="courtItemKey">ID Sân: </span>
-                    <span className="courtItemValue">{court.courtID}</span>
+                  <div className="amenities-container">
+                    <div className="courtDetailItem">
+                      <span className="courtItemKey">ID Sân: </span>
+                      <span className="courtItemValue">{court.courtID}</span>
+                    </div>
+                    <div className="courtDetailItem">
+                      <span className="courtItemKey">Tên Sân : </span>
+                      <span className="courtItemValue">{court.courtName}</span>
+                    </div>
+                    <div className="courtDetailItem">
+                      <span className="courtItemKey">Khu Vực: </span>
+                      <span className="courtItemValue">{court.district}</span>
+                    </div>
+                    <div className="courtDetailItem">
+                      <span className="courtItemKey">Địa Chỉ: </span>
+                      <span className="courtItemValue">
+                        {court.courtAddress}
+                      </span>
+                    </div>
+                    <div className="courtDetailItem">
+                      <span className="courtItemKey">Quy Mô: </span>
+                      <span className="courtItemValue">
+                        {court.courtQuantity} Sân
+                      </span>
+                    </div>
+                    <div className="courtDetailItem">
+                      <span className="courtItemKey">Thời Gian Mỗi Slot: </span>
+                      <span className="courtItemValue">
+                        {court.duration} phút
+                      </span>
+                    </div>
                   </div>
-                  <div className="courtDetailItem">
-                    <span className="courtItemKey">Tên Sân : </span>
-                    <span className="courtItemValue">{court.courtName}</span>
+                  <div className="amenities-container">
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>ID</TableCell>
+                          <TableCell>Name Staff</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {itemDatastaff.map((staff, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{staff.staffID}</TableCell>
+                            <TableCell>{staff.staffName}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </div>
-                  <div className="courtDetailItem">
-                    <span className="courtItemKey">Khu Vực: </span>
-                    <span className="courtItemValue">{court.district}</span>
-                  </div>
-                  <div className="courtDetailItem">
-                    <span className="courtItemKey">Địa Chỉ: </span>
-                    <span className="courtItemValue">{court.courtAddress}</span>
-                  </div>
-                  <div className="courtDetailItem">
-                    <span className="courtItemKey">Quy Mô: </span>
-                    <span className="courtItemValue">
-                      {court.courtQuantity} Sân
-                    </span>
-                  </div>
-                  <div className="courtDetailItem">
-                    <span className="courtItemKey">Thời Gian Mỗi Slot: </span>
-                    <span className="courtItemValue">
-                      {court.duration} phút
-                    </span>
-                  </div>
-                </div>
-
                 </div>
 
                 <div className="courtPriceSlot">
@@ -134,24 +158,26 @@ const CourtDetail = ({ open, onClose, court }) => {
                       ))}
                     </ul>
                   </div>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Open Time</TableCell>
-                        <TableCell>Close Time</TableCell>
-                        <TableCell>Unit Price (VND/1h)</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {listPrice.map((price) => (
-                        <TableRow key={price.priceID}>
-                          <TableCell>{price.startTime}</TableCell>
-                          <TableCell>{price.endTime}</TableCell>
-                          <TableCell>{VND.format(price.unitPrice)}</TableCell>
+                  <div className="amenities-container">
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Open Time</TableCell>
+                          <TableCell>Close Time</TableCell>
+                          <TableCell>Unit Price (VND/1h)</TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHead>
+                      <TableBody>
+                        {listPrice.map((price) => (
+                          <TableRow key={price.priceID}>
+                            <TableCell>{price.startTime}</TableCell>
+                            <TableCell>{price.endTime}</TableCell>
+                            <TableCell>{VND.format(price.unitPrice)}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </div>
               </div>
             </div>

@@ -63,7 +63,7 @@ const Widget = ({ type }) => {
               const totalEarnings = result.data.reduce((acc, payment) => acc + payment.paymentAmount, 0);
           
               setData({
-                title: "TOTAL EARNINGS",
+                title: "Tổng doanh thu",
                 // isMoney: true,
                 link: "View net earnings",
                 icon: (
@@ -97,10 +97,10 @@ const Widget = ({ type }) => {
         </span>
       </div>
       <div className="right">
-        <div className="percentage positive">
+        {/* <div className="percentage positive">
           <KeyboardArrowUpIcon />
           {diff}%
-        </div>
+        </div> */}
         {data.icon}
       </div>
     </div>
