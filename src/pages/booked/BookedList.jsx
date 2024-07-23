@@ -283,6 +283,8 @@ const BookingDayDetails = ({ paymentHistory, formatDate }) => {
         {paymentHistory.bookingDetails.map((detail, index) => (
           <div key={index} className="flight-info">
             <p>{paymentHistory.courtName}</p>
+            <p>{paymentHistory.address}</p>
+
             <p>
               {paymentHistory.bookingDate} · {detail.startTime}-{detail.endTime}
             </p>

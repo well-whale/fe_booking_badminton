@@ -176,14 +176,25 @@ const Sidebar = () => {
           Booked
         </Typography>
         <NavLink
-          to="/ownerCourt/listOrder"
+          to="/ownerCourt/listOrderDay"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
           <ListItem button>
             <ListItemIcon>
               <MdOutlinePayment />
             </ListItemIcon>
-            <ListItemText primary="Orders" />
+            <ListItemText primary="Orders Day" />
+          </ListItem>
+        </NavLink>
+        <NavLink
+          to="/ownerCourt/listOrderRecurring"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          <ListItem button>
+            <ListItemIcon>
+              <MdOutlinePayment />
+            </ListItemIcon>
+            <ListItemText primary="Orders Recurring" />
           </ListItem>
         </NavLink>
         {/* <NavLink

@@ -25,6 +25,7 @@ import { selectUser } from "../../redux/userSlice";
 import dayjs from "dayjs";
 import BookedDetail from "../single/BookedDetail";
 import "./Customer.css";
+import BookedDetailRecurring from "../single/BookedDetailRecurring";
 
 const StyledGridOverlay = styled("div")(({ theme }) => ({
   display: "flex",
@@ -58,7 +59,7 @@ function CustomNoRowsOverlay() {
   );
 }
 
-const ListOrder = () => {
+const ListOrderRecurring = () => {
   const [data, setData] = useState([]);
   const [court, setCourt] = useState([]);
   const [open, setOpen] = useState(false);
@@ -67,27 +68,32 @@ const ListOrder = () => {
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [bookingType, setBookingType] = useState("all");
+  const [startPaymentDate, setStartPaymentDate] = useState(null);
+  const [endPaymentDate, setEndPaymentDate] = useState(null);
   const user = useSelector(selectUser).user;
 
   const fetchData = async (courtID) => {
     if (courtID) {
       try {
-        const response = await getAllBookingsOfCourt(courtID);
-        setData(response.data); // Ensure this is an array
+        const response = await getAllBookingsOfCourt2(courtID);
+        setData(response.data.recurringBookingResponseList.filter((booking) => booking.recurringBookingID));
       } catch (error) {
         console.error("Error fetching booking data:", error);
       }
     } else {
       try {
-        // Fetch all bookings if no court is selected
         const allBookings = [];
         const response = await getAllCourtOfOwner(user.userID);
         const courts = response.data; // Ensure this is an array
+        console.log(courts)
+
         for (const court of courts) {
           const courtBookings = await getAllBookingsOfCourt2(court.courtID);
-          console.log(courtBookings.data)
-          allBookings.push(...courtBookings.data);
+          allBookings.push(
+            ...courtBookings.data.recurringBookingResponseList.filter(
+              (booking) => booking.recurringBookingID
+            )
+          );
         }
         setData(allBookings);
         setCourt(courts);
@@ -96,7 +102,7 @@ const ListOrder = () => {
       }
     }
   };
-console.log(data)
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -135,30 +141,35 @@ console.log(data)
     setEndDate(date ? dayjs(date).toDate() : null);
   };
 
+  const handleStartPaymentDateChange = (date) => {
+    setStartPaymentDate(date ? dayjs(date).toDate() : null);
+  };
+
+  const handleEndPaymentDateChange = (date) => {
+    setEndPaymentDate(date ? dayjs(date).toDate() : null);
+  };
+
   const handleResetDate = () => {
     setStartDate(null);
     setEndDate(null);
-  };
-
-  const handleBookingTypeChange = (event) => {
-    setBookingType(event.target.value);
+    setStartPaymentDate(null);
+    setEndPaymentDate(null);
   };
 
   const filteredItems = useMemo(() => {
     return data.filter((item) => {
-      const itemDate = new Date(item.bookingDate);
-      const matchesDate =
-        (!startDate || itemDate >= startDate) &&
-        (!endDate || itemDate <= endDate);
+      const itemBookingDate = new Date(item.bookingDate);
+      const itemPaymentDate = new Date(item.paymentResDTO.paymentDate);
+      const matchesBookingDate =
+        (!startDate || itemBookingDate >= startDate) &&
+        (!endDate || itemBookingDate <= endDate);
+      const matchesPaymentDate =
+        (!startPaymentDate || itemPaymentDate >= startPaymentDate) &&
+        (!endPaymentDate || itemPaymentDate <= endPaymentDate);
 
-      const matchesType =
-        bookingType === "all" ||
-        (bookingType === "day" && item.bookingId) ||
-        (bookingType === "current" && item.recurringBookingID);
-
-      return matchesDate && matchesType;
+      return matchesBookingDate && matchesPaymentDate;
     });
-  }, [data, startDate, endDate, bookingType]);
+  }, [data, startDate, endDate, startPaymentDate, endPaymentDate]);
 
   const actionColumn = [
     {
@@ -194,32 +205,6 @@ console.log(data)
       <div className="customerContainer">
         <div className="filters" style={{ display: "flex" }}>
           <div>
-            {" "}
-            <FormControl style={{ padding: "20px", gap: "20px" }}>
-              <FormLabel id="demo-radio-buttons-group-label">
-                Booking Type
-              </FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-radio-buttons-group-label"
-                value={bookingType}
-                onChange={handleBookingTypeChange}
-                name="radio-buttons-group"
-              >
-                <FormControlLabel value="all" control={<Radio />} label="All" />
-                <FormControlLabel
-                  value="day"
-                  control={<Radio />}
-                  label="Day Booking"
-                />
-                <FormControlLabel
-                  value="current"
-                  control={<Radio />}
-                  label="Recurring Booking"
-                />
-              </RadioGroup>
-            </FormControl>
-          </div>
-          <div>
             <Box
               display="grid"
               alignItems="center"
@@ -228,15 +213,15 @@ console.log(data)
             >
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  label="Start Date"
-                  value={startDate ? dayjs(startDate) : null}
-                  onChange={handleStartDateChange}
+                  label="Start Payment Date"
+                  value={startPaymentDate ? dayjs(startPaymentDate) : null}
+                  onChange={handleStartPaymentDateChange}
                   renderInput={(params) => <TextField {...params} />}
                 />
                 <DatePicker
-                  label="End Date"
-                  value={endDate ? dayjs(endDate) : null}
-                  onChange={handleEndDateChange}
+                  label="End Payment Date"
+                  value={endPaymentDate ? dayjs(endPaymentDate) : null}
+                  onChange={handleEndPaymentDateChange}
                   renderInput={(params) => <TextField {...params} />}
                   style={{ marginLeft: 16 }}
                 />
@@ -250,7 +235,7 @@ console.log(data)
               </Button>
             </Box>
           </div>
-          <div style={{paddingTop:"20px"}}>
+          <div style={{ paddingTop: "20px" }}>
             {court.length > 0 && (
               <Autocomplete
                 id="grouped-demo"
@@ -266,7 +251,7 @@ console.log(data)
                 sx={{ "--DataGrid-overlayHeight": "300px", width: 300 }}
                 onChange={handleCourtChange}
                 renderInput={(params) => (
-                  <TextField {...params} label="CourtName" />
+                  <TextField {...params} label="Court Name" />
                 )}
               />
             )}
@@ -288,7 +273,7 @@ console.log(data)
           />
         </div>
         {dialogType === "view" && selectedBooked && (
-          <BookedDetail
+          <BookedDetailRecurring
             open={open}
             onClose={handleClose}
             booking={selectedBooked}
@@ -299,4 +284,4 @@ console.log(data)
   );
 };
 
-export default ListOrder;
+export default ListOrderRecurring;

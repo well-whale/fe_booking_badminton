@@ -33,7 +33,6 @@ import OwnerHome from './pages/ownerHome/Home';
 import ListCourtForOwnerActive from './pages/list/ListCourtForOwnerActive';
 import ListCourtForOwnerPending from './pages/list/ListCourtForOwnerPending';
 import ListCourtForOwnerPause from './pages/list/ListCourtForOwnerPause';
-import ListOrder from './pages/list/Order';
 import NewCourt from './pages/new/NewCourt';
 import ProfileAdmin from './pages/single/Profile';
 import ProfileOwner from './pages/single/ProfileOwner';
@@ -43,6 +42,8 @@ import Staff from './pages/list/Staff';
 import StaffHome from './pages/StaffHome/Home';
 import Checkin from './pages/booked/CheckIn';
 import ProfileStaff from './pages/single/ProfileStaff';
+import ListOrderDay from './pages/list/OrderDay';
+import ListOrderRecurring from './pages/list/OrderRecurring';
 
 function App() {
   const dispatch = useDispatch();
@@ -93,7 +94,9 @@ function App() {
         <Route path={routes.listCourtForOwnerActive} element={<ProtectedRoute role="Court Owner"><ListCourtForOwnerActive /></ProtectedRoute>} />
         <Route path={routes.listCourtForOwnerPending} element={<ProtectedRoute role="Court Owner"><ListCourtForOwnerPending /></ProtectedRoute>} />
         <Route path={routes.listCourtForOwnerPause} element={<ProtectedRoute role="Court Owner"><ListCourtForOwnerPause /></ProtectedRoute>} />
-        <Route path={routes.listOrder} element={<ProtectedRoute role="Court Owner"><ListOrder /></ProtectedRoute>} />
+        <Route path={routes.listOrderDay} element={<ProtectedRoute role="Court Owner"><ListOrderDay /></ProtectedRoute>} />
+        <Route path={routes.listOrderRecurring} element={<ProtectedRoute role="Court Owner"><ListOrderRecurring /></ProtectedRoute>} />
+
         <Route path={routes.newCourt} element={<ProtectedRoute role="Court Owner"><NewCourt /></ProtectedRoute>} />
         <Route path={routes.ownerProfile} element={<ProtectedRoute role="Court Owner"><ProfileOwner /></ProtectedRoute>} />
         <Route path={routes.ownerUpdateCourt} element={<ProtectedRoute role="Court Owner"><UpdateCourt /></ProtectedRoute>} />

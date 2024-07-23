@@ -31,7 +31,9 @@ export const routes = {
     listCourtForOwnerActive: "/ownerCourt/listCourtActive",
     listCourtForOwnerPending: "/ownerCourt/listCourtPending",
     listCourtForOwnerPause: "/ownerCourt/listCourtPause",
-    listOrder: "/ownerCourt/listOrder",
+    listOrderDay: "/ownerCourt/listOrderDay",
+    listOrderRecurring: "/ownerCourt/listOrderRecurring",
+
     newCourt: "/ownerCourt/newCourt",
     ownerProfile: "/ownerCourt/Profile",
     ownerProfile: "/ownerCourt/Profile",
