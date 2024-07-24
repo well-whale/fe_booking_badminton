@@ -222,6 +222,14 @@ const UpdateCourt = () => {
       toast.error("End Time AM must be between Start Time and End Time.");
       return;
     }
+    if (formData.prices[0].unitPrice <10000 ) {
+      toast.error("Please enter an amount greater than 10.000 đ");
+      return;
+    }
+    if ( formData.prices[1].unitPrice <10000) {
+      toast.error("Please enter an amount greater than 10.000 đ");
+      return;
+    }
 
     setUploading(true);
     try {
