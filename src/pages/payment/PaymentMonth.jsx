@@ -77,7 +77,15 @@ const PaymentMonthPage = () => {
   const [openDialog, setOpenDialog] = useState(false);
 
   const navigate = useNavigate();
-
+  const dayMapping = {
+    MONDAY: 'THỨ HAI',
+    TUESDAY: 'THỨ BA',
+    WEDNESDAY: 'THỨ TƯ',
+    THURSDAY: 'THỨ NĂM',
+    FRIDAY: 'THỨ SÁU',
+    SATURDAY: 'THỨ BẢY',
+    SUNDAY: 'CHỦ NHẬT'
+  };
   const getDetailCourt = async () => {
     try {
       const res = await getCourtByIdCourt(orderDetail.courtId);
@@ -254,7 +262,7 @@ const PaymentMonthPage = () => {
                     {orderDetail.dayOfWeek.map((detail, index) => (
                       <Box key={index} className="payment-summary-item">
                         <Typography className="payment-summary-name">
-                          {detail}
+                        {dayMapping[detail] || detail}
                         </Typography>
                       </Box>
                     ))}
