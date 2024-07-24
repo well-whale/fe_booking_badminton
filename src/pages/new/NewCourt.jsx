@@ -311,6 +311,8 @@ const NewCourt = () => {
                 type="number"
                 fullWidth
                 margin="normal"
+                inputProps={{ min: "1" }}
+
               />
               <div className="formSection top-right">
                 <h2 style={{ textAlign: "center" }}>Images</h2>
@@ -478,6 +480,8 @@ const NewCourt = () => {
                   onChange={handlePriceChange(0, "unitPrice")}
                   fullWidth
                   margin="normal"
+                  inputProps={{ min: "10000" }}
+
                 />
                 <div className="aaaaaa">
                   <TimePicker
@@ -491,7 +495,7 @@ const NewCourt = () => {
                     disabled
                   />
                   <TimePicker
-                    label="End Time PM (VND)"
+                    label="End Time PM "
                     views={["hours"]}
                     value={formData.endTime}
                     onChange={handleTimeChange("endTime")}
@@ -509,6 +513,8 @@ const NewCourt = () => {
                   onChange={handlePriceChange(1, "unitPrice")}
                   fullWidth
                   margin="normal"
+                  inputProps={{ min: "10000" }}
+
                 />
               </LocalizationProvider>
               <Button

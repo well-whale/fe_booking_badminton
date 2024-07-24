@@ -335,6 +335,8 @@ console.log(finalFormData)
                 type="number"
                 fullWidth
                 margin="normal"
+                inputProps={{ min: "1" }}
+
               />
               <div className="formItem">
                 <h4>Upload Images</h4>
@@ -489,6 +491,8 @@ console.log(finalFormData)
                   onChange={handlePriceChange(0, "unitPrice")}
                   fullWidth
                   margin="normal"
+                  inputProps={{ min: "10000" }}
+
                 />
                 <div className="aaaaaa">
                   <TimePicker
@@ -520,6 +524,8 @@ console.log(finalFormData)
                   onChange={handlePriceChange(1, "unitPrice")}
                   fullWidth
                   margin="normal"
+                  inputProps={{ min: "10000" }}
+
                 />
               </LocalizationProvider>
               <Button
