@@ -313,7 +313,7 @@ const PaymentPage = () => {
             <FormControl fullWidth className="formControl">
               <TextField
                 id="firstname"
-                label="First Name"
+                label="Họ"
                 variant="outlined"
                 value={orderDetail.firstname || ""}
                 onChange={handleInputChange}
@@ -323,7 +323,7 @@ const PaymentPage = () => {
             <FormControl fullWidth className="formControl">
               <TextField
                 id="lastName"
-                label="Last Name"
+                label="Tên"
                 variant="outlined"
                 value={orderDetail.lastName || ""}
                 onChange={handleInputChange}
@@ -333,7 +333,7 @@ const PaymentPage = () => {
             <FormControl fullWidth className="formControl">
               <TextField
                 id="email"
-                label="Email Address"
+                label="Email "
                 variant="outlined"
                 value={orderDetail.email}
                 onChange={handleInputChange}
@@ -343,7 +343,7 @@ const PaymentPage = () => {
             <FormControl fullWidth className="formControl">
               <TextField
                 id="phone"
-                label="Phone Number"
+                label="Số điện thoại"
                 variant="outlined"
                 value={orderDetail.phone}
                 onChange={handleInputChange}
@@ -353,9 +353,9 @@ const PaymentPage = () => {
             <FormControl fullWidth className="formControl">
               <TextField
                 id="totalPrice"
-                label="Total Price"
+                label="Tổng tiền"
                 variant="outlined"
-                value={`${orderDetail.totalPrice}.000` || ""}
+                value={`${VND.format(orderDetail.totalPrice)}` || ""}
                 onChange={handleInputChange}
                 disabled
               />
