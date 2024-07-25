@@ -10,7 +10,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import "./NewUser.css";
-import { addStaff, getAllCourtOfOwner, newUser } from "../../services/UserServices";
+import { addStaff, getAllCourtOfOwner } from "../../services/UserServices";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../../router/routes";
 import { useSelector } from "react-redux";
@@ -61,7 +61,6 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
   const validate = () => {
     const newErrors = {};
 
-   
     if (!formData.firstName) {
       newErrors.firstName = "First Name is required";
     }
@@ -81,6 +80,9 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
     } else if (!/^\d+$/.test(formData.phone)) {
       newErrors.phone = "Please enter a valid phone number";
     }
+    if (formData.courtID == null) {
+      newErrors.courtID = "Court name is required";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -93,15 +95,20 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
     setSubmitting(true);
     setApiError("");
     try {
-      console.log(formData)
-      await addStaff(formData);
-      setFormData(initialFormData);
-      handleClose();
-      refreshData();
-      navigate(routes.adminListStaff);
+      const response = await addStaff(formData);
+      if (response.status === 200 || response.status === 201) {
+        // Assuming that a successful response has status 200 or 201
+        setFormData(initialFormData);  // Reset the form data
+        handleClose();
+        refreshData();
+        navigate(routes.adminListStaff);
+      } else {
+        // Handle unexpected successful response status
+        setApiError("Unexpected response status: " + response.status);
+      }
     } catch (error) {
       setApiError(
-        error.response?.data?.message || "An error occurred while adding the user."
+        error.response?.data?.message
       );
     } finally {
       setSubmitting(false);
@@ -217,21 +224,28 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
                   fullWidth
                   margin="normal"
                 />
-                <Autocomplete
-                  id="grouped-demo"
-                  options={options.sort(
-                    (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
-                  )}
-                  groupBy={(option) => option.firstLetter}
-                  getOptionLabel={(option) => option.courtName}
-                  isOptionEqualToValue={(option, value) =>
-                    option.courtID === value.courtID
-                  }
-                  onChange={handleCourtChange}
-                  renderInput={(params) => (
-                    <TextField {...params} label="CourtName" />
-                  )}
-                />
+                <div className="abc">
+                  <Autocomplete
+                    id="grouped-demo"
+                    options={options.sort(
+                      (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
+                    )}
+                    groupBy={(option) => option.firstLetter}
+                    getOptionLabel={(option) => option.courtName}
+                    isOptionEqualToValue={(option, value) =>
+                      option.courtID === value.courtID
+                    }
+                    onChange={handleCourtChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Court Name"
+                        error={!!errors.courtID}
+                        helperText={errors.courtID}
+                      />
+                    )}
+                  />
+                </div>
                 <div className="form-buttons">
                   <Button
                     type="submit"
@@ -247,6 +261,7 @@ const NewStaff = ({ open, handleClose, refreshData }) => {
                     color="secondary"
                     className="form-button"
                     onClick={() => setFormData(initialFormData)}
+                    disabled={submitting}
                   >
                     Reset
                   </Button>

@@ -116,6 +116,24 @@ const UpdateCourt = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
+    // Regular expression for general special characters
+    const generalSpecialCharacterPattern = /[^a-zA-Z0-9\sÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯăẠ-ỹ]/;
+  
+    // Regular expression for allowed characters in courtAddress
+    const addressAllowedCharacterPattern = /^[a-zA-Z0-9\s/ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯưẠ-ỹ]*$/;
+  
+    if (name === "courtName" && generalSpecialCharacterPattern.test(value)) {
+      // If special characters are found in courtName, do not update the state
+      toast("Special characters are not allowed in the court name.");
+      return;
+    }
+  
+    // if (name === "courtAddress" && !addressAllowedCharacterPattern.test(value)) {
+    //   // If special characters are found in courtAddress, do not update the state
+    //   toast("Special characters are not allowed in the court address except for '/'.");
+    //   return;
+    // }
     setFormData({
       ...formData,
       [name]: name === "courtQuantity" ? parseInt(value, 10) : value,
@@ -217,7 +235,10 @@ const UpdateCourt = () => {
 
     if (
       dayjs(formData.prices[0].endTime).isBefore(dayjs(formData.startTime)) ||
+      dayjs(formData.prices[0].endTime).isSame(dayjs(formData.startTime))||
+      dayjs(formData.prices[0].endTime).isSame(dayjs(formData.endTime))||
       dayjs(formData.prices[0].endTime).isAfter(dayjs(formData.endTime))
+      
     ) {
       toast.error("End Time AM must be between Start Time and End Time.");
       return;

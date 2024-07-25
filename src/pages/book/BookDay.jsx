@@ -140,13 +140,21 @@ const BookDay = () => {
       const newSelectedTimes = [];
       const start = Math.min(firstSelected, id);
       const end = Math.max(firstSelected, id);
-      for (let i = start; i <= end; i += 30) {
-        newSelectedTimes.push(i);
+      if (start === end) {
+        setSelectedTimes([]);
+        setStartTime(null);
+        setEndTime(null);
+        setFirstSelected(null);
+        setSelectedCourts([]);
+      } else {
+        for (let i = start; i <= end; i += 30) {
+          newSelectedTimes.push(i);
+        }
+        setSelectedTimes(newSelectedTimes);
+        setFirstSelected(null);
+        setStartTime(start);
+        setEndTime(end);
       }
-      setSelectedTimes(newSelectedTimes);
-      setFirstSelected(null);
-      setStartTime(start);
-      setEndTime(end);
     }
   };
 
@@ -289,7 +297,14 @@ const BookDay = () => {
                 <DatePicker
                   label="Date"
                   value={selectedDate}
-                  onChange={(newValue) => setSelectedDate(dayjs(newValue))}
+                  onChange={(newValue) => {
+                    setSelectedDate(dayjs(newValue));
+                    setSelectedTimes([]);
+                    setStartTime(null);
+                    setEndTime(null);
+                    setFirstSelected(null);
+                    setSelectedCourts([]);
+                  }}
                   shouldDisableDate={disablePastDates}
                 />
               </DemoContainer>
@@ -317,37 +332,40 @@ const BookDay = () => {
           ))}
         </div>
         <div style={{ display: "flex", paddingTop: "5%", gap: "3%" }}>
-        <div className=" right-section weekdays ">
-        <Box component="section" sx={{ p: 3, border: "1px dashed grey" }}>
-
-        <label>Chọn Sân:</label>
-        <div>
-          {areas.map(({ name, subCourtID }) => (
-            <Button
-              key={subCourtID}
-              color={
-                selectedCourts.some((court) => court.subCourtID === subCourtID)
-                  ? "success"
-                  : getButtonColor(subCourtID)
-              }
-              variant={
-                selectedCourts.some((court) => court.subCourtID === subCourtID)
-                  ? "contained"
-                  : "outlined"
-              }
-              disabled={
-                getButtonColor(subCourtID) === "error" ||
-                startTime === null ||
-                endTime === null
-              }
-              onClick={() => handleCourtSelection(subCourtID)}
-            >
-              {name}
-            </Button>
-          ))}
-        </div>
-        </Box>
-        </div>
+          <div className=" right-section weekdays ">
+            <Box component="section" sx={{ p: 3, border: "1px dashed grey" }}>
+              <label>Chọn Sân:</label>
+              <div>
+                {areas.map(({ name, subCourtID }) => (
+                  <Button
+                    key={subCourtID}
+                    color={
+                      selectedCourts.some(
+                        (court) => court.subCourtID === subCourtID
+                      )
+                        ? "success"
+                        : getButtonColor(subCourtID)
+                    }
+                    variant={
+                      selectedCourts.some(
+                        (court) => court.subCourtID === subCourtID
+                      )
+                        ? "contained"
+                        : "outlined"
+                    }
+                    disabled={
+                      getButtonColor(subCourtID) === "error" ||
+                      startTime === null ||
+                      endTime === null
+                    }
+                    onClick={() => handleCourtSelection(subCourtID)}
+                  >
+                    {name}
+                  </Button>
+                ))}
+              </div>
+            </Box>
+          </div>
         </div>
       </div>
 
@@ -367,7 +385,12 @@ const BookDay = () => {
 
             <CardContent>
               <Box component="section" sx={{ p: 3, border: "2px dashed grey" }}>
-                <Typography gutterBottom variant="h5" component="div" style={{fontWeight:"600"}}>
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  style={{ fontWeight: "600" }}
+                >
                   {court.courtName}
                 </Typography>
                 <Typography

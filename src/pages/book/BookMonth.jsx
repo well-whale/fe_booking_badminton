@@ -153,13 +153,21 @@ const BookMonth = () => {
       const newSelectedTimes = [];
       const start = Math.min(firstSelected, id);
       const end = Math.max(firstSelected, id);
-      for (let i = start; i <= end; i += 30) {
-        newSelectedTimes.push(i);
+      if (start === end) {
+        setSelectedTimes([]);
+        setStartTime(null);
+        setEndTime(null);
+        setFirstSelected(null);
+        setSelectedCourts([]);
+      } else {
+        for (let i = start; i <= end; i += 30) {
+          newSelectedTimes.push(i);
+        }
+        setSelectedTimes(newSelectedTimes);
+        setFirstSelected(null);
+        setStartTime(start);
+        setEndTime(end);
       }
-      setSelectedTimes(newSelectedTimes);
-      setFirstSelected(null);
-      setStartTime(start);
-      setEndTime(end);
     }
   };
   useEffect(() => {
@@ -307,8 +315,14 @@ const BookMonth = () => {
                 <DatePicker
                   label="End Day"
                   value={selectedDate}
-                  onChange={(newValue) =>
-                    setSelectedDate(dayjs(newValue))
+                  onChange={(newValue) =>{
+                    setSelectedDate(dayjs(newValue));
+                    setSelectedTimes([]);
+                    setStartTime(null);
+                    setEndTime(null);
+                    setFirstSelected(null);
+                    setSelectedCourts([]);
+                  }
                   }
                   shouldDisableDate={disablePastDates}
                 />
