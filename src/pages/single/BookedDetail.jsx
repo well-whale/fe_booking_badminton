@@ -43,7 +43,7 @@ const BookedDetail = ({ open, onClose, booking }) => {
                                 </div>
                             </div>
                             <div className="product-details">
-                                <h3>Chi tiết sản phẩm</h3>
+                                <h3>Chi tiết đặt</h3>
                                 {booking.bookingDetails.map((detail, index) => (
                                     <div key={index} className="flight-info">
                                         <p>{booking.courtName}</p>

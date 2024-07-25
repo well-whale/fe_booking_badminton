@@ -163,7 +163,7 @@ console.log(currentItems)
                 style={{ marginLeft: 16 }}
               />
             </LocalizationProvider>
-            <Button onClick={handleResetDate} variant="outlined" style={{ marginLeft: 8 }}>
+            <Button onClick={handleResetDate} fullWidth variant="outlined" >
               Tất cả
             </Button>
           </Box>
